@@ -1,0 +1,13 @@
+{
+  "college": "马克思主义学院",
+  "citation_style": "footnote",
+  "bibliography_style": "categorized",
+  "quote_style": "fullwidth_chinese",
+  "abstract_keywords_delimiter": ";",
+  "build_chain": [
+    "xelatex",
+    "xelatex",
+    "xelatex"
+  ],
+  "compile_timeout": 300
+}
