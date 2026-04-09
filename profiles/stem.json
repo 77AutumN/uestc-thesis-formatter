@@ -1,0 +1,14 @@
+{
+  "college": "理工科通用",
+  "citation_style": "inline_bracket",
+  "bibliography_style": "bibtex",
+  "quote_style": "mixed",
+  "abstract_keywords_delimiter": ",",
+  "build_chain": [
+    "xelatex",
+    "biber",
+    "xelatex",
+    "xelatex"
+  ],
+  "compile_timeout": 300
+}

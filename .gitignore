@@ -1,0 +1,14 @@
+__pycache__/
+*.pyc
+.pytest_cache/
+output/
+*.pdf
+.env
+*.egg-info/
+dist/
+build/
+.venv/
+vendor/DissertationUESTC/
+
+# Gemini CLI IPC bridge
+.gemini_ipc/

@@ -1,0 +1,20 @@
+{
+  "title_zh": "关于某个学科的理论与实践研究",
+  "title_en": "Research on the Theory and Practice of a Certain Subject",
+  "author_zh": "张三",
+  "author_en": "Zhang San",
+  "advisor_zh": "李四 教授",
+  "advisor_en": "Prof. Li Si",
+  "school_zh": "学院名称",
+  "school_en": "School Name",
+  "major_zh": "专业名称",
+  "major_en": "Major Name",
+  "student_number": "1234567890123",
+  "degree": "master",
+  "classification": "A81",
+  "udc": "",
+  "secret_level": "公开",
+  "date_submit": "",
+  "date_oral": "",
+  "date_confer": ""
+}

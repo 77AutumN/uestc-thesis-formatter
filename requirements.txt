@@ -1,0 +1,6 @@
+# Core dependencies
+python-docx>=0.8.11
+PyMuPDF>=1.23.0
+
+# Development dependencies
+pytest>=7.0.0

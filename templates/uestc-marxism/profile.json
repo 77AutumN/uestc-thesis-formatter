@@ -1,0 +1,108 @@
+{
+  "name": "uestc-marxism",
+  "display_name": "电子科技大学 — 马克思主义学院",
+  "parent": "uestc",
+  "description": "马克思主义学院硕士论文格式，与标准 UESTC 模板的主要区别：脚注引用制 + 分类参考文献",
+
+  "citation_style": "footnote-per-page",
+  "citation_details": {
+    "format": "每页底部脚注，编号使用带圈数字 ①-⑳",
+    "repeat_policy": "同一文献多处引用时，每次都重写完整脚注信息",
+    "numbering_reset": "每页重置",
+    "max_per_page": 20,
+    "note": "DissertUESTC.cls 原生支持圆圈脚注（xunicode-addon + Source Han Serif SC），无需 CLS patching"
+  },
+
+  "bibliography_mode": "categorized",
+  "bibliography_categories": [
+    {"key": "book",    "label": "一、著作类",     "types": ["M"]},
+    {"key": "article", "label": "二、期刊类",     "types": ["J"]},
+    {"key": "thesis",  "label": "三、学位论文类", "types": ["D"]},
+    {"key": "online",  "label": "四、网页报纸类", "types": ["N", "OL", "EB/OL", "R/OL", "N/OL"]}
+  ],
+  "bibliography_format": {
+    "output_file": "bibliography_categorized.tex",
+    "generator_script": "scripts/categorize_refs.py",
+    "note": "纯 LaTeX 文本，不依赖 bibtex/biblatex"
+  },
+
+  "compile_chain": ["xelatex", "xelatex", "xelatex", "xelatex"],
+  "use_latexmk": true,
+  "compile_note": "马院模式不需要 bibtex 步骤，脚注和参考文献都是纯 LaTeX 文本",
+
+  "conversion_scripts": {
+    "cite_to_footnote": {
+      "script": "scripts/refs_to_footnotes.py",
+      "description": "将 \\cite{key} 批量转换为 \\footnote{完整文献信息}",
+      "input": "chapter/*.tex + references_raw.txt",
+      "output": "chapter/*.tex (in-place modification)"
+    },
+    "categorize_refs": {
+      "script": "scripts/categorize_refs.py",
+      "description": "将文献按著作/期刊/学位论文/网页报纸分类生成 LaTeX 文件",
+      "input": "references_raw.txt",
+      "output": "bibliography_categorized.tex"
+    }
+  },
+
+  "golden_template_v2": {
+    "document_order": [
+      "cover → zh_titlepage → en_titlepage → declaration → abstracts → TOC → chapters → 结语 → 致谢 → 参考文献(categorized) → 成果"
+    ],
+    "key_macros": {
+      "cover": "\\uestccover{题目}{专业}{学号}{姓名}{导师}{职称}{学院}",
+      "zh_titlepage": "\\ClsNum{} \\UDC{} \\DissertationTitle{} \\Author{} \\Supervisor{}{}{}{} \\Major{} \\Date{}{} \\Grant{}{} \\uestczhtitlepage",
+      "en_titlepage": "\\uestcentitlepage{title}{major}{id}{author}{advisor}{}{school}",
+      "declaration": "\\declaration{}{}{}",
+      "abstract_zh": "\\zhabstract ... \\zhkeywords{}",
+      "abstract_en": "\\enabstract ... \\enkeywords{}",
+      "acknowledgement": "\\acknowledgement",
+      "achievement": "\\achievement",
+      "bibliography": "\\chapter*{参考文献} + \\input{bibliography_categorized}"
+    },
+    "text_integrity": {
+      "rule": "ALL extracted text MUST be verbatim copies from Word. NEVER allow AI to rewrite, summarize, or append text.",
+      "severity": "P0",
+      "verification": "diff extracted/*.txt against misc/*.tex and chapters/*.tex (ignoring LaTeX commands)"
+    }
+  },
+
+  "deprecated_v1": {
+    "note": "以下配置来自旧 thesis-uestc 模板，保留仅供历史参考",
+    "cls_patches": "REMOVED — DissertUESTC.cls 原生支持圆圈脚注和空白页控制",
+    "patch_cls_script": "REMOVED — 不再需要物理修改 CLS",
+    "uestc_patches_sty": "REMOVED — 新模板原生支持所有马院需求"
+  },
+
+  "golden_reference_pdf": "",
+
+  "verified_cases": [
+    {
+      "id": "CASE-001",
+      "date": "2026-04-04",
+      "engine": "thesis-uestc (v1)",
+      "result": "success",
+      "note": "First Marxism pipeline run"
+    },
+    {
+      "id": "CASE-004",
+      "date": "2026-04-07",
+      "engine": "thesis-uestc (v1)",
+      "result": "success",
+      "pages": 77,
+      "footnotes": 83,
+      "references": 99,
+      "note": "Production-grade v1"
+    },
+    {
+      "id": "CASE-003",
+      "date": "2026-04-09",
+      "engine": "DissertUESTC (v2)",
+      "result": "success",
+      "pages": 73,
+      "note": "Golden reference PDF. Validated by thesis_validator.py 3-Gate audit (23/23 pass). Tables standardized to booktabs 三线表."
+    }
+  ],
+
+  "knowledge_item": "uestc_marxism_thesis_pipeline"
+}

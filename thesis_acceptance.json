@@ -1,0 +1,41 @@
+{
+  "version": "2026.1",
+  "source": "UESTC 研究生学位论文撰写规范",
+
+  "cls_values": {
+    "heavyrulewidth": {"expected": "1.5bp", "tolerance": 0, "spec_ref": "§2.4.2 三线表上下边线", "unit_note": "1bp ≈ 1.00375pt, CLS uses bp"},
+    "lightrulewidth": {"expected": "0.75bp", "tolerance": 0, "spec_ref": "§2.4.2 三线表内线"},
+    "cmidrulewidth": {"expected": "0.75bp", "tolerance": 0, "spec_ref": "§2.4.2 三线表辅助线 (DissertUESTC uses same as lightrule)"},
+    "abovedisplayskip": {"expected": "6pt", "tolerance": 0, "spec_ref": "§2.5 公式段前距"},
+    "belowdisplayskip": {"expected": "6pt", "tolerance": 0, "spec_ref": "§2.5 公式段后距"},
+    "abovedisplayshortskip": {"expected": "6pt", "tolerance": 0, "spec_ref": "§2.5 公式段前距(短)"},
+    "belowdisplayshortskip": {"expected": "6pt", "tolerance": 0, "spec_ref": "§2.5 公式段后距(短)"},
+    "figure_aboveskip": {"expected": "6pt", "tolerance": 0, "spec_ref": "§2.4.1 图题段前距"},
+    "figure_belowskip": {"expected": "12pt", "tolerance": 0, "spec_ref": "§2.4.1 图题段后距"},
+    "table_aboveskip": {"expected": "12pt", "tolerance": 0, "spec_ref": "§2.4.2 表题段前距"},
+    "table_belowskip": {"expected": "6pt", "tolerance": 0, "spec_ref": "§2.4.2 表题段后距"}
+  },
+
+  "structure": {
+    "section_order": ["摘要", "ABSTRACT", "目录", "正文", "致谢", "参考文献"],
+    "abstract_max_words_master": 800,
+    "abstract_max_pages_master": 1,
+    "abstract_max_words_doctor": 1500,
+    "abstract_max_pages_doctor": 2,
+    "keywords_count_min": 3,
+    "keywords_count_max": 5,
+    "keyword_separator": "；",
+    "title_max_chars": 25,
+    "max_heading_levels": 4
+  },
+
+  "pdf_checks": {
+    "min_pages": 30,
+    "max_pages": 300,
+    "page_diff_warn": 10,
+    "overfull_warn": 5,
+    "overfull_fail": 20,
+    "default_title_strings": ["论文标题", "Thesis Title", "请输入论文题目"],
+    "default_author_strings": ["作者", "作者姓名", "学院"]
+  }
+}
