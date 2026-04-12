@@ -1,0 +1,16 @@
+__pycache__/
+*.pyc
+.pytest_cache/
+output/
+*.pdf
+.env
+*.egg-info/
+dist/
+build/
+.venv/
+
+# Gemini CLI IPC bridge
+.gemini_ipc/
+
+# Codex IPC artifacts
+.codex_ipc/

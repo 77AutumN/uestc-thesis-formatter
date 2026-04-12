@@ -1,0 +1,3 @@
+[submodule "vendor/DissertationUESTC"]
+	path = vendor/DissertationUESTC
+	url = https://github.com/MGG1996/DissertationUESTC.git

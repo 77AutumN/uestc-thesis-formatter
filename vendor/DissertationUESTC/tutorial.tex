@@ -1,0 +1,2507 @@
+% !TEX Program = xelatex
+\documentclass[doctor, vlined, ]{DissertUESTC}
+
+
+
+\begin{document}
+	
+	% 以下两条命令为高亮示例文档中的关键内容而设，正式撰写时切不可使用
+	\newcommand{\shad}[1]{\textcolor{DodgerBlue}{\ttfamily #1}}
+	\newcommand{\shadcmd}[1]{\shad{$\backslash$#1}}
+
+
+	% 下方命令允许跨页排版包含多个行间公式的公式组，可选参数可取值为1,2,3,4，越大表示跨页倾向越高
+	% \allowdisplaybreaks[3]
+
+
+	% 当论文中某节的内容接近填满页面且其下紧随几项标题时，LaTeX更倾向于在后续的标题前分页，并且纵向拉伸当前页内容的段间距，以实现纵向分散对齐，也就是很多人在问的现象。这并不是模板bug，而是LaTeX特性。
+	% 出现这种情况的本质原因是用户的内容，尤其是在页面中有些图、表、标题的时候，它们的高度很可能不是正文行距的整数倍，那必然就会出现这种问题。
+	% 如果你觉得Word从上到下直接堆叠内容，然后在页尾留下明显空白的处理方式更合你意，那就使用下方的\raggedbottom命令
+	% \raggedbottom  % 此命令可让LaTeX像Word那样直接堆叠页面内容，而不再默认拉伸段间距，代价是页尾可能会有明显空白
+	
+
+	% \setconfidential命令用于设置论文封面中的“密级信息”。慎用！！！学生个人不应随意将论文定性为涉密，需要先经过审批。此命令必须先于\uestccover使用才有效
+	% 命令参数：\setconfidential(<信息右上角与纸张左、上边界的距离，以逗号分隔>)[<字体格式>]{<密级>}{<保密期限>}。可选参数默认值：(18cm,2cm)[\zihao{4}\bfseries]
+	\setconfidential{密级}{保密期限}  % 非涉密论文一定要注释掉该命令
+
+	% 封面示例————“双学位学士”以外的学位论文
+%	\uestccover[<学院名称排版风格>]{<论文题目>}{<学科专业>}{<学号>}{<作者姓名>}{<指导教师>}{<教师职称>}{<学院>} % 单学位学士、研究生通用
+	\uestccover{}{}{}{}{}{}{}  % 空封面
+
+	\uestccover{关于我的杀父仇人疑似是名震天下的大侠时该如何报仇}
+				{玉女素心剑法}
+				{1182000}
+				{杨\hspace{1em}过}
+				{小龙女}
+				{掌\hspace{1em}门}%{终南山古墓派}
+				{终南山古墓派终南山古墓派终南山古墓派}  % 默认将过长的学院名称压缩至下划线宽度
+
+	\uestccover[par]{关于我的杀父仇人疑似是名震天下的大侠时该如何报仇}
+				{玉女素心剑法}
+				{1182000}
+				{杨\hspace{1em}过}
+				{小龙女}
+				{掌\hspace{1em}门}%{终南山古墓派}
+				{终南山古墓派终南山古墓派终南山古墓派}  % par参数将过长学院名称换行排版，此参数必影响封面布局，无可避免
+
+	% 封面示例————“双学位学士”论文，需要doublebachelor选项
+	% \uestccover{<论文题目>}{<学院>}{<第一专业>}{<第二专业>}{<学号>}{<作者姓名>}{<第一导师及职称>}{<第二导师及职称>} % 仅双学位学士论文，需要doublebachelor选项
+	% \uestccover{}{}{}{}{}{}{}{}  % 空封面
+	% \uestccover{关于我的杀父仇人疑似是名震天下的大侠时该如何报仇}
+	% 			{终南山古墓派终南山古墓派终南山古墓派}  % 空间有限，过长的学院名称必须压缩至下划线宽度
+	% 			{玉女素心剑法}
+	% 			{打狗棒法}
+	% 			{1182000}
+	% 			{杨\hspace{1em}过}
+	% 			{小龙女\hspace*{4em}掌\hspace{1em}门}
+	% 			{洪七公\hspace*{4em}帮\hspace{1em}主}
+
+
+	
+	% 中文扉页，仅研究生用
+	\DegLv{}  % 清空文档类选项设置的<申请学位级别>
+	\uestczhtitlepage  % 空白中文扉页
+
+	\ClsNum{TN828.6}  % \ClsNum{<分类号>}
+	\ClsLv{公开}  % \ClsLv{<密级>}
+	\UDC{621.39}  % \UDC{<UDC号>}
+	\DissertationTitle{关于我的杀父仇人疑似是名震天下的大侠时\\该如何报仇}  % \DissertationTitle{<题名>}
+	\Author{杨过}  % \Author{<作者姓名>}
+	\Supervisor{小龙女}{掌门}{古墓派}{活死人墓}  % \Supervisor{<指导教师>}{<职称>}{<单位名称>}{<单位地址>}
+	% 副导师信息，无则注释
+	\AssociateSupervisor{洪七公}{前帮主}{丐帮}{襄阳}  % \AssociateSupervisor{<副导师名称>}{<职称}>{<单位名称>}{<单位地址>}
+	\DegLv{西狂}  % \DegLv{<申请学位级别>}，该信息由文档类选项自动确定，需修改默认内容时使用，否则注释即可
+	\Major{玉女素心剑法}  % \Major{<学科专业>}
+	\Profield{剑道}  % \Profield{专业学位领域代码}，此为专业学位独有，学术学位用户注释即可
+	\Date{1959年1月1日}{1961年1月1日}  % \Date{<论文提交日期>}{<论文答辩日期>}
+	\Grant{中华武林}{1961年2月2日}  % \Grant{<学位授予单位>}{<学位授予日期>}
+	\Reviewer{黄蓉}{一灯大师、老顽童、黄老邪、郭靖、小龙女}  % \Reviewer{<答辩委员为主席>}{<评阅人>}
+	\uestczhtitlepage
+
+
+	\Supervisor{小龙女}{古墓派末代掌门}{古墓派}{活死人墓}  % \Supervisor{<指导教师>}{<职称>}{<单位名称>}{<单位地址>}
+	% 副导师信息，无则注释
+	\AssociateSupervisor{洪七公}{天下第一帮前帮主}{丐帮}{襄阳}  % \AssociateSupervisor{<副导师名称>}{<职称}>{<单位名称>}{<单位地址>}
+	\Reviewer{黄蓉}{一灯大师、老顽童、黄老邪、郭靖、小龙女、金轮法王、洪七公、欧阳锋}  % \Reviewer{<答辩委员为主席>}{<评阅人>}
+	\uestczhtitlepage  % 过长评阅人文本将被自动压缩至下划线宽度，不会超出页面边界
+
+	\uestczhtitlepage[compress]  % 在compress选项下，“中文扉页”将自动压缩过长职称的字宽，使之不超出官方模板为该内容设定的长度
+	
+
+	% 英文扉页，仅研究生用
+	% \uestcentitlepage{<文题>}{<专业>}{<学号>}{<作者>}{<导师>}{<副导师>}{<学院>}，若无副导师，则将“<副导师>”参数留空即可
+	\uestcentitlepage{}{}{}{}{}{}{}  % 空白英文扉页
+	\uestcentitlepage{How to Take Revenge When My Father's Murderer is Suspected to Be a Famous Hero}
+					{Jade Lady Soul Sword Technique Jade Lady Soul Sword Technique}
+					{1182000}
+					{Yang Guo}
+					{Grandmaster Dragondaughter Little}{Grandmaster Northern Beggar}
+					{Ancient Tomb Sect Ancient Tomb Sect Ancient Tomb Sect Ancient Tomb Sect}
+	
+	% 独创性声明：[<签名宽度>]{<日期>}{<作者签名图片1>}[<作者签名图片2 默认值为作者签名图片1>]{<导师签名图片>}，仅研究生用
+	\declaration{}{}{}  % 空白独创性声明
+	
+	\declaration[3cm]{2024年08月31日}{authsign}{spvrsign}
+
+	\declaration[3cm]{2024年08月31日}{authsign}[yangguo1]{spvrsign}
+
+	
+	
+	% 开启中文摘要
+	\zhabstract
+	
+	杨过少年时期母亲染病而亡，随后他便过着四处流浪的生活。后来遇到郭靖夫妇，便由他们照看。但之后因杨过与郭芙等人之间的矛盾，郭靖便送其去全真派习武。其后，又从全真派逃出，机缘巧合下于古墓遇见小龙女，之后便跟随小龙女练功。他身边有许多红颜知己钟情于他，而他却一心只爱小龙女，后结为夫妇；他和郭家恩怨难分，数度因误会关系紧张，却始终挺身而出相助他们，解除嫌隙，化气为和；命运多舛，与小龙女分隔十六年里，随伴亦师亦友的神雕行侠仗义，惩恶扬善。江湖人称“神雕大侠”。后等小龙女不至毅然跳崖殉情，在谷底与小龙女重逢后携手保卫襄阳城，杨过一展其旷世武学的威力，打败金轮法王，飞石击杀蒙古大汗，保大宋十三年和平。成为名扬天下的“神雕侠侣”。最后一次华山论剑后，与妻子小龙女绝迹江湖。
+
+	% \null\newpage
+
+	% 杨过少年时期母亲染病而亡，随后他便过着四处流浪的生活。后来遇到郭靖夫妇，便由他们照看。但之后因杨过与郭芙等人之间的矛盾，郭靖便送其去全真派习武。其后，又从全真派逃出，机缘巧合下于古墓遇见小龙女，之后便跟随小龙女练功。他身边有许多红颜知己钟情于他，而他却一心只爱小龙女，后结为夫妇；他和郭家恩怨难分，数度因误会关系紧张，却始终挺身而出相助他们，解除嫌隙，化气为和；命运多舛，与小龙女分隔十六年里，随伴亦师亦友的神雕行侠仗义，惩恶扬善。江湖人称“神雕大侠”。后等小龙女不至毅然跳崖殉情，在谷底与小龙女重逢后携手保卫襄阳城，杨过一展其旷世武学的威力，打败金轮法王，飞石击杀蒙古大汗，保大宋十三年和平。成为名扬天下的“神雕侠侣”。最后一次华山论剑后，与妻子小龙女绝迹江湖。
+
+	% 杨过少年时期母亲染病而亡，随后他便过着四处流浪的生活。后来遇到郭靖夫妇，便由他们照看。但之后因杨过与郭芙等人之间的矛盾，郭靖便送其去全真派习武。其后，又从全真派逃出，机缘巧合下于古墓遇见小龙女，之后便跟随小龙女练功。他身边有许多红颜知己钟情于他，而他却一心只爱小龙女，后结为夫妇；他和郭家恩怨难分，数度因误会关系紧张，却始终挺身而出相助他们，解除嫌隙，化气为和；命运多舛，与小龙女分隔十六年里，随伴亦师亦友的神雕行侠仗义，惩恶扬善。江湖人称“神雕大侠”。后等小龙女不至毅然跳崖殉情，在谷底与小龙女重逢后携手保卫襄阳城，杨过一展其旷世武学的威力，打败金轮法王，飞石击杀蒙古大汗，保大宋十三年和平。成为名扬天下的“神雕侠侣”。最后一次华山论剑后，与妻子小龙女绝迹江湖。
+
+	% 杨过少年时期母亲染病而亡，随后他便过着四处流浪的生活。后来遇到郭靖夫妇，便由他们照看。但之后因杨过与郭芙等人之间的矛盾，郭靖便送其去全真派习武。其后，又从全真派逃出，机缘巧合下于古墓遇见小龙女，之后便跟随小龙女练功。他身边有许多红颜知己钟情于他，而他却一心只爱小龙女，后结为夫妇；他和郭家恩怨难分，数度因误会关系紧张，却始终挺身而出相助他们，解除嫌隙，化气为和；命运多舛，与小龙女分隔十六年里，随伴亦师亦友的神雕行侠仗义，惩恶扬善。江湖人称“神雕大侠”。后等小龙女不至毅然跳崖殉情，在谷底与小龙女重逢后携手保卫襄阳城，杨过一展其旷世武学的威力，打败金轮法王，飞石击杀蒙古大汗，保大宋十三年和平。成为名扬天下的“神雕侠侣”。最后一次华山论剑后，与妻子小龙女绝迹江湖。
+
+	% 杨过少年时期母亲染病而亡，随后他便过着四处流浪的生活。后来遇到郭靖夫妇，便由他们照看。但之后因杨过与郭芙等人之间的矛盾，郭靖便送其去全真派习武。其后，又从全真派逃出，机缘巧合下于古墓遇见小龙女，之后便跟随小龙女练功。他身边有许多红颜知己钟情于他，而他却一心只爱小龙女，后结为夫妇；
+
+	% 中文关键词
+	\zhkeywords{练武；离经叛道；复仇；抗敌；练武；离经叛道；复仇；抗敌；练武；离经叛道；复仇；抗敌；练武；离经叛道；复仇；抗敌；\textcolor{DarkRed}{注意：2025年09月03日修订的\href{https://gr.uestc.edu.cn/xiazai/114/3917}{\color{DarkRed}\CJKunderline*[thickness=0.5bp, format=\color{DarkRed}]{研究生论文撰写规范}}要求改用“；”分隔关键词；（\href{https://www.jwc.uestc.edu.cn/info/1507170256521551874}{\color{DarkRed}\CJKunderline*[thickness=0.5bp, format=\color{DarkRed}]{双学位}}）\href{https://www.sice.uestc.edu.cn/info/1140/14689.htm}{\color{DarkRed}\CJKunderline*[thickness=0.5bp, format=\color{DarkRed}]{学士论文撰写规范}}尚未调整，仍使用“，”分隔关键词}}
+	
+	
+	
+	
+	% 开启英文摘要
+	\enabstract
+	
+	When Yang was a teenager, his mother contracted a disease and died, and he then lived a wandering life. When he met Guo Jing and his wife, they took care of him. However, due to the conflict between Yang and Guo Fu, Guo Jing sent him to learn martial arts in the Quanzhen Sect. Later, he escaped from the Quanzhen Sect and met Xiao Longnian at the ancient tomb, where he practised kung fu with Xiao Longnian. He was surrounded by many confidantes who were in love with him, but he only loved Little Dragon Girl, and later married; he and the Guo family feud, several times due to misunderstanding tension, but always stepped forward to help them, lifting the suspicion, turning the gas into peace; ill-fated, separated from Little Dragon Girl for sixteen years, along with the Divine Eagle who is also a teacher and friend of the chivalrous, punishing the evil and promoting the good. Jianghu people ``divine eagle hero". After the little dragon lady is not to perseverance to jump off the cliff to martyrdom, in the bottom of the valley and the little dragon lady reunited with the defence of Xiangyang City, Yang past a show of its unparalleled martial arts power to defeat the Golden Wheel of the Fa Wang, flying stone to kill the Mongolian Khan, to protect the thirteen years of peace in the Great Song Dynasty. He became the world-famous ``Divine Eagle Couple". After the last Mount Hua sword debate, he and his wife Xiaolongnu went into exile.
+
+	% When Yang was a teenager, his mother contracted a disease and died, and he then lived a wandering life. When he met Guo Jing and his wife, they took care of him. However, due to the conflict between Yang and Guo Fu, Guo Jing sent him to learn martial arts in the Quanzhen Sect. Later, he escaped from the Quanzhen Sect and met Xiao Longnian at the ancient tomb, where he practised kung fu with Xiao Longnian. He was surrounded by many confidantes who were in love with him, but he only loved Little Dragon Girl, and later married; he and the Guo family feud, several times due to misunderstanding tension, but always stepped forward to help them, lifting the suspicion, turning the gas into peace; ill-fated, separated from Little Dragon Girl for sixteen years, along with the Divine Eagle who is also a teacher and friend of the chivalrous, punishing the evil and promoting the good. Jianghu people ``divine eagle hero". After the little dragon lady is not to perseverance to jump off the cliff to martyrdom, in the bottom of the valley and the little dragon lady reunited with the defence of Xiangyang City.
+
+	% When Yang was a teenager, his mother contracted a disease and died, and he then lived a wandering life. When he met Guo Jing and his wife, they took care of him. However, due to the conflict between Yang and Guo Fu, Guo Jing sent him to learn martial arts in the Quanzhen Sect. Later, he escaped from the Quanzhen Sect and met Xiao Longnian at the ancient tomb, where he practised kung fu with Xiao Longnian. He was surrounded by many confidantes who were in love with him, but he only loved Little Dragon Girl, and later married; he and the Guo family feud, several times due to misunderstanding tension, but always stepped forward to help them, lifting the suspicion, turning the gas into peace; ill-fated, separated from Little Dragon Girl for sixteen years, along with the Divine Eagle who is also a teacher and friend of the chivalrous, punishing the evil and promoting the good. Jianghu people ``divine eagle hero". After the little dragon lady is not to perseverance to jump off the cliff to martyrdom, in the bottom of the valley and the little dragon lady reunited with the defence of Xiangyang City, Yang past a show of its unparalleled martial arts power to defeat the Golden Wheel of the Fa Wang, flying stone to kill the Mongolian Khan, to protect the thirteen years of peace in the Great Song Dynasty. He became the world-famous ``Divine Eagle Couple". After the last Mount Hua sword debate, he and his wife Xiaolongnu went into exile.
+
+	% When Yang was a teenager, his mother contracted a disease and died, and he then lived a wandering life. When he met Guo Jing and his wife, they took care of him. However, due to the conflict between Yang and Guo Fu, Guo Jing sent him to learn martial arts in the Quanzhen Sect. Later, he escaped from the Quanzhen Sect and met Xiao Longnian at the ancient tomb, where he practised kung fu with Xiao Longnian. He was surrounded by many confidantes who were in love with him, but he only loved Little Dragon Girl, and later married; he and the Guo family feud, several times due to misunderstanding tension, but always stepped forward to help them, lifting the suspicion, turning the gas into peace; ill-fated, separated from Little Dragon Girl for sixteen years, along with the Divine Eagle who is also a teacher and friend of the chivalrous, punishing the evil and promoting the good. Jianghu people ``divine eagle hero". After the little dragon lady is not to perseverance to jump off the cliff to martyrdom, in the bottom of the valley and the little dragon lady reunited with the defence of Xiangyang City, Yang past a show of its unparalleled martial arts power to defeat the Golden Wheel of the Fa Wang, flying stone to kill the Mongolian Khan, to protect the thirteen years of peace in the Great Song Dynasty. He became the world-famous ``Divine Eagle Couple". After the last Mount Hua sword debate, he and his wife Xiaolongnu went into exile.
+	
+	
+	% 英文关键词
+	\enkeywords{Martial arts；Apostasy；Revenge；Fighting against the enemy；Martial arts；Apostasy；Revenge；Fighting against the enemy}
+
+	
+	\tableofcontents  % 主目录，必要
+	
+	\listoffigures  % 图多则放，反之不放
+	
+	\listoftables  % 表多则放，反之不放
+	
+	\listofsymbs  % 生成主要符号表标题，需要额外维护符号表内容
+	
+	生成主要符号表的章标题需使用本模板提供的\shadcmd{listofsymbs}命令。排版主要符号表的内容则需要使用本模板提供的\shad{symbtable}环境。该环境基于\shad{longtable}环境进行封装，依次接受两个可选参数：
+	
+	\shadcmd{begin\{symbtable\}[<表格整体位置>](<主要符号表的列控制参数>)}
+	
+	\noindent 其中，第一项可选参数用于设置\shad{longtable}环境的可选参数，且默认值与\shad{longtable}环境保持一致；第二项可选参数用于设置\shad{longtable}环境的必选参数，其默认值设置为\shad{p\{3.5em\} p\{$\backslash$linewidth-9em\} p\{3em\}<\{$\backslash$centering\}}。
+	
+	若非必要，用户不应指定\shad{symbtable}环境的可选参数。但若出于对排版美观性的考虑，可适当调整主要符号表各列的宽度。注意，按照学位论文撰写规范中的示例，\textbf{主要符号表有且仅有三列}。因此，切勿对第二项可选参数设置其他列数。
+	
+	\textbf{重要提醒}：\shadcmd{listofsymbs}命令和\shad{symbtable}环境必须同时出现或消失。不需要主要符号表时，通通注释掉即可；需要时，必须使用\shad{symbtable}环境生成表格内容。
+	
+	\begin{symbtable}
+		a & 加速度（acceleration） & 1 \\
+		A & 振幅（amplitude）、面积（Area)、磁场矢量势（magnetic vector potential） & 2 \\
+		B & 磁场、磁感应强度、核结合能 & 3 \\
+		c & 真空中光速 & 4 \\
+		C & 比热容(heat capacity）、电容 & 5 \\
+		d & 长度（distance）、直径（diameter）、微分（differential，如dx）& 6 \\
+		D & 电位移矢量（electric displacement） & 7 \\
+		e & 元电荷、自然底数（欧拉常数）& 8 \\
+		E & 能量、电场场强，电动势 & 9 \\
+		f & 频率、焦距（光学） & 10 \\
+		F & 力、通量（Flux） & 11 \\
+		g &（地表）重力加速度 & 12 \\
+		G & 万有引力常数 & 13 \\
+		h & 普朗克常数、高度 & 14 \\
+		H & 哈勃常数、焓、磁化强度矢量、哈密顿算符（Hamiltonian） & 15 \\
+		i & 虚数单位 & 16 \\
+		I & 电流、惯量（inertia）、冲量(impulse) & 17 \\
+		j & 辐射强度、加加速度（jerk） & 18 \\
+		J & 角动量、概率流(量子力学）、电流密度、巨配分函数里的巨势 Z(J) & 19 \\
+		k & 玻尔兹曼(Boltzmann)常数、库伦常数、用来指代某常量或固定比值 & 20 \\
+		K & 四维波矢量（相对论）、动能 & 21 \\
+		l & 长度(length) & 22 \\
+		L & 角动量、电感系数 & 23 \\
+		m & 质量 & 24 \\
+		M & 磁化率 & 25 \\
+		n & 序数、主量子数、摩尔数（化学）、折射率（光学） & 26 \\
+		N & 序数、中子数、放大倍率（光学）& 27 \\
+		o & 小o符号 & 28 \\
+		O & 大O符号 & 29 \\
+		p & 动量、压强(pressure)、电偶极矩(electric dipole moment) & 30 \\
+		P & 概率（量子力学，统计学）、功率（power)、极化度 & 31 \\
+		q & 电荷 & 32 \\
+		Q & 电荷热量、流量 & 33 \\
+		r & 半径、位置向量、球坐标系半径轴 & 34 \\
+		R & 电阻、普适气体常数（热力学）、里德伯(Rydberg)常数（光谱学）、反射率（Reflectivity，光学） & 35 \\
+		s & 自旋 & 36 \\
+		S & 熵、面积 & 37 \\
+		t & 时间 & 38 \\
+		T & 温度、周期、透射率（Transmittance，光学） & 39 \\
+		u & 原子质量单位、物距（光学） & 40 \\
+		U & 电压、电势 & 50 \\
+		v & 速度、像距（光学） & 51 \\
+		V & 体积、势能 & 52 \\
+		w & 速度 & 53 \\
+		W & 功 & 54 \\
+		x & 直角坐标系横轴 & 55 \\
+		X & 磁化率、电抗 & 56 \\
+		y & 直角坐标系纵轴 & 57 \\
+		Y & 光亮度、球谐函数 & 58 \\
+		z & 直角/圆柱坐标系竖轴、复数变量 & 59 \\
+		Z & 阻抗、原子序数（质子数）、配分函数（partition function） & 60 \\
+		$\alpha$ & 角度、精细结构常数、角加速度、四维加速度（相对论）、攻角 & 61 \\
+		Α & Alpha （与英文拼写难区分的希腊字母一般不使用） & 62 \\
+		$\beta$ & 角度；磁通系数；速度与光速的比值 & 63 \\
+		Β & Beta Β函数 & 64 \\
+		γ & 电导系数、洛伦兹因子、热容比 & 65 \\
+		Γ & Gamma Γ函数、克里斯托弗尔符号 & 66 \\
+		δ & 狄拉克δ函数、克罗内克函数（Kronecker delta）、屈光度、微分 & 67 \\
+		Δ & Delta 拉普拉斯算子、有限差 & 68 \\
+		ε & 电容率（permittivity）、介电常数、列维-奇维塔符号(Levi-Civita symbol)、发射率 & 69 \\
+		Ε & Epsilon & 70 \\
+		Ϝ & digamma & 71 \\
+		ζ & 阻尼比、黎曼ζ函数 & 72 \\
+		Ζ & Zeta & 73 \\
+		η & 黏度（viscosity）、磁滞系数、效率 & 74 \\
+		Η & Eta & 75 \\
+		θ & 角变量、温度、球坐标/圆柱坐标横角 & 76 \\
+		Θ & Theta 单位阶跃函数（Heaviside step function） & 77 \\
+		Ι & Iota & 78 \\
+		$\kappa$ & 介质常数比ε/ε0、导热率、热扩散率 & 79 \\
+		$\kappa$ & Kappa & 80 \\
+		λ & 波长、mean free path、半衰期 & 81 \\
+		$\Lambda$ & Lambda 洛伦兹变换、冯·卡门常数 & 82 \\
+		μ & 磁导率、质子质量单位、摩擦系数、离子迁移率 & 83 \\
+		Μ & Mu & 84 \\
+		ν & 频率、运动粘度、自由度 & 85 \\
+		Ν & Nu & 86 \\
+		ξ & 黎曼ξ函数、随机变量 & 87 \\
+		Ξ & Xi & 88 \\
+		Ο & Omicron & 89 \\
+		π & 圆周率、共轭动量 & 90 \\
+		∏ & Pi 乘积 & 91 \\
+		ρ & 密度、电阻率 & 92 \\
+		Ρ & Rho & 93 \\
+		σ & 导电率、斯提芬-波尔兹曼常数（Stefan–Boltzmann constant）、核反应截面、表面密度、标准差 & 94 \\
+		∑ & Sigma 总和 & 95 \\
+		τ & 扭矩(Torque)、剪应力（Shear stress）、时间常数、2π & 96 \\
+		Τ & Tau & 97 \\
+		Υ & Upsilon & 98 \\
+		φ & 球坐标纵角、波相位（wave phase）、直径 & 99 \\
+		Φ & Phi 磁通量、辐射通量、逸出功 & 100 \\
+		χ & 电极化率(Electric susceptibility) & 101 \\
+		Χ & Chi 电抗 & 102 \\
+		ψ & 角速；介质电通量（静电力线） & 103 \\
+		Ψ & Psi 波函数 & 104 \\
+		ω & 角速度 & 105 \\
+		Ω & omega 蔡廷常数（Chaitin's constant） 立体角（Solid angle） & 106 \\
+	\end{symbtable}
+	
+	
+	
+	% 打印缩略词表，\printnomenclature[<英文缩写宽度>](<中文全称宽度>)
+	\printnomenclature
+	\nomchn{LP}{Linear Programming}{线性规划}  % 创建缩略词条目，% \nomchn{<缩略词>}{<英文全称>}{<中文全称>}
+	\nomchn{PLE}{Path Loss Exponent}{路径损失指数}
+	\nomchn{QoS}{Quality of Service}{服务质量}
+	\nomchn{SLA}{Service Level Agreement}{服务水平协议}
+	\nomchn{NLP}{non-linear programming}{非线性规划}
+	\nomchn{4G}{Fourth Generation Mobile Communication Technology}{第四代移动通信技术}
+	\nomchn{5G}{Fifth Generation Mobile Communication Technology}{第五代移动通信技术}
+	\nomchn{B5G}{Beyond 5G}{超五代移动通信技术}
+	\nomchn{NSA}{Non-Standalone}{非独立组网}
+	\nomchn{mMIMO}{massive Multiple Input Multiple Output}{大规模多输入多输出}
+	\nomchn{FDMA}{Frequency Division Multiple Access}{频分多址}
+	\nomchn{TDMA}{Time Division Multiple Access}{时分多址}
+	\nomchn{IP}{Internet Protocol}{网际互连协议}
+	\nomchn{CDMA}{Code Division Multiple Access}{码分多址}
+	\nomchn{LTE}{Long Term Evolution}{长期演进}
+	\nomchn{OFDM}{Orthogonal Frequency Division Multiplexing}{正交频分复用}
+	\nomchn{SDMA}{Space Division Multiple Access}{空分多址}
+	\nomchn{MIMO}{Multiple Input Multiple Output}{多输入多输出}
+	\nomchn{MBS}{Macro Base Station}{宏基站}
+	\nomchn{SBS}{Small Base Station}{微基站}
+	\nomchn{PBS}{Pico Base Station}{微微基站}
+	\nomchn{FBS}{Femto Base Station}{毫微微基站}
+	\nomchn{NR}{New Radio}{新空口}
+	\nomchn{EPC}{Evolved Packet Core}{演进分组核心}
+	\nomchn{5GC}{The Fifth Generation Core Network}{5G核心网}
+	\nomchn{RAN}{Radio Access Network}{无线接入网络}
+	\nomchn{Multi-RAT}{Multi Radio Access Technology}{多制式}
+	\nomchn{HetNet}{Heterogeneous Network}{异构网络}
+	\nomchn{CSI}{Channel State Information}{信道状态信息}
+	\nomchn{3GPP}{3rd Generation Partnership Project}{第三代合作伙伴计划}
+	\nomchn{PDCP}{Packet Data Convergence Protocol}{分组数据汇聚协议}
+	\nomchn{MME}{Mobile Management Entity}{移动管理实体}
+	\nomchn{S-GW}{Serving GateWay}{服务网关}
+	\nomchn{RLC}{Radio Link Control}{无线链路控制协议}
+	\nomchn{MAC}{Media Access Control}{媒体访问控制协议}
+	\nomchn{SDN}{Software-Defined Networking}{软件定义网络}
+	\nomchn{NFV}{Network Functions Virtualization}{网络功能虚拟化}
+	\nomchn{NSI}{Network Slice Instance}{网络切片实例}
+	\nomchn{MANO}{Management and Network Orchestration}{管理和网络编排}
+	\nomchn{SDM-X}{Software-Defined Mobile Network Coordinator}{软件定义移动网络协调器}
+	\nomchn{SDM-C}{Software-Defined Mobile Network Controller}{软件定义移动网络控制器}
+	\nomchn{VNF}{Virtual Network Function}{虚拟网络功能}
+	\nomchn{PNF}{Physical Network Function}{物理网络功能}
+	\nomchn{ETSI}{European Telecommunications Standards Institute}{欧洲电信标准化协会}
+	\nomchn{NFVO}{Network Function Virtualization Orchestrator}{虚拟网络功能编排器}
+	\nomchn{VNFM}{Virtual Network Function Manager}{虚拟网络功能管理器}
+	\nomchn{VIM}{Virtual Infrastructure Manager}{虚拟基础设施管理器}
+	\nomchn{NSMF}{Network Slice Management Function}{网络切片管理功能}
+	\nomchn{NSSMF}{Network Sub-Slice Management Function}{网络子切片管理功能}
+	\nomchn{SDM-O}{Software-Defined Mobile Network Orchestrator}{软件定义移动网络编排器}
+	\nomchn{SLA}{Service Level Agreement}{服务水平协议}
+	\nomchn{5GPPP}{5G Infrastructure Public Private Partnership}{5G基础设施公私合作伙伴关系}
+	\nomchn{InP}{Infrastructure Provider}{基础设施提供商}
+	\nomchn{QoS}{Quality of Service}{服务质量}
+	\nomchn{NFC}{Network Function Component}{网络功能组件}
+	\nomchn{QoE}{Quality of Experience}{服务体验}
+	\nomchn{AI}{Artificial Intelligence}{人工智能}
+	\nomchn{RSRP}{Reference Singal Receiving Power}{参考信号接收功率}
+	\nomchn{RSSI}{Received Signal Strength Indicator}{接收信号强度指标}
+	
+	生成缩略词表相对复杂一些：
+	\begin{enumerate}
+		\item 先使用\shadcmd{printnomenclature[<英文缩写宽度>](<中文全称宽度>)}，第一项可选参数控制\textbf{英文缩写}的列宽，默认为\shad{5em}；第二项可选参数控制\textbf{中文全称}的列宽，默认为\shad{7.5em}。
+		
+		\item 然后在正文中出现缩略词的位置使用命令\\\shadcmd{nomchn[<排序前缀>]\{<缩略词>\}\{<英文全称>\}\{<中文全称>\}}添加该缩略词条目。其中\shad{排序前缀}是可选参数，仅在对特定条目有特殊排序需求时才使用。具体细节参考\href{https://mirrors.hust.edu.cn/CTAN/macros/latex/contrib/nomencl/nomencl.pdf}{\ttfamily\color{DarkRed}\CJKunderline*[thickness=0.5bp, format=\color{DarkRed}]{nomencl}}宏包对\shadcmd{nomenclature}命令的参数说明。
+	\end{enumerate}
+	
+	另外，本地用户需要先编译生成缩略词表的辅助文件，再编译完整文档才能获得正确的结果，辅助文件编译教程参见\href{https://zhuanlan.zhihu.com/p/46442713}{\color{DarkRed}\CJKunderline*[thickness=0.5bp, format=\color{DarkRed}]{编译缩略词表}} 或 \href{https://github.com/MGG1996/DissertationUESTC?tab=readme-ov-file#6-目录图目录表目录主要符号表缩略词表}{\color{DarkRed}\CJKunderline*[thickness=0.5bp, format=\color{DarkRed}]{项目readme第6节}}给出的操作图示。简言之：
+	\begin{itemize}
+		\item TeXstudio用户可直接添加自定义命令，操作步骤见图\ref{fig: TeXstudio编译缩略词表}，图中命令为：\newline
+		\shad{txs:///compile | makeindex \%.nlo -s nomencl.ist -o \%.nls | txs:///compile}
+		\item VSCode用户需要先按照图\ref{fig: VSCode手动编译缩略词表}打开终端，并运行下列命令：\newline
+		\shad{makeindex "TeX文件名".nlo -s nomencl.ist -o "TeX文件名".nls}\newline
+		注意修改命令中的文件名，之后再次编译TeX文件才会生成缩略词表。
+		
+		\textbf{\color{DarkRed}如果不希望每次更新缩略词表时都手动敲命令}，那可以在配置编译工具\verb*|"latex-workshop.latex.tools"|时增加\shad{makeindex}工具（下左），并将其嵌入\verb*|"latex-workshop.latex.recipes"|的某条编译链（下右），后续编译TeX文件时只需使用该编译链即可生成缩略词表。若已经配置了\shad{bibtex}工具，所示编译链也会更新参考文献。\textcolor{DarkRed}{（2026.01.19）}
+	\end{itemize}
+	\begin{boxedminipage}[t]{0.48\linewidth}
+		\vspace*{5pt}%
+		\begin{verbatim}
+	"latex-workshop.latex.tools": [
+		..., // 其他原有工具
+		{// 增加makeindex工具
+			"name": "makeindex",
+			"command": "makeindex",
+			"args": [
+				"%DOCFILE%.nlo",
+				"-s", "nomencl.ist",
+				"-o", "%DOCFILE%.nls"
+			]
+		},
+	],
+		\end{verbatim}
+	\end{boxedminipage}
+	\begin{boxedminipage}[t]{0.51\linewidth}
+		\vspace*{5pt}
+		\begin{verbatim}
+	"latex-workshop.latex.recipes": [
+		..., // 其他原有编译链
+		{// 增加包含makeindex的编译链
+			"name": "Xe > Bib > Ind > Xe*2",
+			"tools": [
+				"xelatex",
+				"bibtex", // 编译参考文献
+				"makeindex", // 编译缩略词表
+				"xelatex", "xelatex"
+			]
+		},
+	],
+		\end{verbatim}
+	\end{boxedminipage}
+	
+	\null\par
+	\begin{itemize}
+		\item Overleaf用户可以一键搞定，无需额外操作。\textbf{\color{DarkRed}注意，Overleaf用户要在网站里选择TeXLive的2024版，亲测Overleaf目前的TeXLive2025版无法正确编译出“主要符号表”和“缩略词表”的页眉。本地用户只要保证TeXLive版本≥ 2024就不会有问题。}
+	\end{itemize}
+	
+
+	\begin{figure}[!htb]
+		\centering
+		\includegraphics[width=0.95\linewidth]{TeXstudio-nomenclature1}
+		\\
+		\includegraphics[width=0.95\linewidth]{TeXstudio-nomenclature2}
+		\\
+		\includegraphics[width=0.95\linewidth]{TeXstudio-nomenclature3}
+		\caption{TeXstudio编译缩略词表的操作步骤} \label{fig: TeXstudio编译缩略词表}
+	\end{figure}
+	\begin{figure}[!htb]
+		\centering
+		\includegraphics[width=0.95\linewidth]{VSCode-nomenclature}
+		\caption{VSCode手动编译缩略词表的操作步骤} \label{fig: VSCode手动编译缩略词表}
+	\end{figure}
+	
+	
+
+	\chapter{前言}
+	\section{当前版本编译时间}
+	\noindent%
+	\begin{center}%
+		\zihao{-2}\bfseries\color{DarkRed}%
+		\zhdigits*{\the\year} 年\zhnumber{\the\month} 月\zhnumber{\the\day} 日\;\xxivtime
+	\end{center}
+
+	\section{适用对象}
+	
+	本模板参照以下电子科技大学官方规范编写，适用于学术学位博士、专业学位博士、学术学位硕士、专业学位硕士、普通学士、双学位学士以及来华留学生。
+	\begin{itemize}
+		\item \href{https://gr.uestc.edu.cn/xiazai/114/3917}{\color{DarkRed}\CJKunderline*[thickness=0.5bp, format=\color{DarkRed}]{研究生学位论文撰写规范（最后修订：2025.09.03）}}
+		\item \href{https://www.sice.uestc.edu.cn/info/1140/14689.htm}{\color{DarkRed}\CJKunderline*[thickness=0.5bp, format=\color{DarkRed}]{关于启动2021级本科毕业设计工作的通知（发布时间：2024.10.09）}}
+		\item \href{https://www.jwc.uestc.edu.cn/info/1507170256521551874}{\color{DarkRed}\CJKunderline*[thickness=0.5bp, format=\color{DarkRed}]{交叉复合型毕业设计（发布时间：2022.03.25）}}
+	\end{itemize}
+	
+
+	\section{使用环境}
+
+	本模板兼容Windows、MacOS以及Overleaf等主流平台，其开发测试环境为TeXLive2024+TeXstudio，以及TeXLive2024+VSCode。\textbf{请所有本地用户将LaTeX环境更新到\href{https://mirrors.tuna.tsinghua.edu.cn/tex-historic-archive/systems/texlive/}{\color{DarkRed}\CJKunderline*[thickness=0.5bp, format=\color{DarkRed}]{TeXLive2024及以上}}或\href{https://mirrors.tuna.tsinghua.edu.cn/tex-historic-archive/systems/mactex/}{\color{DarkRed}\CJKunderline*[thickness=0.5bp, format=\color{DarkRed}]{MacTeX2024及以上}}}，以避免兼容性问题。
+
+	\begin{itemize}
+		\item \href{https://zhuanlan.zhihu.com/p/389394015}{\color{DarkRed}\CJKunderline*[thickness=0.5bp, format=\color{DarkRed}]{TeXLive安装教程}}、\href{https://blog.csdn.net/ChrisP_333/article/details/82943508}{\color{DarkRed}\CJKunderline*[thickness=0.5bp, format=\color{DarkRed}]{MacTeX安装教程}}
+		\item \href{https://texstudio.sourceforge.net/#download}{\color{DarkRed}\CJKunderline*[thickness=0.5bp, format=\color{DarkRed}]{TeXstudio下载地址}}、\href{https://code.visualstudio.com/Download}{\color{DarkRed}\CJKunderline*[thickness=0.5bp, format=\color{DarkRed}]{VSCode下载地址}}、\href{https://zhuanlan.zhihu.com/p/166523064}{\color{DarkRed}\CJKunderline*[thickness=0.5bp, format=\color{DarkRed}]{VSCode配置LaTeX环境}}
+	\end{itemize}
+	
+	模板需要使用\shad{XeLaTeX}引擎编译：
+	\begin{itemize}
+		\item 若使用TeXstudio编辑器，则不需要对软件进行设置：\shad{tutorial.tex}文件首行已经添加了\shad{\% !TEX Program = xelatex}，该指令指定使用\shad{XeLaTeX}编译该文档；
+		
+		\item VSCode编辑器和Overleaf无法识别上述命令，需要自行将编译引擎设置为\shad{XeLaTeX}。
+	\end{itemize}
+	
+
+	为了确保在Windows、MacOS、Overleaf等平台上编译出完全一致的结果，模板内置了所有用到的字体文件，这导致项目大小超出了Overleaf上传压缩包的限制。因此，Overleaf用户需要进行另一番操作：\textbf{先在Overleaf上新建一个空项目，然后解压本模板并拖拽文件和文件夹到新建的项目中}。\textcolor{DarkRed}{\textbf{切记网站里要选TeXLive2024}，经测试，线上目前的TeXLive2025反而无法编译出正确的“主要符号表”和“缩略词表”页眉，原因不明。}本地2024及以上的TeXLive均无任何问题！
+
+	\textbf{提醒}：\textcolor{DarkRed}{Overleaf近期似乎收紧了普通账号的编译时间限制}，而模版需要完整编译4次才能建立缩略词表、交叉引用等信息，因此普通账号在Overleaf上会编译超时。所以：\textcolor{DarkRed}{1）要么，搭建自己的本地环境，最稳妥；2）要么，升级Overleaf的高级账号；3）要么，用第三方的Overleaf平台}，这里推荐一个：\href{https://www.onlinelatex.com/home/}{\color{DarkRed}\CJKunderline*[thickness=0.5bp, format=\color{DarkRed}]{OnlineLaTeX}}。如果你既想用Overleaf，又不想升级高级账号或是用第三方平台，那只能用由网友\href{https://github.com/note286}{\color{DarkRed}\CJKunderline*[thickness=0.5bp, format=\color{DarkRed}]{@note286}}提供的方法：\textbf{\color{DarkRed}在模版根目录新建名为\shad{latexmkrc}的文件，内容为\shad{\$max\_repeat = 1;}}。其原理是每次点击编译按钮后，让Overleaf只进行单次XeLaTeX编译，而不是默认的多次编译，这样只要单次编译时长不超过限制即可正常使用。代价是\textcolor{DarkRed}{需要用户手动编译3次生成“缩略词表”，4次建立交叉引用}。自此提醒添加之日起，模版发布将分为常规版和Overleaf特别版，\textbf{后者提供了\shad{latexmkrc}文件，仅针对想使用官方Overleaf又不想升级高级会员的用户}。（2026.01.03）
+
+
+	\section{模板更新方法}
+
+	模板的发布地址为：\href{https://github.com/MGG1996/DissertationUESTC}{\color{DarkRed}\CJKunderline*[thickness=0.5bp, format=\color{DarkRed}]{https://github.com/MGG1996/DissertationUESTC}}。
+	
+	更新模板的正确方式：\textbf{下载最新的完整压缩包，解压后用自己的\shad{.bib}和\shad{.tex}文件以及\shad{fig}目录替换掉模板中原有的同名文件和目录}。
+
+	更建议的更新方式：\textbf{\color{DarkRed}在初次使用本模板时，修改\shad{.tex}和\shad{.bib}文件的文件名（别忘了\shad{.tex}文件内通过\shadcmd{bibliography\{\}}设置的\shad{.bib}文件名），后续只需下载最新的模板，并将其内容全部复制到论文所在的目录进行替换}。
+
+
+	\section{新手入门}
+
+	使用本模板需要掌握基本的LaTeX排版操作。如果你是纯新手，那可以先看看\href{https://ctan.math.utah.edu/ctan/tex-archive/info/lshort/chinese/lshort-zh-cn.pdf}{\bfseries\color{DarkRed}\CJKunderline*[thickness=0.5bp, format=\color{DarkRed}]{一份（不太）简短的LaTeX2ε介绍}}，它足以帮助你建立起基本概念，进而顺利使用本模板。
+
+
+	\section{本模板已载入的宏包}
+
+	本模板已在\shad{DissertUESTC.cls}文件中载入下列宏包，用户应避免重复载入，有特殊需求的用户在载入其他宏包时应留意与现有宏包是否冲突。
+
+	\begin{verbatim}
+		\RequirePackage{ifthen}  % 条件判断需要
+		\RequirePackage[UTF8]{ctex}  % ctex 包含 xeCJK 包含 fontspec
+		\RequirePackage{xeCJKfntef}  % 中文添加下划线需要
+		\RequirePackage{calc}  % 简单的长度加减运算需要
+		\RequirePackage{color}
+		\RequirePackage[dvipsnames, svgnames, x11names]{xcolor}  % 更多预设颜色
+		\RequirePackage{layouts}  % 设置页面布局
+		\RequirePackage{zhnumber}  % 将计数器显示成中文
+		\RequirePackage{titlesec}  % 修改各级标题样式、目录等
+		\RequirePackage{titletoc}  % 调整目录需要
+		\RequirePackage[titles]{tocloft}  % 调整图目录、表目录需要
+		\RequirePackage{fancyhdr}  % 设置页眉需要
+		\RequirePackage[
+			bookmarksnumbered=true,
+			bookmarksdepth=3,
+			citecolor=black,
+			linkcolor=black,
+			urlcolor=black,
+		]{hyperref}  % 生成带编号的书签，并设置书签深度
+		\RequirePackage{graphicx}  % 图片排版
+		\RequirePackage[font=small]{subfig}  % 子图排版
+		\RequirePackage[numbers,sort&compress]{natbib}  % 参考文献及其引用样式
+		\RequirePackage{notoccite}  % 防止section、caption等命令中的引用使正文文献乱序
+		\RequirePackage[nomentbl]{nomencl}  % 缩略词表
+		\RequirePackage{amssymb, amsmath, amsthm}  % 公式、数学符号、定理环境
+		\RequirePackage{caption}  % 图、表、伪代码标题
+		\RequirePackage[algochapter, linesnumbered, ruled]{algorithm2e}% 伪码
+		\RequirePackage{appendix}
+		\RequirePackage{xunicode-addon}  % 脚注编号使用带圈数字需要
+		\RequirePackage{xpatch}
+		\RequirePackage{scrextend}  % 调整脚注的缩进设置
+		\RequirePackage[perpage]{footmisc}  % 脚注序号每页重置
+		\RequirePackage{enumitem}  % 调整list的边距需要
+		\RequirePackage{array}
+		\RequirePackage[flushleft]{threeparttable}  % 排版带附注的表格需要
+		\RequirePackage{booktabs}  % 调整三线表线宽需要
+		\RequirePackage{longtable}  % 跨页表格需要
+		\RequirePackage{xparse}  % 定义带多个可选参数的命令或环境时需要
+		\RequirePackage{multirow}  % 表格合并多行单元格需要
+		\RequirePackage{extarrows}  % 带文字的长等号与箭头需要
+		\RequirePackage{mathspec}  % 设置公式字体为Times New Roman需要
+		\RequirePackage{xintfrac}  % 计算两个长度的比值需要
+		\RequirePackage{pifont}  % 保密标识中的实心五角星符号需要
+		\RequirePackage[absolute,overlay]{textpos}  % 在封面中悬浮保密信息需要
+		\RequirePackage{xstring}  % 在字符串中搜索子串需要
+		\RequirePackage{listings}  % 代码块风格化排版需要
+		\RequirePackage{zref-user, zref-abspage}  % 获取绝对页码，实现超页提醒
+		\RequirePackage{mhchem, chemfig}  % 排版化学方程式、结构式和键线式
+		\RequirePackage{datetime}  % 获取当前系统时间需要
+		\RequirePackage{boxedminipage}  % 用于排版带边框的minipage环境
+	\end{verbatim}
+	
+
+	\chapter{模板使用说明}
+	\section{导言区及模板选项}
+
+	模板的导言区只有两行：
+	\begin{itemize}
+		\item \shad{\% !TEX Program = xelatex}：在Texstudio中，这表示指定使用\shad{XeLaTeX}引擎编译该文档；在其他编辑器中，需要手动设置编译引擎为\shad{XeLaTeX}。
+
+		\item \shadcmd{documentclass[<选项列表>]\{DissertUESTC\}}：加载名为\shad{DissertUESTC} 的文档类，该文档类基于LaTeX的\shad{book}类编写，可设置\textbf{\textcolor{DarkRed}{八种}}选项：
+
+		\begin{itemize}
+			\item \shad{print} / \shad{nonprint}\textcolor{DarkRed}{〔默认〕}：该选项控制是否以印刷模式生成文档，印刷模式会按印刷要求自动在论文的前置部分添加必要的空白页。
+
+			\item \shad{doctor}\textcolor{DarkRed}{〔默认〕} / \shad{prodoctor} / \shad{intdoctor} / \shad{ipdoctor} / \shad{master} / \shad{promaster} / \shad{intmaster} / \shad{ipmaster} / \shad{bachelor} / \shad{doublebachelor}：该选项设置学位论文类型，其与学位的对应关系如下：
+			
+			\begin{table}[!htb]
+				\centering\hspace*{1.5cm}
+				% \caption{各学位论文类型对应的选项设置} \label{tab: 学位论文类型选项}
+				\begin{tabular}{p{9em} p{20em}}
+					\toprule
+					\textbf{选项值} & \textbf{对应学位类型} \\
+					\midrule
+					\shad{doctor} & 学术博士学位 \\
+					\shad{prodoctor} & 专业博士学位 \\
+					\shad{intdoctor} & International Doctor with Academic Degree \\
+					\shad{ipdoctor} & International Doctor with Professional Degree \\
+					\shad{master} & 学术硕士学位 \\
+					\shad{promaster} & 专业硕士学位 \\
+					\shad{intmaster} & International Master with Academic Degree \\
+					\shad{ipmaster} & International Master with Professional Degree \\
+					\shad{bachelor} & 学士学位 \\
+					\shad{doublebachelor} & 双学士学位 \\
+					\bottomrule
+				\end{tabular}
+			\end{table}
+   
+			\item \shad{subfigsimple} / \shad{subfigparens}\textcolor{DarkRed}{〔默认〕}：该选项用于调整正文中对子图标签进行引用时生成的编号样式，\shad{subfigsimple}对应样式\textcolor{DodgerBlue}{1-1a}；\shad{subfigparens}对应样式\textcolor{DodgerBlue}{1-1(a)}。
+   
+			\item \shad{draftfig}：LaTeX标准文档类提供的\shad{draft}选项在排版草稿时不会生成交叉引用链接、超链接、书签，图片也会被替换为尺寸与之相同的外框+文本，并且会在超出表格、页面边界的位置标注粗框线。\shad{draftfig}选项则仅将图片替换为\fbox{外框+文本}，而不修改标准\shad{draft}选项涉及的其他内容。主要用于自行查重时隐去实验结果数据，且不改变论文的整体排版。
+			
+			\item \shad{review}：该选项将以评审模式排版论文的“封面”及“中英文扉页”，届时所有有关个人身份的信息都将被隐去，包括导师信息以及独创性声明中的签名和日期。当然，也可以通过设置空参数来隐去对应信息，但\shad{review}选项能在不调整命令参数内容的情况下实现同样的效果。
+			
+			另外，\textcolor{DarkRed}{模板支持将\shad{review}的作用范围扩展到其他内容}。例如，送审前需要抹除“致谢”和“成果”中的个人身份信息，使用者可将相应内容置于\shadcmd{ifreview[<替换文本>]\{<原内容>\}}命令。若未指定该命令的第一项可选参数，\shad{review}选项将以两字宽的水平空白替换原内容；否则，\shad{review}选项将以指定的参数替换原内容。用户可对比以下两句话在\shad{review}选项下的区别。（2025.03.06）
+
+			\textbf{示例}：杨过的师傅是\ifreview[XXX]{小龙女}；杨过不承认师傅是\ifreview{赵志敬}。
+			
+			\item \shad{noreminder}：默认情况下，当\textbf{“中文摘要”}和\textbf{“致谢”}的篇幅超出规范的最大页数限制时，模板（\textbf{经过两次编译后}）将在对应内容的结尾显式打印提醒信息。若使用者在知悉这些内容的长度超出规范限制后仍希望保持原样，则可使用\shad{noreminder}选项禁用提醒信息。（2025.02.22）
+			
+			\item \shad{cmmmath}\textcolor{DarkRed}{〔默认〕} / \shad{timesmathnogreek} / \shad{timesmath}：该选项用于选择渲染公式使用的字体。其中，\shad{cmmmath}即对应LaTeX默认使用的Computer Modern Math，也是此类选项的默认值；\shad{timesmathnogreek}指定使用Times New Roman来渲染公式中的英文字母和数字，但不影响希腊字母、手写体和双线体；\shad{timesmath}则继续将希腊字母也设置成Times New Roman（个人觉得希腊字符用该字体有些违和），手写体和双线体仍保持原样。
+			
+			追求公式字体均为Times New Roman的使用者可采用\shad{timesmath}选项。后两种选项均基于\href{https://mirrors.pku.edu.cn/ctan/macros/xetex/latex/mathspec/mathspec.pdf}{\ttfamily\color{DarkRed}\CJKunderline*[thickness=0.5bp, format=\color{DarkRed}]{mathspec}}宏包实现，在本人有限的测试实践中，只有它能做到真正意义上的Times New Roman。（2025.01.31）
+
+			\textbf{P.s. 1：}因为\href{https://mirrors.pku.edu.cn/ctan/macros/xetex/latex/mathspec/mathspec.pdf}{\ttfamily\color{DarkRed}\CJKunderline*[thickness=0.5bp, format=\color{DarkRed}]{mathspec}}宏包本身的特性，使用Times New Roman作为公式字体需要用户付出更多精力。举个例子，你想排版\shad{\$f\^{}t\$}，那么你会发现\shad{f}和\shad{t}之间的间隔很小，两者发生了重叠，这时候需要你手动用\shad{"}插入空格，变成\shad{\$f\^{}\{"t\}\$}。因此，\shad{timesmathnogreek}和\shad{timesmath}选项均存在类似瑕疵，届时就需要仔细查阅\href{https://mirrors.pku.edu.cn/ctan/macros/xetex/latex/mathspec/mathspec.pdf}{\ttfamily\color{DarkRed}\CJKunderline*[thickness=0.5bp, format=\color{DarkRed}]{mathspec}}的宏包文档。
+
+			\textbf{P.s. 2：}其实，规范并未对公式字体作强制要求，即便审查系统识别到公式字体不是Times New Roman，它也只是抛出提醒而非错误，不会造成格式审查不通过。只是实在有太多人问怎么公式字体不是Times New Roman，既然有部分同学喜欢Times New Roman，那本模板秉承兼容并包的原则，将选择权交给使用者。
+
+			\item 另外，\href{https://mirrors.sustech.edu.cn/CTAN/macros/latex/contrib/algorithm2e/doc/algorithm2e.pdf}{\ttfamily\color{DarkRed}\CJKunderline*[thickness=0.5bp, format=\color{DarkRed}]{algorithm2e}}宏包的\shad{vlined}和\shad{boxruled}选项也能通过文档类设置。
+		\end{itemize}
+	\end{itemize}
+	
+	% \newpage
+	\section{各级标题}
+	
+	本模板基于\shad{book}类，章标题需要使用\shad{$\backslash$chapter\{<章标题>\}} 生成，其他各级标题依次为\shad{$\backslash$section\{<节标题>\}}、\shad{$\backslash$subsection\{<子节标题>\}}、\\ \shad{$\backslash$subsubsection\{<孙节标题>\}}。
+
+	\subsection{连续标题垂直间隔示例（上侧）}\vspace*{-10bp}
+	\subsubsection{连续标题垂直间隔示例（下侧）}
+
+	规范要求：\textbf{\textcolor{DarkRed}{两个标题之间无正文时，第二个标题的段前距设置为0磅。}}亲测LaTeX原本就会自动压缩连续标题间的垂直距离，且其采用的规则就是直接忽略下侧标题的段前距。
+	
+	然而，在实际使用中有时会出现连续标题间的垂直间隔仍然较大的情况，这一现象本质上是因为LaTeX的另一排版规则。在默认情况下（即未使用\shadcmd{raggedbottom}），当中间某页的实际内容并非恰好填满当页区域时，LaTeX会在该页的各段之间均匀插入额外的垂直距离，从而让整页的内容纵向对齐到页面的上下边界。正是这一特性在某些情况下导致了连续标题间的垂直距离过大。
+
+	理论上讲，中间页的内容越充足，段落数越多，LaTeX对连续标题的排版结果越接近规范要求。若确实因为页面内容不足等原因，造成连续标题间的垂直间隔过大，则用户需要手动特调。操作方式是在连续的标题之间用\shadcmd{vspace*\{\}}插入负垂直距离来进行补偿，负距离的取值并不固定，取决于当页的内容情况，需要用户自行尝试。上方的两项标题用这种方式设置了一定的垂直距离补偿，仅作演示。
+	
+	\section{图片}
+	
+	本模板使用\href{https://mirror.nyist.edu.cn/CTAN/macros/latex/required/graphics/grfguide.pdf}{\ttfamily\color{DarkRed}\CJKunderline*[thickness=0.5bp, format=\color{DarkRed}]{graphicx}}和\href{https://mirrors.bfsu.edu.cn/CTAN/macros/latex/contrib/subfig/subfig.pdf}{\ttfamily\color{DarkRed}\CJKunderline*[thickness=0.5bp, format=\color{DarkRed}]{subfig}}宏包来处理插入的图片及子图，需要将待排版图片文件放入项目目录\shad{./fig/}中。以下给出一些排版图片的例子。
+	
+	需要注意，在图\ref{fig: 报仇哪有姑姑重要}的图题中引用子图\ref{fig: 见到姑姑嘻嘻}的编号和在本段中引用子图编号使用的命令分别为\shad{$\backslash$subref\{fig: 见到姑姑嘻嘻\}}和\shad{$\backslash$ref\{fig: 见到姑姑嘻嘻\}}，它们分别生成仅含带括号子图编号和完整子图编号的结果，即\subref{fig: 见到姑姑嘻嘻}和\ref{fig: 见到姑姑嘻嘻}。
+	
+	另外，图\ref{fig: 报仇哪有姑姑重要}的图题包含了子图题文本，但生成的图目录中却只有主图题文本，其实现方式为在主图题命令中使用可选参数单独指定图目录中的显示文本：\shad{$\backslash$caption[报仇哪有姑姑重要]\{<实际图题>\}}
+
+	\begin{figure}[!h]
+		\centering
+		\includegraphics[width=0.6\linewidth]{huangrongguojing1}
+		\caption{锁定仇人}
+	\end{figure}
+	
+	% \clearpage
+	\begin{figure}[!h]
+		\centering
+		\subfloat[]{
+			\includegraphics[width=0.4\linewidth]{yangguoxiaolongnv3}
+			\label{fig: 见到姑姑嘻嘻}
+		}
+		\hfill
+		\subfloat[]{
+			\includegraphics[width=0.4\linewidth]{yangguoxiaolongnv6}
+			\label{fig: 姑姑见我不嘻嘻}
+		}
+		\caption[报仇哪有姑姑重要]{报仇哪有姑姑重要。\subref{fig: 见到姑姑嘻嘻}见到姑姑我嘻嘻；\subref{fig: 姑姑见我不嘻嘻}姑姑见我不嘻嘻} \label{fig: 报仇哪有姑姑重要}
+	\end{figure}
+	
+	\begin{figure}[!htb]
+		\centering
+		\subfloat[]{
+			\includegraphics[width=0.4\linewidth]{luwushuang2}
+			\label{fig: 陆无双2}
+		}
+		\hfill
+		\subfloat[]{
+			\includegraphics[width=0.4\linewidth]{chengying3}
+			\label{fig: 程英3}
+		}
+		\caption{找其他红颜知己嘻嘻。\subref{fig: 陆无双2}眼睛像姑姑；\subref{fig: 程英3}举止像姑姑} \label{fig: 红颜知己}
+	\end{figure}
+	
+	研究生和本科生学位论文规范对多行图题左右侧缩进距离的要求不同，前者为单侧\shad{4em}，后者为单侧\shad{2em}。此参数由论文类型选项控制，无需用户过问。各位可以试试看，图\ref{fig: 被动技能}的主图题在\shad{bachelor}和\shad{doublebachelor}选项下能单行排版，而在其他类型选项下会换行。
+
+	\begin{figure}[!htb]
+		\centering
+		\subfloat[]{
+			\includegraphics[width=0.4\linewidth]{lve2}
+			\label{fig: 绿萼2}
+		}
+		\hfill
+		\subfloat[]{
+			\includegraphics[width=0.4\linewidth]{yangguolve}
+			\label{fig: 杨过绿萼}
+		}
+		\\
+		\subfloat[]{
+			\includegraphics[width=0.98\linewidth]{luwushuangchengying}
+			\label{fig: GG}
+		}
+		\caption{撩妹是我杨过的被动技能。\subref{fig: 绿萼2}好腼腆的姑娘；\subref{fig: 杨过绿萼}你终于肯笑了；\subref{fig: GG}哦吼} \label{fig: 被动技能}
+	\end{figure}
+	
+	\begin{figure}[!htb]
+		\centering
+		\includegraphics[width=0.98\linewidth]{yangguoguojing}
+		\caption{还是推主线吧，动手动手}
+	\end{figure}
+	
+	\clearpage
+	\section{表格}
+
+	\textbf{写在最开始}：由于一些实现上的问题，对于\textbf{确定非置底排版}的任何表格，用户在通过\shad{table}环境的选项指定可选择的排版模式时，\textbf{\color{DarkRed}不可提供\shad{b}模式}，否则表格的上间距将过窄；反之，对于页内\textbf{确定置底排版}的第一个表格，用户需要\textbf{\color{DarkRed}显式在选项中指定\shad{b}或\shad{!b}}，否则此表格上间距将过宽。
+
+	若出现意料之外的情况，用户可以通过在\shad{table}环境开始后和结束前的位置插入\shad{$\backslash$vspace*\{<距离长度>\}}来调整其上下间距，使之看起来协调。
+	
+	\subsection{普通表格}
+	
+	普通表格的排版本身无需多言，使用\shad{table}+\shad{tabular}环境即可，但是要注意三线表中的三条线分别需要使用\shad{$\backslash$toprule}、\shad{$\backslash$midrule}、\shad{$\backslash$bottomrule}生成，这样才符合研究生规范中对线粗的要求（\shad{1.5}磅、\shad{0.75}磅、\shad{1.5}磅）。注意不要用\shad{$\backslash$hline}。而对于本科生，学士学位论文规范要求表格中的线粗统一为\shad{0.5}磅。因此，在\shad{bachelor}和\shad{doublebachelor}选项下，\shad{$\backslash$toprule}、\shad{$\backslash$midrule}、\shad{$\backslash$bottomrule}和\shad{$\backslash$cmidrule}的线粗均设置为\shad{0.5}磅（2025.05.01调整）。
+	
+	\begin{table}[htp]
+		\caption{$\backslash$cmidrule示例}\label{tab: cmidrule示例}
+		\begin{threeparttable}
+			\begin{tabular}{ccccc}
+				\toprule
+				\multirow{2}{*}{Column0} &  \multicolumn{2}{c}{Column1\tnote{1}} & \multicolumn{2}{c}{Column2\tnote{2}} \\
+				\cmidrule(lr){2-3}\cmidrule[2.5bp](l){4-5}
+				~     & subcolumn1 & subcolumn2 & subcolumn1 & subcolumn2 \\
+				\midrule
+				Row1  & element11 & element12 &element13 & element14 \\
+				Row2  & element21 & element22 &element23 & element24 \\
+				\cmidrule{2-3}\cmidrule[2.5bp]{4-5}
+				Row3  & element31 & element32 &element33 & element34 \\
+				\bottomrule
+			\end{tabular}
+			\begin{tablenotes}
+				\item[1] 在\shad{bachelor}和\shad{doublebachelor}选项下，\shadcmd{cmidrule}默认线粗设置为0.5bp，而在其他论文类型下，默认值为0.75bp，两者规范的要求不同。可用第二项可选参数同时修剪掉框线的左右端点
+				\item[2] 通过指定\shadcmd{cmidrule}的第一项可选参数调整线粗，并用第二项可选参数仅修剪掉框线的左端点
+			\end{tablenotes}
+		\end{threeparttable}
+	\end{table}
+
+	在需要为表格中的某些单元格添加水平框线时，应使用\newline\shadcmd{cmidrule[<线粗>](<修剪>)\{<起始列-终止列>\}}而非\shadcmd{cline\{<起始列-终止列>\}}。后者似乎无法调整线粗，也无法对框线的端点进行修剪。前者的第一项可选参数允许用户设置框线粗细，其默认值在\shad{bachelor}和\shad{doublebachelor}选项下设置为了\shad{0.5}磅，而在其他论文类型下设置为了\shad{0.75}磅。若非必要，用户无需设置该可选参数；第二项可选参数允许用户对框线的端点进行修剪，该选项可防止同行独立的相邻框线在视觉上连通到一起，参见表\ref{tab: cmidrule示例}中的示例。有关第二项可选参数可取的值，建议用户查阅\href{https://mirrors.sustech.edu.cn/CTAN/macros/latex/contrib/booktabs/booktabs.pdf}{\ttfamily\color{DarkRed}\CJKunderline*[thickness=0.5bp, format=\color{DarkRed}]{booktabs}}宏包的官方文档。
+	
+	若要调整表格中单元格的水平对齐方式，自适应宽度的表格可以直接使用\shad{tabular}环境的\shad{l/c/r}参数；如果同时需要限定单元格宽度，则可使用\shad{p\{<宽度值>\}}、\shad{p\{<宽度值>\}<\{$\backslash$centering\}}、\shad{p\{<宽度值>\}<\{$\backslash$raggedleft\}}参数，效果见表\ref{tab: 单元格三种水平对齐方式}。
+
+	\begin{table}[!ht]
+		\caption{\shad{单元格三种水平对齐方式}} \label{tab: 单元格三种水平对齐方式}
+		\begin{tabular}{p{2cm} p{3cm}<{\centering} p{7cm}<{\raggedleft}}
+			\toprule
+			\textbf{姓名} & \textbf{所属势力} & \textbf{武功绝学} \\
+			\midrule
+			郭靖 & 重阳宫 & 降龙十八掌 \\
+			黄蓉 & 丐帮 & 打狗棒法 \\
+			洪七公 & 丐帮 & 降龙十八掌、打狗棒法 \\
+			黄老邪 & 桃花岛 & 弹指神通、落英神剑掌、玉箫剑法 \\
+			老顽童 & 重阳宫 & 左右互博术 \\
+			一灯 & 云南大理 & 一阳指、千里传音 \\
+			\bottomrule
+		\end{tabular}
+	\end{table}
+
+	若要调整具有多行内容的固定列宽单元格的垂直对齐方式，可以使用\shad{tabular}环境的\shad{p\{<宽度值>\}}、\shad{m\{<宽度值>\}}、\shad{b\{<宽度值>\}}参数，\textbf{它们分别表示使用对应单元格内容的上线、中线、底线作为垂直对齐时的基准线}，\textcolor{DarkRed}{而非使单元格内容上端对齐、垂直居中对齐、下端对齐}，效果见表\ref{tab: 单元格三种垂直对齐方式}。如果这段说明不好理解，那可以参考这个：\href{https://tex.stackexchange.com/questions/35293}{\ttfamily\color{DarkRed}\CJKunderline*[thickness=0.5bp, format=\color{DarkRed}]{p, m and b columns in tables}}。
+
+	\begin{table}[!ht]
+		\caption{\shad{单元格三种垂直对齐方式}} \label{tab: 单元格三种垂直对齐方式}
+		\begin{tabular}{p{2cm} b{2cm} m{2cm}}
+			\toprule
+			\textbf{姓名} & \textbf{所属势力} & \textbf{武功绝学} \\
+			\midrule
+			洪七公 & 丐帮 & 降龙十八掌、打狗棒法 \\
+			黄老邪黄老邪黄老邪 & 桃花岛桃花岛桃花岛 & 弹指神通、落英神剑掌、玉箫剑法 \\
+			\bottomrule
+		\end{tabular}
+	\end{table}
+	
+	\newpage
+	\subsection{带附注表格}
+	
+	更需要说明的是生成带附注的表格。本模板采用\shad{threeparttable}宏包实现将表格中的附注内容顶格排版在表格底部：
+	\begin{enumerate}
+		\item 使用\shadcmd{tnote\{<label>\}}在表格中插入上标编号；
+		\setcounter{enumi}{98}% 更改后续列表编号的起始值
+		\item 使用\shad{tablenotes}环境在表格底部排版附注。该环境提供选项\shad{online}用于将附注文本前的标号从默认的上标样式（见表\ref{tab: 江湖势力背调}）更改为非上标样式（见表\ref{tab: 已习得武功}）。
+	\end{enumerate}
+	
+	\begin{table}[!ht]
+		\caption{江湖势力背调} \label{tab: 江湖势力背调}
+		\begin{threeparttable}
+			\begin{tabular}{p{2cm} p{3cm}<{\centering} p{7cm}<{\raggedleft}}
+				\toprule
+				\textbf{姓名} & \textbf{所属势力} & \textbf{武功绝学} \\
+				\midrule
+				郭靖 & 重阳宫 & 降龙十八掌 \\
+				黄蓉 & 丐帮 & 打狗棒法 \\
+				洪七公 & 丐帮 & 降龙十八掌、打狗棒法 \\
+				黄老邪 & 桃花岛 & 弹指神通、落英神剑掌、玉箫剑法 \\
+				老顽童 & 重阳宫 & 左右互博术\tnote{1} \\
+				一灯 & 云南大理 & 一阳指\tnote{2}、千里传音 \\
+				\bottomrule
+			\end{tabular}
+			\begin{tablenotes}
+				\item[1] 左右互搏术是金庸小说《射雕英雄传》中「老顽童」周伯通在桃花岛的地洞中创出的武功，本质是一心二用，能够两手同时做不同的事情，在金庸武侠体系中是一门非常精妙的武学，其对于人物本身的战斗力加成堪称台阶性。
+				\item[2] 云南大理段氏嫡传的武功，在点穴功夫中位居天下第一，运功后以右手食指点穴，出指可缓可快，缓时潇洒飘逸，快则疾如闪电，但着指之处，分毫不差。当与敌挣搏凶险之际，用此指法既可贴近径点敌人穴道，也可从远处欺近身去，一中即离，一攻而退，实为克敌保身的无上妙术。
+			\end{tablenotes}
+		\end{threeparttable}
+	\end{table}
+	
+	\begin{table}[!ht]
+		\caption{已习得武功} \label{tab: 已习得武功}
+		\begin{threeparttable}
+			\begin{tabular}{p{3cm} p{3cm} p{5cm}}
+				\toprule
+				\textbf{武功绝学} & \textbf{传授者} & \textbf{传授地点} \\
+				\midrule
+				蛤蟆功 & 欧阳锋 & 重阳山脉 \\
+				九阴真经 & 小龙女 & 活死人墓 \\
+				打狗棒法 & 洪七公、黄蓉 & 华山之巅、英雄大会 \\
+				玉箫剑法 & 黄老邪 & 深山老林 \\
+				黯然销魂掌\tnote{1} & 自创 & 海边 \\
+				\bottomrule
+			\end{tabular}
+			\begin{tablenotes}[online]
+				\item[1] 黯然销魂掌，是在杨过与小龙女离别后，认为今生再也见不到小龙女，悲从中来，由此创作了黯然销魂掌。黯然销魂掌和心情有关，此后杨过与小龙女重逢后，其心理愉悦，故使不出黯然销魂掌。
+			\end{tablenotes}
+		\end{threeparttable}
+	\end{table}
+
+	上述方式排版的带附注表格无法通过点击表格中的编号跳转到对应附注。为此，本模板提供命令\shadcmd{puttablenotelabel\{<标签>\}}和\shadcmd{tablenoteref\{<标签>\}}来实现该操作\textcolor{red}{（2025.01.05新增）}：
+
+	\begin{itemize}
+		\item 首先将\shad{tablenotes}环境中手动设置的编号替换为\shadcmd{puttablenotelabel\{<标签>\}}；
+		\item 然后在表格内容的对应位置使用\shadcmd{tablenoteref\{<标签>\}}即可。编号将自动生成，并按照使用\shadcmd{puttablenotelabel}的顺序递加。
+	\end{itemize}
+
+	这种方式由于需要建立交叉引用，通常需要用户编译两次。切记，\textbf{标签必须全文唯一}。表\ref{tab: 江湖势力背调（基于puttablenotelabel和tablenoteref）}提供了使用示例。
+
+	\begin{table}[!ht]
+		\caption{江湖势力背调（基于\shadcmd{puttablenotelabel}和\shadcmd{tablenoteref}）} \label{tab: 江湖势力背调（基于puttablenotelabel和tablenoteref）}
+		\begin{threeparttable}
+			\begin{tabular}{p{2cm} p{3cm} p{7cm}}
+				\toprule
+				\textbf{姓名} & \textbf{所属势力} & \textbf{武功绝学} \\
+				\midrule
+				郭靖 & 重阳宫 & 降龙十八掌 \\
+				黄蓉 & 丐帮 & 打狗棒法 \\
+				洪七公 & 丐帮 & 降龙十八掌、打狗棒法 \\
+				黄老邪 & 桃花岛 & 弹指神通、落英神剑掌、玉箫剑法 \\
+				老顽童 & 重阳宫 & 左右互博术\tablenoteref{tn: 左右互搏术} \\
+				一灯 & 云南大理 & 一阳指\tablenoteref{tn: 一阳指}、千里传音 \\
+				\bottomrule
+			\end{tabular}
+			\begin{tablenotes}
+				\item[\puttablenotelabel{tn: 左右互搏术}] 左右互搏术是金庸小说《射雕英雄传》中「老顽童」周伯通在桃花岛的地洞中创出的武功，本质是一心二用，能够两手同时做不同的事情，在金庸武侠体系中是一门非常精妙的武学，其对于人物本身的战斗力加成堪称台阶性。
+				\item[\puttablenotelabel{tn: 一阳指}] 云南大理段氏嫡传的武功，在点穴功夫中位居天下第一，运功后以右手食指点穴，出指可缓可快，缓时潇洒飘逸，快则疾如闪电，但着指之处，分毫不差。当与敌挣搏凶险之际，用此指法既可贴近径点敌人穴道，也可从远处欺近身去，一中即离，一攻而退，实为克敌保身的无上妙术。
+			\end{tablenotes}
+		\end{threeparttable}
+	\end{table}
+	
+	
+	\clearpage
+	\subsection{跨页表格}
+	
+	原则上，长度不足一页的表格不应跨页。而对于本身超过一页的表格，本模板使用\href{https://mirrors.tuna.tsinghua.edu.cn/CTAN/macros/latex/required/tools/longtable.pdf}{\ttfamily\color{DarkRed}\CJKunderline*[thickness=0.5bp, format=\color{DarkRed}]{longtable}}宏包提供的\shad{longtable}环境实现。用户需要了解\shad{longtable}环境的基本使用方法，它与\shad{tabular}环境的最大区别在于需要用户自行定义分页后的表题、表头以及表尾。
+	
+	本模板提供了命令\shadcmd{CPcaption\{<当前表格总列数>\}\{<跨页表题>\}}来正确排版跨页之后的表题\textcolor{red}{（2025.01.05更新命令使用方式）}。\textbf{务必使用此命令}，否则跨页后的表题将会与表格内容采用相同的行距和段前段后，而非与规范中要求的表题格式保持一致；并且在跨页表题长度超过表宽时，无法产生预期的排版结果。
+	
+	此外，\textbf{\textcolor{DarkRed}{不应将\shad{longtable}环境嵌套在\shad{table}等浮动环境中}}，否则长表格将无法正常跨页。具体细节参见本小节示例表\ref{tab: 中国计算机学会部分推荐期刊及会议}和表\ref{tab: 中国计算机学会部分推荐期刊及会议简表}。
+	
+	% \newpage
+
+	\begin{longtable}{p{2em} p{4.5em} p{11em} p{6em} p{11em}}
+		\caption{中国计算机学会部分推荐期刊及会议} \label{tab: 中国计算机学会部分推荐期刊及会议} \\
+		
+		\toprule
+		\textbf{序号} & \textbf{刊物简称} & \textbf{刊物全称} & \textbf{出版社} & \textbf{网址} \\
+		\midrule
+		\endfirsthead
+		
+		% 在这里设计首页以外的表题和表头
+		\CPcaption{5}{中国计算机学会部分推荐期刊及会议}\\
+		\toprule
+		\textbf{序号} & \textbf{刊物简称} & \textbf{刊物全称} & \textbf{出版社} & \textbf{网址} \\
+		\midrule
+		\endhead
+		
+		% 在这里设计首页以外的表尾
+		\bottomrule
+		\multicolumn{5}{l}{续下页} \\  % 如不希望跨页表尾显示任何内容则注释掉即可
+		\endfoot
+		
+		\bottomrule
+		\endlastfoot
+		
+		1 & JSAC & IEEE Journal on Selected Areas in Communications & IEEE & http://dblp.uni-trier.de/db/journals/jsac/ \\
+		2 & TMC & IEEE Transactions on Mobile Computing & IEEE & http://dblp.uni-trier.de/db/journals/tmc/ \\
+		3 & TON & IEEE/ACM Transactions on Networking & IEEE/ACM & http://dblp.uni-trier.de/db/journals/ton/ \\
+		1 & TOIT & ACM Transactions on Internet Technology & ACM & http://dblp.uni-trier.de/db/journals/toit/ \\
+		2 & TOMM & ACM Transactions on Multimedia Computing, Communications and Applications & ACM & http://dblp.uni-trier.de/db/journals/tomccap/ \\
+		3 & TOSN & ACM Transactions on Sensor Networks & ACM & http://dblp.uni-trier.de/db/journals/tosn/ \\
+		4 & CN & Computer Networks & Elsevier & http://dblp.uni-trier.de/db/journals/cn/ \\
+		5 & TCOM & IEEE Transactions on Communications & IEEE & http://dblp.uni-trier.de/db/journals/tcom/ \\
+		6 & TWC & IEEE Transactions on Wireless Communications & IEEE & http://dblp.uni-trier.de/db/journals/twc/ \\
+		1 & & Ad Hoc Networks & Elsevier & http://dblp.uni-trier.de/db/journals/adhoc/ \\
+		2 & CC & Computer Communications & Elsevier & http://dblp.uni-trier.de/db/journals/comcom/ \\
+		3 & TNSM & IEEE Transactions on Network and Service Management & IEEE & http://dblp.uni-trier.de/db/journals/tnsm/ \\
+		4 & & IET Communications & IET & http://dblp.uni-trier.de/db/journals/iet-com/ \\
+		5 & JNCA & Journal of Network and Computer Applications & Elsevier & http://dblp.uni-trier.de/db/journals/jnca/ \\
+		6 & MONET & Mobile Networks and Applications & Springer & http://dblp.uni-trier.de/db/journals/monet/ \\
+		7 & & Networks & Wiley & http://dblp.uni-trier.de/db/journals/networks/ \\
+		8 & PPNA & Peer-to-Peer Networking and Applications & Springer & http://dblp.uni-trier.de/db/journals/ppna/ \\
+		9 & WCMC & Wireless Communications and Mobile Computing & Wiley & http://dblp.uni-trier.de/db/journals/wicomm/ \\
+		10 & & Wireless Networks & Springer & http://dblp.uni-trier.de/db/journals/winet/ \\
+		11 & IOT & IEEE Internet of Things Journal & IEEE & https://dblp.org/db/journals/ iotj/index.html \\
+		1 & SIGCOMM & ACM International Conference on Applications, Technologies, Architectures, and Protocols for Computer Communication & ACM & http://dblp.uni-trier.de/db/conf/sigcomm/ index.html \\
+		2 & MobiCom & ACM International Conference on Mobile Computing and Networking & ACM & http://dblp.uni-trier.de/db/conf/mobicom/ \\
+		3 & INFOCOM & IEEE International Conference on Computer Communications & IEEE & http://dblp.uni-trier.de/db/conf/infocom/ \\
+		4 & NSDI & Symposium on Network System Design and Implementation & USENIX & http://dblp.uni-trier.de/db/conf/nsdi/ \\
+		1 & SenSys & ACM Conference on Embedded Networked Sensor Systems & ACM & http://dblp.uni-trier.de/db/conf/sensys/ \\
+		2 & CoNEXT & ACM International Conference on Emerging Networking Experiments and Technologies & ACM & http://dblp.uni-trier.de/db/conf/conext/ \\
+		3 & SECON & IEEE International Conference on Sensing, Communication, and Networking & IEEE & http://dblp.uni-trier.de/db/conf/secon/ \\
+		4 & IPSN & International Conference on Information Processing in Sensor Networks & IEEE/ACM & http://dblp.uni-trier.de/db/conf/ipsn/ \\
+		5 & MobiSys & ACM International Conference on Mobile Systems, Applications, and Services & ACM & http://dblp.uni-trier.de/db/conf/mobisys/ \\
+		6 & ICNP & IEEE International Conference on Network Protocols & IEEE & http://dblp.uni-trier.de/db/conf/icnp/ \\
+		7 & MobiHoc & International Symposium on Theory, Algorithmic Foundations, and Protocol Design for Mobile Networks and Mobile Computing & ACM/IEEE & http://dblp.uni-trier.de/db/conf/mobihoc/ \\
+		8 & NOSSDAV & International Workshop on Network and Operating System Support for Digital Audio and Video & ACM & http://dblp.uni-trier.de/db/conf/nossdav/ \\
+		9 & IWQoS & IEEE/ACM International Workshop on Quality of Service & IEEE & http://dblp.uni-trier.de/db/conf/iwqos/ \\
+		10 & IMC & ACM Internet Measurement Conference & ACM/USENIX & http://dblp.uni-trier.de/db/conf/imc/ \\
+		
+		
+	\end{longtable}
+
+	\newpage
+
+	\begin{longtable}{p{2em} p{4.5em}}
+		\caption{中国计算机学会部分推荐期刊及会议简表（用于测试跨页表宽低于表题长度的情况）} \label{tab: 中国计算机学会部分推荐期刊及会议简表} \\
+		
+		\toprule
+		\textbf{序号} & \textbf{刊物简称} \\
+		\midrule
+		\endfirsthead
+		
+		% 在这里设计首页以外的表题和表头
+		\CPcaption{2}{中国计算机学会部分推荐期刊及会议简表（用于测试跨页表宽低于表题长度的情况）}\\
+		\toprule
+		\textbf{序号} & \textbf{刊物简称} \\
+		\midrule
+		\endhead
+		
+		% 在这里设计首页以外的表尾
+		\bottomrule
+		\multicolumn{2}{r}{续下页} \\  % 如不希望跨页表尾显示任何内容则注释掉即可
+		\endfoot
+		
+		\bottomrule
+		\endlastfoot
+		
+		1 & JSAC \\
+		2 & TMC \\
+		3 & TON \\
+		1 & TOIT \\
+		2 & TOMM \\
+		3 & TOSN \\
+		4 & CN \\
+		5 & TCOM \\
+		6 & TWC \\
+		2 & CC \\
+		3 & TNSM \\
+		5 & JNCA \\
+		6 & MONET \\
+		8 & PPNA \\
+		9 & WCMC \\
+		11 & IOT \\
+		1 & SIGCOMM \\
+		2 & MobiCom \\
+		3 & INFOCOM \\
+		4 & NSDI \\
+		1 & SenSys \\
+		2 & CoNEXT \\
+		3 & SECON \\
+		4 & IPSN \\
+		5 & MobiSys \\
+		6 & ICNP \\
+		7 & MobiHoc \\
+		8 & NOSSDAV \\
+		9 & IWQoS \\
+		10 & IMC \\
+		1 & JSAC \\
+		2 & TMC \\
+		3 & TON \\
+		1 & TOIT \\
+		2 & TOMM \\
+		3 & TOSN \\
+		4 & CN \\
+		5 & TCOM \\
+		6 & TWC \\
+		2 & CC \\
+		3 & TNSM \\
+		5 & JNCA \\
+		6 & MONET \\
+		8 & PPNA \\
+		9 & WCMC \\
+		11 & IOT \\
+		1 & SIGCOMM \\
+		2 & MobiCom \\
+		3 & INFOCOM \\
+		4 & NSDI \\
+		1 & SenSys \\
+		2 & CoNEXT \\
+		3 & SECON \\
+		4 & IPSN \\
+		5 & MobiSys \\
+		6 & ICNP \\
+		7 & MobiHoc \\
+		8 & NOSSDAV \\
+		9 & IWQoS \\
+		10 & IMC \\
+	\end{longtable}
+
+	\clearpage
+	\subsection{跨页带附注表格（2025.01.05）}
+
+	很遗憾，\shad{threeparttable}无法做到跨页，而\shad{longtable}又无法像前者那样稳定完美地排版附注。无奈之下，本模板提供了一种繁琐但可行的做法。
+
+	思路是利用\shad{longtable}提供的表尾自定义功能来插入附注，即用户需要修改\shad{longtable}在\shadcmd{endlastfoot}前对表格尾部的设置。为此，模板提供命令：
+	
+	\shadcmd{tablenotetext(online)(<附注编号悬挂距离>)[<附注上方垂直间隔>]\{<附注总宽度>\}\{<附注标签>\}\{<附注内容>\}}。
+
+	\begin{itemize}
+		\item 此命令的第一项可选参数以\shad{()}标识，它仅接受参数\shad{online}，作用是将附注编号从默认的上标形式更改为行内形式，即模仿\shad{tablenotes}环境的选项。此间差异可参考表\ref{tab: 跨页带附注表格示例}的附注；
+		\item 第二项可选参数仅在设置了第一项可选参数为\shad{online}时有效，用于调整附注编号的悬挂缩进距离，默认是\shad{1em}。当表格的附注数量过多时，可通过手动调整该可选参数来避免过长的编号与后方文字重叠，见表\ref{tab: 跨页带附注表格恰巧在附注开始处换页示例}；
+		\item 第三项可选参数以\shad{[]}标识，在生成的附注与上方内容间的垂直距离不合适时，可通过此可选参数手动对其进行调整，默认为\shad{0bp}；
+		\item 第四项强制参数对应附注整体的宽度，其取值需要根据表格排版后的宽度反复调整，直至附注与表格尾线等宽为止。这的确很繁琐，但我实在能力有限，想不出更好的办法，自动确定表格的实际宽度真的很难；
+		\item 第五项强制参数负责设置附注编号对应的标签，以便后续在表格中使用\shadcmd{tablenoteref\{\}}进行引用，标签同样需要全文唯一；
+		\item 第六项强制参数对应附注的实际内容。
+	\end{itemize}
+
+	\textcolor{red}{\textbf{注意：}}使用\shadcmd{tablenotetext}命令的前提是对表格首列进行特定设置，用户\textbf{必须}通过\shad{p\{<长度>\}}或\shad{m\{<长度>\}}来人为指定\shad{longtable}的首列宽度，\textcolor{red}{\textbf{切不可}}将之设置为\shad{c}、\shad{r}或\shad{l}。另外，表格中最后一条\shadcmd{tablenotetext}之后不需要\shadcmd{\shadcmd{}}，否则表尾与下方文本的间隔将偏大。
+
+	可能出现一种极端情况：跨页表格恰好在附注开始处发生了分页，此时也会产生另类的排版结果。要解决该问题，用户得手动在表格内容的适当位置使用\href{https://mirrors.tuna.tsinghua.edu.cn/CTAN/macros/latex/required/tools/longtable.pdf}{\ttfamily\color{DarkRed}\CJKunderline*[thickness=0.5bp, format=\color{DarkRed}]{longtable}}宏包提供的\shadcmd{pagebreak}命令提前断页，代价是前一页底部可能有更多空白，参考表\ref{tab: 跨页带附注表格恰巧在附注开始处换页示例}中的做法。如果你运气尤其差，附注特别长，而且在附注中间跨页了，那我实在无能为力了。
+
+	必须要承认，\shadcmd{tablenotetext}命令很不稳定。其参数在不同的表格中需要特调，甚至在同一表格的不同排版设置下都是如此，可谓一表一参。如遇到不得不用的时候，用户必须要投入很多精力。可惜，这已经是我目前所能做到的极限。
+
+
+	\newpage
+
+	\begin{longtable}{p{2em} p{4.5em} p{20em} p{6em}}
+		\caption{跨页带附注表格示例} \label{tab: 跨页带附注表格示例} \\
+		
+		\toprule
+		\textbf{序号} & \textbf{刊物简称} & \textbf{刊物全称} & \textbf{出版社} \\
+		\midrule
+		\endfirsthead
+		
+		% 在这里设计首页以外的表题和表头
+		\CPcaption{4}{跨页带附注表格示例}\\
+		\toprule
+		\textbf{序号} & \textbf{刊物简称} & \textbf{刊物全称} & \textbf{出版社} \\
+		\midrule
+		\endhead
+		
+		% 在这里设计首页以外的表尾
+		\bottomrule
+		\multicolumn{4}{l}{续下页} \\  % 如不希望跨页表尾显示任何内容则注释掉即可
+		\endfoot
+		
+		\bottomrule
+		\tablenotetext[-7bp]{37.2em}{tn: 手动跨页表格附注标签IEEE}{IEEE是指电气和电子工程师学会，是一个国际性的专业学会，以促进电气工程、电子工程、计算机科学和相关领域的科学和技术发展为宗旨。成立于1884年，总部位于美国纽约。IEEE 的会员包括来自世界各地的专业人士、工程师、学者和学生，是全球最大的技术专业组织之一。} \\
+		\tablenotetext(online)[6bp]{37.2em}{tn: 手动跨页表格附注标签ACM}{ACM是指国际计算机学会，成立于1947年，是一个国际性的科技教育组织，是世界上第一个科学性及教育性计算机学会，总部设在美国纽约。国际计算机学会是世界上最大的计算机领域专业性学术组织，汇集了国际计算机领域教育家，研究人员，工业界人士及学生。ACM致力于提高在中国的活动的规格与影响力。在此基础上，学会成立了ACM中国理事会，为在中国的学会会员与学会活动提供支持。}% 注意这里不需要\\
+		\endlastfoot
+		
+		1 & JSAC & IEEE Journal on Selected Areas in Communications & IEEE \\
+		2 & TMC & IEEE Transactions on Mobile Computing & IEEE \\
+		3 & TON & IEEE/ACM Transactions on Networking & IEEE/ACM \\
+		1 & TOIT & ACM Transactions on Internet Technology & ACM \\
+		2 & TOMM & ACM Transactions on Multimedia Computing, Communications and Applications & ACM \\
+		3 & TOSN & ACM Transactions on Sensor Networks & ACM \\
+		4 & CN & Computer Networks & Elsevier \\
+		5 & TCOM & IEEE Transactions on Communications & IEEE \\
+		6 & TWC & IEEE Transactions on Wireless Communications & IEEE \\
+		1 & & Ad Hoc Networks & Elsevier \\
+		2 & CC & Computer Communications & Elsevier \\
+		3 & TNSM & IEEE Transactions on Network and Service Management & IEEE \\
+		4 & & IET Communications & IET \\
+		5 & JNCA & Journal of Network and Computer Applications & Elsevier \\
+		6 & MONET & Mobile Networks and Applications & Springer \\
+		7 & & Networks & Wiley \\
+		8 & PPNA & Peer-to-Peer Networking and Applications & Springer \\
+		9 & WCMC & Wireless Communications and Mobile Computing & Wiley \\
+		10 & & Wireless Networks & Springer \\
+		11 & IOT & IEEE Internet of Things Journal & IEEE \\
+		1 & SIGCOMM & ACM International Conference on Applications, Technologies, Architectures, and Protocols for Computer Communication & ACM \\
+		2 & MobiCom & ACM International Conference on Mobile Computing and Networking & ACM \\
+		3 & INFOCOM & IEEE International Conference on Computer Communications & IEEE \\
+		4 & NSDI & Symposium on Network System Design and Implementation & USENIX \\
+		1 & SenSys & ACM Conference on Embedded Networked Sensor Systems & ACM \\
+		2 & CoNEXT & ACM International Conference on Emerging Networking Experiments and Technologies & ACM \\
+		3 & SECON & IEEE International Conference on Sensing, Communication, and Networking & IEEE \\
+		4 & IPSN & International Conference on Information Processing in Sensor Networks & IEEE/ACM \\
+		5 & MobiSys & ACM International Conference on Mobile Systems, Applications, and Services & ACM \\
+		6 & ICNP & IEEE International Conference on Network Protocols & IEEE\tablenoteref{tn: 手动跨页表格附注标签IEEE} \\
+		7 & MobiHoc & International Symposium on Theory, Algorithmic Foundations, and Protocol Design for Mobile Networks and Mobile Computing & ACM/IEEE \\
+		8 & NOSSDAV & International Workshop on Network and Operating System Support for Digital Audio and Video & ACM\tablenoteref{tn: 手动跨页表格附注标签ACM} \\
+		9 & IWQoS & IEEE/ACM International Workshop on Quality of Service & IEEE \\
+		10 & IMC & ACM Internet Measurement Conference & ACM/USENIX \\
+		
+		
+	\end{longtable}
+
+	表格后参照文本表格后参照文本表格后参照文本表格后参照文本表格后参照文本表格后参照文本表格后参照文本表格后参照文本表格后参照文本表格后参照文本表格后参照文本表格后参照文本表格后参照文本表格后参照文本表格后参照文本表格后参照文本表格后参照文本表格后参照文本表格后参照文本表格后参照文本表格后参照文本
+
+	\newpage
+
+	\begin{longtable}{m{2em}<{\centering} p{4.5em} p{15em} p{6em}}
+		\caption{跨页带附注表格恰巧在附注开始处换页示例} \label{tab: 跨页带附注表格恰巧在附注开始处换页示例} \\
+		
+		\toprule
+		\textbf{序号} & \textbf{刊物简称} & \textbf{刊物全称} & \textbf{出版社} \\
+		\midrule
+		\endfirsthead
+		
+		% 在这里设计首页以外的表题和表头
+		\CPcaption{4}{跨页带附注表格恰巧在附注中需要换页示例}\\
+		\toprule
+		\textbf{序号} & \textbf{刊物简称} & \textbf{刊物全称} & \textbf{出版社} \\
+		\midrule
+		\endhead
+		
+		% 在这里设计首页以外的表尾
+		\bottomrule
+		\multicolumn{4}{l}{续下页} \\  % 如不希望跨页表尾显示任何内容则注释掉即可
+		\endfoot
+		
+		\bottomrule
+		\tablenotetext[5bp]{32.1em}{tn: 手动跨页表格附注标签Elsevier}{爱思唯尔，创办于1880年，属于RELX集团旗下，总部位于阿姆斯特丹。爱思唯尔是一家荷兰的国际化多媒体出版集团，主要为科学家、研究人员、学生、医学以及信息处理的专业人士提供信息产品和革新性工具。爱思唯尔是全球领先的科学与医学信息服务机构，旗下出版《柳叶刀》《细胞》等2800多种学术期刊。} \setcounter{tablenote}{99}\\
+		\tablenotetext(online)(2em)[5bp]{32.1em}{tn: 手动跨页表格附注标签USENIX}{USENIX成立于1975年，当时的名字叫做Unix用户群。它的主要目的是学习及开发Unix以及类似系统。1977年六月，美国电话电报公司的律师告诉用户群他们不能继续使用UNIX这个名字，因为UNIX是美国电话电报公司所拥有的一个商标。所以这个用户群更名成USENIX.从那以后，USENIX逐渐发展成一个倍受尊敬的由计算机操作系统用户，开发者和研究者所组成的机构。}% 注意这里不需要\\
+		\endlastfoot
+		
+		1 & JSAC & IEEE Journal on Selected Areas in Communications & IEEE \\
+		2 & TMC & IEEE Transactions on Mobile Computing & IEEE \\
+		3 & TON & IEEE/ACM Transactions on Networking & IEEE/ACM \\
+		1 & TOIT & ACM Transactions on Internet Technology & ACM \\
+		2 & TOMM & ACM Transactions on Multimedia Computing, Communications and Applications & ACM \\
+		3 & TOSN & ACM Transactions on Sensor Networks & ACM \\
+		4 & CN & Computer Networks & Elsevier \\
+		5 & TCOM & IEEE Transactions on Communications & IEEE \\
+		6 & TWC & IEEE Transactions on Wireless Communications & IEEE \\
+		1 & & Ad Hoc Networks & Elsevier \\
+		2 & CC & Computer Communications & Elsevier\tablenoteref{tn: 手动跨页表格附注标签Elsevier} \\
+		3 & TNSM & IEEE Transactions on Network and Service Management & IEEE \\
+		% 4 & & IET Communications & IET \\
+		% 5 & JNCA & Journal of Network and Computer Applications & Elsevier \\
+		% 6 & MONET & Mobile Networks and Applications & Springer \\
+		% 7 & & Networks & Wiley \\
+		% 8 & PPNA & Peer-to-Peer Networking and Applications & Springer \\
+		% 9 & WCMC & Wireless Communications and Mobile Computing & Wiley \\
+		% 10 & & Wireless Networks & Springer \\
+		% 11 & IOT & IEEE Internet of Things Journal & IEEE \\
+		1 & SIGCOMM & ACM International Conference on Applications, Technologies, Architectures, and Protocols for Computer Communication & ACM \\
+		2 & MobiCom & ACM International Conference on Mobile Computing and Networking & ACM \\
+		3 & INFOCOM & IEEE International Conference on Computer Communications & IEEE \\
+		4 & NSDI & Symposium on Network System Design and Implementation & USENIX\tablenoteref{tn: 手动跨页表格附注标签USENIX} \\
+		1 & SenSys & ACM Conference on Embedded Networked Sensor Systems & ACM \\
+		\pagebreak  % 用户可以尝试注释掉这条命令看看现象
+		2 & CoNEXT & ACM International Conference on Emerging Networking Experiments and Technologies & ACM \\
+		% 3 & SECON & IEEE International Conference on Sensing, Communication, and Networking & IEEE \\
+		% 4 & IPSN & International Conference on Information Processing in Sensor Networks & IEEE/ACM \\
+		% 5 & MobiSys & ACM International Conference on Mobile Systems, Applications, and Services & ACM \\
+		% 6 & ICNP & IEEE International Conference on Network Protocols & IEEE \\
+		% 7 & MobiHoc & International Symposium on Theory, Algorithmic Foundations, and Protocol Design for Mobile Networks and Mobile Computing & ACM/IEEE \\
+		% 8 & NOSSDAV & International Workshop on Network and Operating System Support for Digital Audio and Video & ACM \\
+		% 9 & IWQoS & IEEE/ACM International Workshop on Quality of Service & IEEE \\
+		% 10 & IMC & ACM Internet Measurement Conference & ACM/USENIX \\
+		
+		
+		
+	\end{longtable}
+
+	表格后参照文本表格后参照文本表格后参照文本表格后参照文本表格后参照文本表格后参照文本表格后参照文本表格后参照文本表格后参照文本表格后参照文本表格后参照文本表格后参照文本表格后参照文本表格后参照文本表格后参照文本表格后参照文本表格后参照文本表格后参照文本表格后参照文本表格后参照文本表格后参照文本
+	
+	\clearpage
+	\section{伪代码}
+	
+	模板基于\href{https://mirrors.sustech.edu.cn/CTAN/macros/latex/contrib/algorithm2e/doc/algorithm2e.pdf}{\ttfamily\color{DarkRed}\CJKunderline*[thickness=0.5bp, format=\color{DarkRed}]{algorithm2e}}宏包提供的\shad{algorithm}环境排版伪代码，默认不添加左右侧框线，且顶部框线和底部框线类比规范对表格的要求进行了加粗，字体大小也调整到了\textbf{五号字}，与表格保持一致。若要恢复伪代码的左右侧框线，可以在载入文档类时使用\shad{boxruled}选项。该环境生成的伪码与正文文本保持相同宽度。
+	
+	除了\href{https://mirrors.sustech.edu.cn/CTAN/macros/latex/contrib/algorithm2e/doc/algorithm2e.pdf}{\ttfamily\color{DarkRed}\CJKunderline*[thickness=0.5bp, format=\color{DarkRed}]{algorithm2e}}宏包本身提供的各种条件、循环语句，本模板基于宏包提供的接口，追加了\shad{Do While}和\shad{Loop}循环语句：
+	\begin{itemize}
+		\item \shadcmd{DoWhile(<紧跟关键字do的文本，可用于添加注释>)\{<循环条件>\}\{<循环体>\}}
+		\item \shadcmd{Loop(<紧跟关键字loop的文本，可用于添加注释>)\{<循环体>\}}
+	\end{itemize}
+	
+	
+	此外，基于调整后的\shad{algorithm2e}环境，本模板进一步封装了\shad{algo}环境，它将生成比\shad{algorithm}环境更\textbf{\color{DarkRed}窄}的伪码浮动区域。除了接受浮动可选参数\shad{[htbp]}，\shad{algo}环境还支持另一可选参数\shad{(<伪码距正文文本边界的总距离>)}：该参数控制浮动体距正文文本边界的总距离，默认\shad{4em}，即单边缩进\shad{2em}，与其下首行文本对齐。两项可选参数可以单独或同时使用，\textbf{同时使用时的顺序必须与下方示例保持一致：}
+	
+	\begin{verbatim}
+		\begin{algo}[<浮动选项>](<伪码距正文文本边界的总距离>)
+		    .....
+		\end{algo}
+	\end{verbatim}
+	
+	算法\ref{alg: algorithm环境伪码示例}和算法\ref{alg: algo环境伪码示例}分别展示了两种环境默认生成的伪码样式；过程\ref{alg: algorithm环境修改伪码标签示例}和过程\ref{alg: algo环境修改伪码标签并调整宽度示例}展示了如何修改伪码中的一些标签，以及调整\shad{algo}伪码宽度的具体做法。
+
+	
+	\begin{algorithm}[!h]
+		\caption{algorithm环境伪码示例} \label{alg: algorithm环境伪码示例}
+		\Input{1) 输入1;\newline 2) 输入2。}
+		\Output{输出结果。}
+		伪码行1。
+		
+		\For(\tcc*[f]{循环条件注释1}){循环条件1}{
+			伪码行2。
+			
+			\tcp{注释2}
+			伪码行3。
+			
+			\DoWhile(\tcc*[f]{循环条件注释3}){循环条件2}{
+				伪码行4。
+			}
+			
+			\tcc{loop循环}
+			\Loop(\tcc*[f]{注释4}){
+				循环体1。
+			}
+			
+			\Repeat(\tcc*[f]{循环条件注释5}){循环条件3}{
+				循环体2。
+			}
+			
+			\tcp{if-elseif-else结构示例}
+			\uIf(\tcc*[f]{条件注释6}){条件语句5}{
+				条件语句5为真，伪码行5。
+			}
+			\uElseIf(\tcc*[f]{elseif条件语句}){条件语句6}{
+				条件语句6为真，伪码行6。
+			}
+			\Else{
+				条件5和6均为假，伪码行7。\tcp*[f]{else代码内容}
+			}
+			
+			\If(\tcc*[f]{条件注释7}){条件语句7}{
+				伪码行8。
+			}
+		}
+		\textbf{return} 算法结果。
+	\end{algorithm}
+	
+	\begin{algorithm}[!h]
+		\renewcommand{\algorithmcfname}{过程}  % 修改伪码标签需要在\caption{}之前
+		\caption{algorithm环境临时修改伪码标签示例} \label{alg: algorithm环境修改伪码标签示例}
+		\SetKwInOut{Input}{In}
+		\SetKwInOut{Output}{Out}
+		\Input{1) 输入1; 2) 输入2。}
+		\Output{输出结果。}
+		伪码行1。
+		
+		\For(\tcc*[f]{循环条件注释1}){循环条件1}{
+			伪码行2。
+			
+			\tcp{注释2}
+			伪码行3。
+			
+			\DoWhile(\tcc*[f]{循环条件注释3}){循环条件2}{
+				伪码行4。
+			}
+			
+			\tcc{loop循环}
+			\Loop(\tcc*[f]{注释4}){
+				循环体1。
+			}
+			
+			\Repeat(\tcc*[f]{循环条件注释5}){循环条件3}{
+				循环体2。
+			}
+			\eIf(\tcc*[f]{条件注释6}){条件语句6}{
+				为真，伪码行5。
+			}{
+				条件为假，伪码行6。\tcp*[f]{else代码内容}
+			}
+			
+			\If(\tcc*[f]{条件注释7}){条件语句7}{
+				伪码行7。
+			}
+		}
+		\textbf{return} 算法结果。
+	\end{algorithm}
+	
+	\begin{algo}[!h]
+		\caption{algo环境伪码示例} \label{alg: algo环境伪码示例}
+		\Input{1) 输入1;\newline 2) 输入2。}
+		\Output{输出结果。}
+		伪码行1。
+		
+		\For(\tcc*[f]{循环条件注释1}){循环条件1}{
+			伪码行2。
+			
+			\tcp{注释2}
+			伪码行3。
+			
+			\DoWhile(\tcc*[f]{循环条件注释3}){循环条件2}{
+				伪码行4。
+			}
+			
+			\tcc{loop循环}
+			\Loop(\tcc*[f]{注释4}){
+				循环体1。
+			}
+			
+			\Repeat(\tcc*[f]{循环条件注释5}){循环条件3}{
+				循环体2。
+			}
+			\eIf(\tcc*[f]{条件注释6}){条件语句6}{
+				为真，伪码行5。
+			}{
+				条件为假，伪码行6。\tcp*[f]{else代码内容}
+			}
+			
+			\If(\tcc*[f]{条件注释7}){条件语句7}{
+				伪码行7。
+			}
+		}
+		\textbf{return} 算法结果。
+	\end{algo}
+	
+	\begin{algo}[!h](8em)
+		\renewcommand{\algorithmcfname}{过程}  % 修改伪码标签需要在\caption{}之前
+		\caption{algo环境临时修改伪码标签并调整宽度示例} \label{alg: algo环境修改伪码标签并调整宽度示例}
+		\SetKwInOut{Input}{In}
+		\SetKwInOut{Output}{Out}
+		\Input{1) 输入1; 2) 输入2。}
+		\Output{输出结果。}
+		伪码行1。
+		
+		\For(\tcc*[f]{循环条件注释1}){循环条件1}{
+			伪码行2。
+			
+			\tcp{注释2}
+			伪码行3。
+			
+			\DoWhile(\tcc*[f]{循环条件注释3}){循环条件2}{
+				伪码行4。
+			}
+			
+			\tcc{loop循环}
+			\Loop(\tcc*[f]{注释4}){
+				循环体1。
+			}
+			
+			\Repeat(\tcc*[f]{循环条件注释5}){循环条件3}{
+				循环体2。
+			}
+			\eIf(\tcc*[f]{条件注释6}){条件语句6}{
+				为真，伪码行5。
+			}{
+				条件为假，伪码行6。\tcp*[f]{else代码内容}
+			}
+			
+			\If(\tcc*[f]{条件注释7}){条件语句7}{
+				伪码行7。
+			}
+		}
+		\textbf{return} 算法结果。
+	\end{algo}
+
+	\clearpage
+	\section{各种列表}
+
+	本模板对\shad{itemize}、\shad{enumerate}和\shad{description}这三种基本列表环境进行了设置，用户可根据实际情况选用。
+
+	\shad{itemize}示例：
+
+	\begin{itemize}
+		\item 外层列表条目1。多行填充多行填充多行填充多行填充多行填充多行填充多行填充多行填充多行填充多行填充
+		\item 外层列表条目2
+		\begin{itemize}
+			\item 内层列表条目1。多行填充多行填充多行填充多行填充多行填充多行填充多行填充多行填充多行填充多行填充
+			\item 内层列表条目2
+		\end{itemize}
+		\item 外层列表条目3
+	\end{itemize}
+
+	\null
+
+	\shad{enumerate}示例：
+
+	\begin{enumerate}
+		\item 外层枚举条目1。多行填充多行填充多行填充多行填充多行填充多行填充多行填充多行填充多行填充多行填充
+		\item 外层枚举条目2
+		\begin{enumerate}
+			\item 内层枚举条目1。多行填充多行填充多行填充多行填充多行填充多行填充多行填充多行填充多行填充多行填充
+			\item 内层枚举条目2
+		\end{enumerate}
+		\item 外层枚举条目3
+	\end{enumerate}
+
+	\null
+
+	\shad{description}示例:
+
+	\begin{description}
+		\item[描述1] 外层描述条目1。多行填充多行填充多行填充多行填充多行填充多行填充多行填充多行填充多行填充多行填充
+		\item[描述2] 外层描述条目2
+		\begin{description}
+			\item[描述2.1] 内层描述条目1。多行填充多行填充多行填充多行填充多行填充多行填充多行填充多行填充多行填充多行填充
+			\item[描述2.2] 内层描述条目2
+		\end{description}
+		\item[描述3] 外层描述条目3
+	\end{description}
+	
+	\clearpage
+	\section{定义、公理、定理、命题、推论、引理、示例、假设、注、证明}
+	
+	本模板分别定义了环境：\shad{definition}、\shad{axiom}、\shad{theorem}、\shad{proposition}、\shad{corollary}、\shad{lemma}、\shad{example}、\shad{assumption}、\shad{annotation}和\shad{proof}。示例如下：
+	
+	% 云南大理段氏嫡传的武功，在点穴功夫中位居天下第一，运功后以右手食指点穴，出指可缓可快，缓时潇洒飘逸，快则疾如闪电，但着指之处，分毫不差。当与敌挣搏凶险之际，用此指法既可贴近径点敌人穴道，也可从远处欺近身去，一中即离，一攻而退，实为克敌保身的无上妙术。
+
+	\begin{definition}[具体名称]
+		云南大理段氏嫡传的武功，在点穴功夫中位居天下第一，运功后以右手食指点穴，出指可缓可快，缓时潇洒飘逸，快则疾如闪电。
+	\end{definition}
+
+	\begin{axiom}[具体名称]
+		云南大理段氏嫡传的武功，在点穴功夫中位居天下第一，运功后以右手食指点穴，出指可缓可快，缓时潇洒飘逸，快则疾如闪电。
+	\end{axiom}
+	
+	\begin{theorem}[具体名称]
+		云南大理段氏嫡传的武功，在点穴功夫中位居天下第一，运功后以右手食指点穴，出指可缓可快，缓时潇洒飘逸，快则疾如闪电。
+
+		\begin{enumerate}
+			\item 当与敌挣搏凶险之际，用此指法既可贴近径点敌人穴道，也可从远处欺近身去，一中即离，一攻而退，实为克敌保身的无上妙术。
+			\begin{enumerate}
+				\item 当与敌挣搏凶险之际，用此指法既可贴近径点敌人穴道，也可从远处欺近身去，一中即离，一攻而退，实为克敌保身的无上妙术。
+			\end{enumerate}
+		\end{enumerate}
+	\end{theorem}
+	
+	\begin{proposition}[具体名称]
+		云南大理段氏嫡传的武功，在点穴功夫中位居天下第一，运功后以右手食指点穴，出指可缓可快，缓时潇洒飘逸，快则疾如闪电。
+	\end{proposition}
+	
+	\begin{corollary}[具体名称]
+		云南大理段氏嫡传的武功，在点穴功夫中位居天下第一，运功后以右手食指点穴，出指可缓可快，缓时潇洒飘逸，快则疾如闪电。
+	\end{corollary}
+	
+	\begin{lemma}[具体名称]
+		云南大理段氏嫡传的武功，在点穴功夫中位居天下第一，运功后以右手食指点穴，出指可缓可快，缓时潇洒飘逸，快则疾如闪电。
+	\end{lemma}
+
+	\begin{example}[具体名称]
+		云南大理段氏嫡传的武功，在点穴功夫中位居天下第一，运功后以右手食指点穴，出指可缓可快，缓时潇洒飘逸，快则疾如闪电。
+	\end{example}
+
+	\begin{assumption}[具体名称]
+		云南大理段氏嫡传的武功，在点穴功夫中位居天下第一，运功后以右手食指点穴，出指可缓可快，缓时潇洒飘逸，快则疾如闪电。
+	\end{assumption}
+
+	\begin{annotation}[具体名称]
+		云南大理段氏嫡传的武功，在点穴功夫中位居天下第一，运功后以右手食指点穴，出指可缓可快，缓时潇洒飘逸，快则疾如闪电。
+	\end{annotation}
+	
+	\begin{proof}
+		云南大理段氏嫡传的武功，在点穴功夫中位居天下第一，运功后以右手食指点穴，出指可缓可快，缓时潇洒飘逸，快则疾如闪电。
+		\begin{itemize}
+			\item 当与敌挣搏凶险之际，用此指法既可贴近径点敌人穴道，也可从远处欺近身去，一中即离，一攻而退，实为克敌保身的无上妙术。
+			\begin{itemize}
+				\item 当与敌挣搏凶险之际，用此指法既可贴近径点敌人穴道，也可从远处欺近身去，一中即离，一攻而退，实为克敌保身的无上妙术。
+			\end{itemize}
+		\end{itemize}
+	\end{proof}
+	
+	\newpage
+
+	\section{脚注}
+	
+	本模板使用包含了带圈数字的字体来替换LaTeX绘制的带圈数字，提供了充足的带圈编号数量，同时保证了带圈脚注编号足够优雅。
+	
+	在正文中加入脚注直接在需要放置脚注标签的位置使用\shadcmd{footnote\{<脚注内容>\}}即可。
+	
+	在其他环境中，如表格，则需要需要使用\shadcmd{footnotemark}配合\shadcmd{footnotetext\{<脚注文本>\}}。在需要放置脚注标签的位置使用\shadcmd{footnotemark}，然后在环境外使用\shadcmd{footnotetext\{<脚注文本>\}}指明脚注内容\footnote{更详细的使用方法参考\href{https://blog.csdn.net/xovee/article/details/127563209}{\ttfamily\color{DarkRed}\CJKunderline*[thickness=0.5bp, format=\color{DarkRed}]{LaTeX脚注}}。冗余文本用于展示脚注内容发生换行后的情况；冗余文本用于展示脚注内容发生换行后的情况；冗余文本用于展示脚注内容发生换行后的情况。}。
+	
+	
+	\section{模板中的各种编号}
+	
+	“标题”、“图片”、“表格”、“伪码”、“公式”、“定义”、“定理”、“命题”、“推论”、“引理”、“证明”、“脚注”这些文档元素均可自行计算并生成编号，无需使用者费心。\textbf{但形如\textcolor{DodgerBlue}{(1-1a)}的子公式编号不能完全自动生成}，为此，模板提供了\shadcmd{subeqtag[<子公式编号标签>]}命令。
+
+	在为数学模型的约束创建编号时，常见的方式可能是使用\shadcmd{tag\{\}}命令直接指定编号内容。但是，该方式操作繁琐，且在后续需要调换或增删约束时很容易漏改某些tag，导致子公式编号混乱，而又不容易察觉。
+
+	本模板提供的\shadcmd{subeqtag[<子公式编号标签>]}命令彻底避免了上述问题。使用者只需要在对应的约束后插入\shadcmd{subeqtag}，即可赋予该约束与当前主公式编号保持一致的次级编号。而且，对连续多个约束使用该命令会\textbf{自动生成}递增的子公式编号，交换约束顺序编号也会自行更新，断不会出错。
+	
+	如果需要在正文中引用某个子公式编号，那么可以像往常一样在\shadcmd{subeqtag}之后使用\shadcmd{label\{<编号标签>\}}，或者直接指定\shadcmd{subeqtag[<子公式编号标签>]}的可选参数，非常人性化。
+	
+	下面的源码将产生式\eqref{eq: obj 1}\textasciitilde \eqref{eq: constriant gamma}对应的例子，其中式\eqref{eq: constraint x}和\eqref{eq: constriant gamma}使用了\shadcmd{subeqtag[<子公式编号标签>]}的可选参数。
+
+	\begin{verbatim}
+		\begin{align}
+			\max \log \left(x^2 + y^2 + z^2 + v^2 + g^2 + m^2 + k^2\right)
+			\label{eq: obj 1} \\
+			\text{s.t.} \quad x \leq 1, \subeqtag[eq: constraint x] \\
+			y \leq 2, \subeqtag \\
+			z \leq 4, \subeqtag
+		\end{align}
+		
+		\begin{align}
+			\min \left(\boldsymbol{\alpha} + \beta + \gamma_{中文}\right)^2
+			\label{eq: obj 2} \\
+			\text{s.t.} \quad \boldsymbol{\alpha} \leq 9, \subeqtag \\
+			\beta \geq -10, \subeqtag \\
+			\gamma_{中文} \geq 8, \subeqtag[eq: constriant gamma]
+		\end{align}
+	\end{verbatim}
+	\begin{align}
+		\thinmuskip=-3mu \medmuskip=-2mu \thickmuskip=-1mu
+		\max \log \left(x^2 + y^2 + z^2 + v^2 + g^2 + m^2 + k^2\right) \label{eq: obj 1} \\
+		\text{s.t.} \quad x \leq 1, \subeqtag[eq: constraint x] \\
+		y \leq 2, \subeqtag \\
+		z \leq 4, \subeqtag
+	\end{align}
+	\begin{align}
+		\min \left(\boldsymbol{\alpha} + \beta + \gamma_{中文}\right)^2 \label{eq: obj 2} \\
+		\text{s.t.} \quad \boldsymbol{\alpha} \leq 9, \subeqtag \\
+		\beta \geq -10, \subeqtag \\
+		\gamma_{中文} \geq 8, \subeqtag[eq: constriant gamma]
+	\end{align}
+	
+
+	$x^2 + \boldsymbol{x}^2 + y^2 + \mathrm{y}^2 + z^2 + \mathcal{B}^2 + \mathcal{M}^2 + \mathbb{I}^2 + v^2 + g^2 + m^2 + k^2$
+	
+	$\check{\boldsymbol{C}}^t_n + \hat{p}^j_{n, s} + \tilde{r}^t_{u,b} + \overline{i}^t_{x, y} + \acute{\alpha}^t_v + \acute{\boldsymbol{\alpha}}^t + \hat{\boldsymbol{\alpha}}^t + f^t_j + f^{"t}_j + l^t_j + l^{"t}_j + \boldsymbol{\acute{\beta}}^t + \boldsymbol{\hat{\beta}}^t$
+
+	$\xlongequal{uvw}, \cdot, \cdots, \xLeftrightarrow{xyz}, \mathcal{N} \triangleq \left\{1, \dots, N\right\}, \times, \partial, \emptyset, \in, \subseteq, \leftarrow, \rightarrow, \leq, \geq$
+
+	$ \alpha \beta \gamma \delta \epsilon \zeta \eta \theta \iota \kappa \lambda \mu \nu \omicron \xi \pi \rho \sigma \tau \upsilon \phi \chi \psi \omega$
+
+	$ \boldsymbol{\alpha} \boldsymbol{\beta} \boldsymbol{\gamma} \boldsymbol{\delta} \boldsymbol{\epsilon} \boldsymbol{\zeta} \boldsymbol{\eta} \boldsymbol{\theta} \boldsymbol{\iota} \boldsymbol{\kappa} \boldsymbol{\lambda} \boldsymbol{\mu} \boldsymbol{\nu} \boldsymbol{\xi} \boldsymbol{\omicron} \boldsymbol{\pi} \boldsymbol{\rho} \boldsymbol{\sigma} \boldsymbol{\tau} \boldsymbol{\upsilon} \boldsymbol{\phi} \boldsymbol{\chi} \boldsymbol{\psi} \boldsymbol{\omega}$
+
+	$ \Alpha \Beta \Gamma \Delta \Epsilon \Zeta \Eta \Theta \Iota \Kappa \Lambda \Mu \Nu \Xi \Omicron \Pi \Rho \Sigma \Tau \Upsilon \Phi \Chi \Psi \Omega$
+	
+	$ \boldsymbol{\Alpha} \boldsymbol{\Beta} \boldsymbol{\Gamma} \boldsymbol{\Delta} \boldsymbol{\Epsilon} \boldsymbol{\Zeta} \boldsymbol{\Eta} \boldsymbol{\Theta} \boldsymbol{\Iota} \boldsymbol{\Kappa} \boldsymbol{\Lambda} \boldsymbol{\Mu} \boldsymbol{\Nu} \boldsymbol{\Xi} \boldsymbol{\Omicron} \boldsymbol{\Pi} \boldsymbol{\Rho} \boldsymbol{\Sigma} \boldsymbol{\Tau} \boldsymbol{\Upsilon} \boldsymbol{\Phi} \boldsymbol{\Chi} \boldsymbol{\Psi} \boldsymbol{\Omega}$
+	
+	有两点需要提醒：
+	\begin{itemize}
+		\item \shadcmd{subeqtag[<子公式编号标签>]}的可选参数全文不可重复定义，因为它本质上还是调用的\shadcmd{label\{<编号标签>\}}。
+		\item 尽管使用\shadcmd{subeqtag[<子公式编号标签>]}的可选参数指定的标签本质上是基于\shadcmd{label\{<编号标签>\}}进行的封装，TeXstudio编辑器在使用\shadcmd{ref\{<编号标签>\}}或\shadcmd{eqref\{<编号标签>\}}却不会自动弹出这些标签的选项，需要手动输入；而如果是直接用\shadcmd{label\{<编号标签>\}}指定的标签，引用时会出现在选项提示中，可以直接选择。这是\shadcmd{subeqtag[<子公式编号标签>]}在接受可选参数后的不便之处，可惜我并不知道该如何解决。
+	\end{itemize}
+	
+	
+	\section{排版及微调数学公式}
+
+	对于不熟悉数学符号与LaTeX源码对应关系的用户，请参考\href{https://www.cnblogs.com/1024th/p/11623258.html}{\color{DarkRed}\CJKunderline*[thickness=0.5bp, format=\color{DarkRed}]{LaTeX公式手册（全网最全）@樱花赞}}，此处不再赘述。
+
+	当出现包含公式较多的数学模型或行间公式组，且当页剩余的排版空间无法完整容纳它们时，用户可以在导言区或文档开头使用\shadcmd{allowdisplaybreaks[<跨页倾向值>]}来允许跨页排版行间公式组，从而避免该页底部出现大幅空白。该命令的可选参数可取的值有\shad{1,2,3,4}，值越大表示跨页排版的倾向越高。
+
+	当某些行间公式过长以致于超出页面边界时，用户可以在\shad{equation}环境中嵌套\shad{aligned}环境将之调整为多行排版。此外，若公式超出页面边界的部分不多，也可以在\shad{equation}环境内通过调整公式中数学符号间的三种间距\shadcmd{thinmuskip}、\shadcmd{medmuskip}、\shadcmd{thickmuskip}来略微压缩公式的排版长度。这三项长度的单位只能是\shad{mu}，用户可对比公式\eqref{eq: 超长行间公式}和\eqref{eq: 微调公式中数学符号间距}的排版效果：两者的内容完全相同，但式\eqref{eq: 微调公式中数学符号间距}调整了上述三项长度。
+	\begin{equation} \label{eq: 超长行间公式}
+		\sum_{k=a}^{b} f(k) = \int_{a}^{b} f(x) \, dx + \frac{f(a) + f(b)}{2} + \sum_{m=1}^{\lfloor p/2 \rfloor} \frac{B_{2m}}{(2m)!} \left( f^{(2m-1)}(b) - f^{(2m-1)}(a) \right) + R_p,
+	\end{equation}
+	\begin{equation} \label{eq: 微调公式中数学符号间距}
+		\thinmuskip=-1mu \medmuskip=-1mu \thickmuskip=0mu
+		\sum_{k=a}^{b} f(k) = \int_{a}^{b} f(x) \, dx + \frac{f(a) + f(b)}{2} + \sum_{m=1}^{\lfloor p/2 \rfloor} \frac{B_{2m}}{(2m)!} \left( f^{(2m-1)}(b) - f^{(2m-1)}(a) \right) + R_p,
+	\end{equation}
+
+
+	\section{在标题中排版数学符号\texorpdfstring{$\tilde{r}^t_{u,b}, \acute{\alpha}^t_v, \check{\boldsymbol{C}}^t_n$}{示例}}
+
+	尽管我不建议在标题中排版数学符号（因为规范甚至不建议在标题中排版英文缩略词），但如果非排版不可，那可参考本节标题的做法，使用\href{https://mirrors.tuna.tsinghua.edu.cn/CTAN/macros/latex/contrib/hyperref/doc/hyperref-doc.pdf}{\ttfamily\color{DarkRed}\CJKunderline*[thickness=0.5bp, format=\color{DarkRed}]{hyperref}}宏包（模板已载入该宏包）提供的\shadcmd{texorpdfstring\{<TeXstring>\}\{<PDFstring>\}}命令，该命令的具体用法参考这个帖子：\href{https://blog.csdn.net/qq_42679415/article/details/139592054}{\ttfamily\color{DarkRed}\CJKunderline*[thickness=0.5bp, format=\color{DarkRed}]{texorpdfstring使用方法}}。
+
+	
+	\section{排版化学方程式}
+
+	本模板基于\href{https://mirrors.cloud.tencent.com/CTAN/macros/latex/contrib/mhchem/mhchem.pdf}{\ttfamily\color{DarkRed}\CJKunderline*[thickness=0.5bp, format=\color{DarkRed}]{mhchem}}和\href{https://mirrors.bfsu.edu.cn/CTAN/macros/generic/chemfig/chemfig-en.pdf}{\ttfamily\color{DarkRed}\CJKunderline*[thickness=0.5bp, format=\color{DarkRed}]{chemfig}}宏包来排版化学方程式、结构式和键线式等。相关命令的使用可参考宏包的官方文档或\href{https://www.luogu.com.cn/user/45443}{\color{DarkRed}\CJKunderline*[thickness=0.5bp, format=\color{DarkRed}]{@codesonic}}的文章：\href{https://www.luogu.com.cn/article/o7mlv3w8}{\color{DarkRed}\CJKunderline*[thickness=0.5bp, format=\color{DarkRed}]{用LaTeX写化学方程式}}。下方示例取自该文章，感谢。
+
+	\ce{2H2 + O2 ->T[点燃] 2H2O}，\quad \ce{N2 + 3H2 <=>T[高温、加压][催化剂] 2NH3}
+	
+	\ce{SO4^2- + Ba^2+ -> BaSO4 v}，\quad \ce{2HCl + Na2CO3 -> H2O + CO2 ^ + 2NaCl}
+
+	\ce{^{227}_{90}Th+}，\quad \ce{KCr(SO4)2 * 12H2O}，\quad \ce{C6H5-CHO}，\quad \ce{X=Y#Z}
+
+	\ce{\chemfig{CH_3C(=[1]O)(-[7]CH_3)} + \chemfig{CN(-[2]H)} ->T[催化剂] \chemfig{CH_3(-[0]C(-[2]OH)(-[0]CN)(-[6]CH3))}}
+
+	\ce{\chemfig{CH_3C(=[1,0.7]O)(-[7,0.7]CH_3)} + \chemfig{CN(-[2,0.7]H)} ->T[催化剂] \chemfig{CH_3(-[0,0.7]C(-[2,0.7]OH)(-[0,0.7]CN)(-[6,0.7]CH3))}}
+
+	\chemfig{[,0.7]*6(-=(*5(-N(-H)-=(-[:30]CH_2CH_2NHCOCH_3)--))-=-(-H_3CO)=)}
+
+	\chemfig{[,0.7]*6(-=(*5(-[0.7]N(-H)-=(-[:30,0.7](-[:330,0.7](-[:30,0.7]N(-[2,0.7]H)(-[:330,0.7](=[6,0.7]O)(-[:30,0.7])))))--))-=-(-[,0.7]O(-[1,0.7]))=)}
+
+	
+	\section{引用}
+	
+	对“公式”、“图片”、“表格”、“伪码”、“定义”、“公理”、“定理”、“命题”、“推论”、“引理”、“示例”、“假设”、“证明”等编号的引用直接用\shadcmd{ref\{<编号label>\}}即可，其中需要带括号公式编号则使用\shadcmd{eqref\{<公式label>\}}。
+	
+	若要对子图题编号进行完整引用直接使用\shadcmd{ref\{<子图题标签>\}}即可，\shad{DissertUESTC}文档类默认生成形如\textcolor{DodgerBlue}{1-1(a)}的完整编号，但若指定了文档类的\shad{subfigsimple}选项，则会生成形如\textcolor{DodgerBlue}{1-1a}的完整编号（\textit{注：学位论文撰写规范中并未明确说明引用子图编号应该采用哪种形式，但我翻了本中文专著，里面采用了\textcolor{DodgerBlue}{1-1(a)}的形式，故而将之设为默认样式}）；反之，若只希望单独引用子图题编号，比如在图题结尾按编号添加子图题文本，则需要使用\shadcmd{subref\{<子图题标签>\}}，它将生成形如\textcolor{DodgerBlue}{(a)}的单独编号。
+	
+	对参考文献的行内引用直接使用\shadcmd{cite\{<参考文献label>\}}，以上标形式引用则使用\shadcmd{citess\{<参考文献label>\}}。
+	
+	参考文献的引用是基于\href{https://mirrors.zju.edu.cn/CTAN/macros/latex/contrib/natbib/natbib.pdf}{\ttfamily\color{DarkRed}\CJKunderline*[thickness=0.5bp, format=\color{DarkRed}]{natbib}}宏包实现，可单次引用多篇参考文献，届时序号会被自动排序并压缩（如果可以的话）。
+
+	另外，研究生论文规范要求正文中引用的公式编号样式采用英文括号，即\textcolor{DodgerBlue}{(1-1)}；而本科论文规范中则要求是中文括号，即\textcolor{DodgerBlue}{（1-1）}。在公式右侧的编号中，两者均采用英文括号。此间区别完全由相应的选项（\shad{doctor} / \shad{prodoctor} / \shad{intdoctor} / \shad{ipdoctor} / \shad{master} / \shad{promaster} / \shad{intmaster} / \shad{ipmaster} / \shad{bachelor} / \shad{doublebachelor}）控制，用户无需过问，但一定要确保自己写对了选项。
+	
+	
+	\section{编译参考文献}
+	
+	本模板实现了规范中列举的\textbf{“期刊论文”}、\textbf{“会议论文”}、\textbf{“专著”}、\textbf{“学位论文”}、\textbf{“报纸文章”}、\textbf{“报告”}、\textbf{“授权专利”}、\textbf{“标准”}、\textbf{“电子文献”}，共计9种文献类型的排版风格。
+	
+	本模板为这些文献类型定义的\shad{.bib}数据库条目\textbf{类型标识}分别为\shad{article}、\shad{inproceedings/conference}、\shad{book}、\shad{mastersthesis/phdthesis}、\shad{news}、\shad{report}、\shad{patent}、\shad{standard}、\shad{digital}。
+	
+	不同文档类型条目包含不同的域，下面列举了一些\href{https://gr.uestc.edu.cn/xiazai/114/3917}{\color{DarkRed}\CJKunderline*[thickness=0.5bp, format=\color{DarkRed}]{研究生学位论文撰写规范}}中用作示例的参考文献对应的\shad{.bib}数据库形式，完全覆盖上述9种文献类型：
+	
+	\begin{verbatim}
+	@book{教育部国家语言文字工作委员2018,
+	    author={教育部国家语言文字工作委员},
+	    title={通用规范汉字},
+	    address={北京},
+	    publisher={语文出版社},
+	    year={2018},
+	    language={schinese},
+	}
+	
+	@standard{学位论文编写规范555,
+	    author={全国信息与文献标准化技术委员},
+	    title={学位论文编写规范},
+	    number={GB/T 7713.1-2006},
+	    address={北京},
+	    publisher={中国标准出版社},
+	    year={2007},
+	    pages={17-20},
+	}
+	
+	@article{王晓琰2019关于连续出版会议论文著录格式的探讨,
+	    title={关于连续出版会议论文著录格式的探讨},
+	    author={王晓琰 and 殷建芳 and 王晓峰 and 邓迎 and 杨蕾},
+	    journal={学报编辑丛论},
+	    number={0},
+	    year={2019},
+	    pages={162-165},
+	    language={schinese},
+	}
+	
+	@article{hu2014domain,
+	    title={Domain decomposition method based on integral equation
+	    for solution of scattering from very thin, conducting cavity},
+	    author={Hu, Jun and Zhao, Ran and Tian, Mi and Zhao, Huapeng and
+	    Jiang, Ming and Wei, Xiang and Nie, Zai Ping},
+	    journal={IEEE Transactions on Antennas and Propagation},
+	    volume={62},
+	    number={10},
+	    pages={5344-5348},
+	    year={2014},
+	    publisher={IEEE}
+	}
+	
+	@inproceedings{bergamasco2015adopting,
+	    title={Adopting an unconstrained ray model in light-field cameras
+	    for 3d shape reconstruction},
+	    author={Bergamasco, Filippo and Albarelli, Andrea and Cosmo, Luca
+	    and Torsello, Andrea and Rodola, Emanuele and Cremers, Daniel},
+	    booktitle={IEEE Conference on Computer Vision and Pattern Recognition},
+	    pages={3003-3012},
+	    year={2015},
+	    organization={Boston, USA}
+	}
+	
+	@article{xue2024survey,
+	    title={A survey of beam management for mmWave and THz
+	    communications towards 6G},
+	    author={Xue, Qing and Ji, Chengwang and Ma, Shaodan and Guo, Jiajia
+	    and Xu, Yongjun and Chen, Qianbin and Zhang, Wei},
+	    journal={IEEE Communications Surveys \& Tutorials},
+	    year={2024},
+	    pages={1-41},
+	    publisher={IEEE}
+	}
+	
+	@book{罗杰斯2011,
+	    author={罗杰斯},
+	    title={西方文明史：问题与源头},
+	    translator={潘惠霞 and 魏婧 and 杨艳 and 汤玲},
+	    edition={2},
+	    address={大连},
+	    publisher={东北财经大学出版社},
+	    year={2011},
+	    pages={1-353},
+	    language={schinese},
+	}
+	
+	@book{harrington1993field,
+	    title={Field computation by moment methods},
+	    author={Harrington, Roger F},
+	    year={1993},
+	    pages={76-112},
+	    edition={3},
+	    address={New York},
+	    publisher={Wiley-IEEE Press}
+	}
+	
+	@digital{电子文献1,
+	    author={Deverell, W and gler, D},
+	    title={A companion to California history},
+	    type={M/OL},
+	    modifydate={2013-11-15},
+	    url={http://onlinelibrary.wiley.com/doi/.ch2/summary},
+	    doi={10.1002/9781444305036},
+	    address={New York},
+	    publisher={John Wiley \& Sons},
+	    year={2013},
+	    pages={21-22},
+	    citedate={2014-06-24},
+	}
+	
+	@digital{电子文献2,
+	    author={Clerc, M},
+	    title={Discrete particle swarm optimization: a fuzzy
+	    combinatorial box},
+	    type={EB/OL},
+	    modifydate={2010-07-16},
+	    url={http://clere.maurice.free.fr/pso/Fuzzy_Discrere_PSO/Fuzzy_DPSO.html},
+	}
+	
+	@mastersthesis{陈念永2001毫米波细胞生物效应及抗肿瘤研究,
+	    author={陈念永},
+	    title={毫米波细胞生物效应及抗肿瘤研究},
+	    address={成都},
+	    school={电子科技大学},
+	    year={2001},
+	    pages={50-60},
+	}
+	
+	@news{顾春20122,
+	    author={顾春},
+	    title={牢牢把握稳中求进的总基调},
+	    publisher={人民日报},
+	    year={2012},
+	    month={03},
+	    day={31},
+	    number={3},
+	}
+	
+	@report{冯西桥1997,
+	    author={冯西桥},
+	    title={核反应堆压力容器的{LBB}分析},
+	    address={北京},
+	    publisher={清华大学核能技术设计研究院},
+	    year={1997},
+	}
+	
+	@patent{肖珍新2012,
+	    author={肖珍新},
+	    title={一种新型排渣阀调节降温装置},
+	    number={ZL201120085830.0},
+	    year={2012},
+	    month={04},
+	    day={25},
+	}
+
+	@phdthesis{陈念永2001毫米波细胞生物效应及抗肿瘤研究无页码,
+	    author={陈念永},
+	    title={毫米波细胞生物效应及抗肿瘤研究（无页码测试）},
+	    address={成都},
+	    school={电子科技大学},
+	    year={2001},
+	}
+	\end{verbatim}
+	
+	这些\shad{.bib}数据依次编译后的结果见本文档中附上的参考文献列表，用户可对应查看。感兴趣的朋友可与\href{https://gr.uestc.edu.cn/xiazai/114/3917}{\color{DarkRed}\CJKunderline*[thickness=0.5bp, format=\color{DarkRed}]{研究生学位论文撰写规范}}中给出的结果进行对比，看看是否做到了完全复刻。
+
+	另外，\textbf{\textcolor{DarkRed}{学士学位论文在大部分参考文献类型上采用了与研究生学位论文不同的排版风格}}，不过其中大部分只是各项内容的排布顺序和其后的标点符号不同，而这些由模板负责处理。换句话说，上述大多数\shad{bib}条目同样适用于学士学位论文。但是，对\textbf{“专利”}而言，学士学位论文还需要新的域：nation（专利国别）和type（专利种类）。\textcolor{DarkRed}{以下是本科生需要为\textbf{“专利”}维护的\shad{bib}信息}：
+	\begin{verbatim}
+	@patent{肖珍新2012,
+	    author={肖珍新},
+	    title={一种新型排渣阀调节降温装置},
+	    number={ZL201120085830.0},
+	    year={2012},
+	    month={04},
+	    day={25},
+	    nation={中国},
+	    type={发明专利},
+	}
+	\end{verbatim}
+
+	类似的，学士学位论文在引用\textbf{“电子文献”}时，“出版地”和“获取地址”只取其一、“发表更新日期”和“引用日期”同样只取其一，所以本科生只需要用\shad{address}域为之提供“出版地”\textcolor{DarkRed}{或}“获取地址”；用\shad{modifydate}域为之提供“发表更新日期”\textcolor{DarkRed}{或}“引用日期”即可。如下所示：
+	\begin{verbatim}
+	@digital{电子文献1,
+	    author={Deverell, W and gler, D},
+	    title={A companion to California history},
+	    type={M/OL},
+	    modifydate={2013-11-15},
+	    address={New York},
+	    publisher={John Wiley \& Sons},
+	}
+	\end{verbatim}
+
+	
+
+	当用户漏掉了参考文献需要的强制域时，BibTeX编译会报错。在VSCode中，编译将直接中断；在TeXstudio中，编译不会中断，但log窗口会打印错误信息。这是一种规范控制手段，并非模板bug。遇到这类问题，用户应该自行筛查疏漏。
+	
+	生成参考文献最耗费精力的是维护正确的\shad{.bib}数据库。在这之后，只需要在正文的对应位置使用以下单行代码即可插入完整的参考文献列表：
+	\begin{verbatim}
+		\bibliography{<.bib文件名>}
+	\end{verbatim}
+	
+	\textbf{\textcolor{DarkRed}{重要提醒}：出于演示方便，示例文档在上述命令之前使用了命令\shadcmd{nocite\{*\}}，该命令现处于注释状态。其作用是在参考文献列表中列出\shad{.bib}数据库中的所有参考文献条目，不论是否在文中有引用。因此，\textcolor{DarkRed}{各位在正式撰写论文时一定要确保该条命令处于注释状态！！！}}
+	
+	尽管研究生和学士学位论文对参考文献的排版风格有不同要求，\textbf{\textcolor{DarkRed}{用户在开篇通过文档类选项指定学位论文类型后，模板将自动确定并应用相应的\shad{.bst}风格文件}}，无需使用\shadcmd{bibliographystyle\{<.bst文件名>\}}来显式设置。（2025.03.12）
+	
+	\textbf{补充说明}：
+	\begin{itemize}
+		\item 对于某些缺少非必要信息的文献，本模板提供的\shad{.bst}文件依然可以正确处理。比如\cite{王晓琰2019关于连续出版会议论文著录格式的探讨}这篇期刊论文缺少卷号，它仍能仅排版期号，这是符合规范的。再比如，文献\cite{电子文献2}比文献\cite{电子文献1}少了\textbf{出版地}、\textbf{出版者}等信息，依然能正常排版；但是注意，\cite{电子文献2}已经是这类文献的最简形式，不可再缺信息。
+		
+		\item 对中文参考文献，如果希望将它们的第四顺位及以后的作者显示为\shad{“等”}，则必须要在它们的bib条目中加入\shad{language=\{\}}域，并将值设置为\shad{schinese}。这是文献编译引擎判断该条参考文献是否是中文的唯一依据。类似的，\cite{罗杰斯2011}中的\shad{“等译”}、\shad{“2版”}均靠设置\shad{language=\{schinese\}}实现。\textbf{\textcolor{DarkRed}{我的建议是，虽然\shad{language}域并非强制，但对于中文文献，最好将其添加进去}}。
+		
+		\item 对电子文献，其类型众多，因此需要用户通过\shad{type=\{\}}域显式指定，如文献\cite{电子文献1}和\cite{电子文献2}；而对其他的文献类型，只要在\shad{@}符号后输入了正确的类型标识，对应的类型标签会自动生成，无需用户手动逐条添加。
+		
+		\item （2025.01.02）需要特别说明的参考文献类型是\shad{mastersthesis/phdthesis}，即学位论文。学校在撰写规范中提到参考文献排版应该遵循国标\href{https://lib.tsinghua.edu.cn/wj/GBT7714-2015.pdf}{\color{DarkRed}\CJKunderline*[thickness=0.5bp, format=\color{DarkRed}]{GB/T 7714-2015}}，在此国标中，对学位论文的引用不需要页码信息。但是，\textbf{学校的规范中又明确为学位论文引用添加了页码信息}。为此，我询问了学位办的相关老师，得到的答复大致是：“\textit{我翻阅了手边信通学院学生的论文，他们是写了页码信息的。但这个要求并没有那么严格，不会说没写就评审不过，历年也没有出现因为这个不过的情况，评审老师也没有严格挑。学位论文的质量并不是通过这个来评判的，不过我们这边还是建议写上}”。
+   
+		本模板原本的实现方式是遵循学校的撰写规范，将学位论文的页码信息设置为了强制域。如果缺少该信息，使用VSCode作为编辑器时将报错而无法完成编译；TeXstudio则能跳过这种小问题继续编译，但BibTeX仍会输出错误提醒。GitHub用户\href{https://github.com/zealrussell}{\color{DarkRed}\CJKunderline*[thickness=0.5bp, format=\color{DarkRed}]{@zealrussell}}在使用VSCode撰写论文时，发现不为学位论文这类参考文献添加页码信息将无法顺利编译，遂发起了\href{https://github.com/MGG1996/DissertationUESTC/issues/7}{\color{DarkRed}\CJKunderline*[thickness=0.5bp, format=\color{DarkRed}]{Issue7}}。
+		
+		经过查阅相关文件，以及向学位办老师求证，本模板调整了此类文献的排版规则。现在，学位论文的“\shad{pages}”域将不再是强制域，缺少该信息不会再中断编译过程，但会输出警告，提醒用户某条参考文献条目缺少页码信息，见参考文献\cite{陈念永2001毫米波细胞生物效应及抗肿瘤研究无页码}。如果你使用TeXstudio，则在编译参考文献辅助文件时BibTeX会发出该警告（图\ref{fig: TeXstudio对参考文献缺失信息的提醒}）；如果你使用VSCode，则需要去检查\shad{problems}窗口输出的信息。它是按文件对警告进行分类的，你需要先定位到\shad{.bib}文件（图\ref{fig: VSCode对参考文献缺失信息的提醒}）。本模板将是否在引用学位论文时添加页码信息的选择权交予用户，但我个人仍建议各位遵循学校的规范。
+	\end{itemize}
+	
+	\begin{figure}[!h]
+		\centering
+		\includegraphics[width=0.9\linewidth]{TeXstudio_bibtex}
+		\caption{TeXstudio对参考文献缺失可选域的提醒\citess{教育部国家语言文字工作委员2018}} \label{fig: TeXstudio对参考文献缺失信息的提醒}
+	\end{figure}
+	\begin{figure}[!h]
+		\centering
+		\includegraphics[width=0.9\linewidth]{VScode_bibtex}
+		\caption{VSCode对参考文献缺失可选域的提醒\citess{教育部国家语言文字工作委员2018}} \label{fig: VSCode对参考文献缺失信息的提醒}
+	\end{figure}
+	
+	\acknowledgement
+	
+	% \null\newpage
+
+	杨过一介狂生，半生漂泊，蒙诸位不弃，屡次仗义相助，此恩此情，铭刻五内。今日斗胆执笔，聊表寸心，若有疏漏，还望海涵。
+
+	一谢郭伯伯、郭伯母养育之恩。幼时孤苦，若非桃花岛收留，传我武功，教我做人，杨过早已沦为市井蝼蚁。虽曾因年少桀骜，与二位生出嫌隙，然郭伯伯侠义为怀，始终视我如子；郭伯母严中有慈，苦心点化。襄阳城下，更以家国大义相托。此恩此德，此生难报。
+
+	二谢师父小龙女授业之情。古墓之中，师父不嫌我顽劣，倾囊相授玉女心经，更以性命护我周全。十六年生死茫茫，师父苦守誓言，而我浪迹天涯，几度沉沦。终得重逢，方知世间至情，莫过于此。师徒之名，夫妻之实，此生无悔。
+
+	三谢义父欧阳锋点拨之谊。虽世人称您"西毒"，然疯癫之际仍传我蛤蟆功，护我性命。您与我皆为世人误解之徒，父子虽无血缘，却有患难真情。义父临终前神智清明，唤我一声"孩儿"，杨过永世难忘。
+
+	四谢洪老前辈、黄岛主、一灯大师等前辈指点。华山之巅、百花谷中，诸位不吝赐教，使我武学融会贯通。洪七公慷慨赠打狗棒法，黄药师以弹指神通相授，一灯大师以佛理化解我心中戾气。若无诸位点拨，断无今日之"西狂"。
+
+	五谢程英、陆无双、公孙绿萼等红颜知己。诸位姑娘待我以真心，我却因执念所困，辜负深情。程英妹妹温婉豁达，无双妹子率真仗义，绿萼姑娘更是为我舍命……杨过此生亏欠，唯愿来世结草衔环。
+
+	六谢周伯通、耶律齐、完颜萍等挚友。老顽童教我以赤子之心，耶律兄与我并肩抗敌，完颜姑娘以诚相待。江湖风波恶，诸君却愿信我、助我，此乃杨过大幸。
+
+	最后，谢天下豪杰容我狂傲。杨过断臂残躯，性子偏激，幸得江湖包容，方能在绝情谷底、襄阳城头，以微薄之力酬答世间。他日若需相助，但凭一纸相召，杨过纵隔千山，亦必赴汤蹈火！
+
+	
+	%% 参考文献部分
+	% \nocite{*}% 为了便于在示例文档中展示参考文献而设，正式撰写时需要注释掉
+	% \bibliographystyle{DissertUESTC}% 自v25.03.12版本后，参考文献风格文件由用户设定的论文类型选项自动确定，无需在此手动设置
+	\bibliography{ref}
+	
+	% 附录起始位置
+	\appendix
+	
+	\chapter{九阴真经原本}
+	
+	\section{总纲（核心心法）}
+	
+	\subsection{梵文总纲（后由郭靖、黄蓉译解）：}
+
+	原版《九阴真经》的总纲以梵文写成，蕴含武学至高哲理，强调“阴阳互济、刚柔并重”，是化解经中武功戾气的关键。
+
+	关键理念：“天之道，损有余而补不足”（出自《道德经》），主张内力修炼需顺应自然，调和阴阳。
+
+	\section{上卷（内功与心法）}
+	
+	\subsection{易筋锻骨篇：}
+
+	基础内功心法，可改善根骨、提升内力修为（郭靖、洪七公均曾修习）。
+
+	\subsection{疗伤篇：}
+
+	用于治疗内伤，需配合深厚内力（如黄蓉为郭靖疗伤时所用）。
+
+	\subsection{点穴篇：}
+
+	包含解穴、闭穴、移穴等秘术，能破解天下点穴手法（如小龙女被困时使用）。
+
+	\subsection{移魂大法：}
+
+	类似催眠术，以眼神和内力震慑对手心智（杨过曾以此克制达尔巴）。
+
+	\section{下卷（武功招式与实战）}
+	
+	\subsection{九阴白骨爪：}
+
+	原为正统武功，但被梅超风、陈玄风误练成邪派招式（以五指插人头顶，阴狠毒辣）。
+
+	\subsection{摧心掌：}
+
+	掌力直击内脏，中招者外表无伤而心脉碎裂。
+
+	\subsection{白蟒鞭法：}
+
+	柔韧凌厉的鞭法，梅超风曾以此横行江湖。
+
+	\subsection{大伏魔拳：}
+
+	刚猛正大的拳法，周伯通在百花谷对战杨过时曾用。
+
+	\subsection{蛇行狸翻：}
+
+	诡异身法，可于倒地时灵活闪避（郭靖在桃花岛曾施展）。
+
+	\section{其他秘术}
+
+	\subsection{闭气秘诀：}
+
+	可长时间屏息，适用于水下或毒气环境。
+
+	\subsection{解穴秘诀：}
+
+	无需外人相助，自行冲开被封穴道。
+
+	\subsection{飞絮劲：}
+
+	卸力化劲的防御法门，能化解敌人攻击。
+
+	\section{经中隐藏的武学智慧}
+
+	\subsection{克制“玉女心经”：}
+
+	王重阳曾参考《九阴真经》破解林朝英的玉女心经。
+
+	\subsection{与《九阳真经》互补：}
+
+	张无忌发现二者结合可达到“阴阳相济”的至高境界。
+
+	\section{江湖影响}
+
+	正邪之争：因《九阴真经》引发华山论剑，五绝争夺归属。
+
+	传承脉络：王重阳→周伯通→郭靖→黄蓉→杨过（部分）→后世峨眉派（郭襄所得残篇）。
+
+	\section{注意}
+
+	误练风险：梅超风、周芷若等因未学总纲，强行修炼导致武功偏邪（如九阴白骨爪黑化）。
+
+	真经精髓：金庸强调“武功无正邪，人心分善恶”，真正高手需以总纲调和武学（如郭靖、洪七公）。
+
+	《九阴真经》不仅是招式合集，更是一部武学哲学，唯有心正之人方能发挥其至高威力。
+	
+	\chapter{黯然销魂掌秘籍}
+	
+	\section{黯然销魂掌的来历}
+	
+	\subsection{创招背景：}
+
+	杨过与小龙女分离十六年，饱受相思之苦，内心极度悲怆。
+
+	在南海之滨练剑时，结合毕生所学，创出这套以情驭劲的掌法。
+
+	\subsection{武学根基：}
+
+	融合《九阴真经》的刚柔并济、古墓派的轻灵迅捷、欧阳锋的蛤蟆功爆发力、黄药师的弹指神通巧劲，以及洪七公的打狗棒法变化。
+
+	\section{黯然销魂掌的十七式}
+
+	\begin{table}[!h]
+		\caption{黯然销魂掌招式解析}
+		\begin{tabular}{l l}
+			\toprule
+			\textbf{招式} & \textbf{要领} \\
+			\midrule
+			拖泥带水 & 缠绵悱恻，掌力如浪潮般连绵不绝 \\
+			孤形只影 & 身形飘忽，掌劲忽左忽右，难以捉摸 \\
+			心惊肉跳 & 以极快掌法扰乱对手心神，使其胆寒 \\
+			徘徊空谷 & 掌力回荡，如幽谷回声，劲力反复叠加 \\
+			力不从心 & 看似无力，实则暗藏后劲，后发制人 \\
+			行尸走肉 & 身法诡异，如僵尸般飘忽不定 \\
+			庸人自扰 & 掌势混乱无序，却暗合武学至理 \\
+			饮恨吞声 & 掌力内敛，蓄势待发，一击必杀 \\
+			六神不安 & 掌风笼罩对手全身，使其难以招架 \\
+			穷途末路 & 绝境反击，掌力爆发至极限 \\
+			面无人色 & 掌风阴寒，令对手如坠冰窟 \\
+			想入非非 & 虚招惑敌，实则暗藏杀机 \\
+			呆若木鸡 & 静立不动，却蕴含极强防御反击之势 \\
+			神不守舍 & 掌法飘忽，如鬼魅般难以预测 \\
+			魂不附体 & 掌劲透体，直击对手经脉 \\
+			倒行逆施 & 逆反常理，出招角度刁钻 \\
+			黯然销魂 & 终极杀招，需极度悲痛心境才能施展 \\
+			\bottomrule
+		\end{tabular}
+	\end{table}
+
+	\section{黯然销魂掌的特点}
+
+	\subsection{以情驭劲：}
+
+	必须心境极度悲伤才能发挥全部威力，若心情愉悦，则威力大减（周伯通曾因无法体会杨过的心境而学不会）。
+
+	\subsection{刚柔并济：}
+
+	既有《九阴真经》的阴柔变化，又有蛤蟆功的刚猛霸道。
+
+	\subsection{招式诡谲：}
+
+	每一式都蕴含复杂变化，既有正派武功的堂皇大气，又有邪派武学的奇诡莫测。
+
+	\subsection{心境限制：}
+
+	杨过后来与小龙女重逢，心境转变，黯然销魂掌的威力也随之减弱。
+
+	\section{实战表现}
+
+	\subsection{百花谷之战（VS 周伯通）：}
+
+	杨过以黯然销魂掌逼平周伯通，老顽童惊叹“这掌法比我师兄的王重阳还厉害！”
+
+	\subsection{襄阳大战（VS 金轮法王）：}
+
+	在极度悲愤下，杨过以“黯然销魂”一式击败金轮法王，救下郭襄。
+
+	\subsection{华山论剑：}
+
+	杨过凭此掌法被推举为“西狂”，成为新五绝之一。
+
+	\section{后世影响}
+
+	由于黯然销魂掌对心境要求极高，后世几乎无人能完整继承，成为武林绝响。
+
+	郭襄曾见识此掌法，但因其性格开朗，无法领悟其中精髓。
+	
+	\achievement % 仅研究生用
+	
+	\section*{发表论文：}
+	
+	\begin{enumerate}
+	    \item \textbf{作者1}, 作者2*, 作者3, 作者4. Domain decomposition method based on integral equation for solution of scattering from very thin, conducting cavity. \emph{IEEE Transactions on Antennas and Propagation}, 2014, 62(10): 5344--5348. (\textbf{CCF评级}, \underline{中科院分区}, IF: 98.8)
+	    
+		\setcounter{enumi}{98}
+	    
+		\item \textbf{作者1}, 作者2*, 作者3, 作者4. Domain decomposition method based on integral equation for solution of scattering from very thin, conducting cavity. \emph{IEEE Transactions on Antennas and Propagation}, 2014, 62(10): 5344--5348. (\textbf{CCF评级}, \underline{中科院分区}, IF: 98.8)
+	\end{enumerate}
+	
+	\newpage% 测试多页页眉
+	\section*{发明专利：}
+	
+	\begin{enumerate}
+		
+		\item \textbf{作者1}, 作者2*, 作者3, 作者4。一种基于xxxxx的真气运转方法: ZL201120846830.0. 2023--02--20.
+		
+	\end{enumerate}
+	
+	\section*{参与项目：}
+	
+	\begin{itemize}
+		\item 项目号. 项目名称. 项目级别, 2020.01--2022.12.
+	\end{itemize}
+
+
+	%%%%%% 开启“外文资料原文”
+	%% \originalliterature{<外文标题>}{<外文作者>}
+	\originalliterature{How to Take Revenge When My Father's
+	Murderer is Suspected to Be a Famous Hero}{Yang Guo}
+
+	%% 这部分内容务必使用模板提供的首字母大写的标题命令生成对应的外文原文标题，
+	%% 否则，对应内容将出现在正文的目录和pdf的书签中，非常冗余。
+	%% 另外，可使用的各级标题有\Section{}、\Subsection{}、\Subsubsection{}，没有chapter
+
+	\textit{Abstract}——When Yang was a teenager, his mother contracted a disease and died, and he then lived a wandering life. When he met Guo Jing and his wife, they took care of him. However, due to the conflict between Yang and Guo Fu, Guo Jing sent him to learn martial arts in the Quanzhen Sect.
+
+	\textit{Index Terms}——Martial arts, apostasy, revenge, fighting against the enemy, martial arts, apostasy, revenge, fighting against the enemy
+
+	\Section{Introduction}
+
+	\begin{table}[htp]
+		\captionsetup{list=no}% 阻止此表格显示在表目录中
+		\caption{Example of a table}
+		\begin{tabular}{ccccc}
+			\toprule
+			\multirow{2}{*}{Column0} &  \multicolumn{2}{c}{Column1\tnote{1}} & \multicolumn{2}{c}{Column2\tnote{2}} \\
+			\cmidrule(lr){2-3}\cmidrule(l){4-5}
+			~     & subcolumn1 & subcolumn2 & subcolumn1 & subcolumn2 \\
+			\midrule
+			Row1  & element11 & element12 &element13 & element14 \\
+			Row2  & element21 & element22 &element23 & element24 \\
+			\cmidrule{2-3}\cmidrule{4-5}
+			Row3  & element31 & element32 &element33 & element34 \\
+			\bottomrule
+		\end{tabular}
+	\end{table}
+
+
+	\Subsection{Contributions}
+
+
+	\Subsubsection{While while while}
+
+	\begin{longtable}{p{2em} p{6em}}
+		\captionsetup{list=no}% 阻止此表格显示在表目录中
+		\caption{Recommended journals and conferences}\\
+		
+		\toprule
+		\textbf{Num} & \textbf{Abbreviation} \\
+		\midrule
+		\endfirsthead
+		
+		% 在这里设计首页以外的表题和表头
+		\CPcaption{2}{Recommended journals and conferences}\\
+		\toprule
+		\textbf{Num} & \textbf{Abbreviation} \\
+		\midrule
+		\endhead
+		
+		% 在这里设计首页以外的表尾
+		\bottomrule
+		\multicolumn{2}{l}{to next page} \\  % 如不希望跨页表尾显示任何内容则注释掉即可
+		\endfoot
+		
+		\bottomrule
+		\endlastfoot
+		
+		1 & JSAC \\
+		2 & TMC \\
+		3 & TON \\
+		1 & TOIT \\
+		2 & TOMM \\
+		3 & TOSN \\
+		4 & CN \\
+		5 & TCOM \\
+		6 & TWC \\
+		2 & CC \\
+		3 & TNSM \\
+		5 & JNCA \\
+		6 & MONET \\
+		8 & PPNA \\
+		9 & WCMC \\
+		11 & IOT \\
+		% 1 & SIGCOMM \\
+		% 2 & MobiCom \\
+		% 3 & INFOCOM \\
+		% 4 & NSDI \\
+		% 1 & SenSys \\
+		% 2 & CoNEXT \\
+		% 3 & SECON \\
+		% 4 & IPSN \\
+		% 5 & MobiSys \\
+		% 6 & ICNP \\
+		% 7 & MobiHoc \\
+		% 8 & NOSSDAV \\
+		% 9 & IWQoS \\
+		% 10 & IMC \\
+		% 1 & JSAC \\
+		% 2 & TMC \\
+		% 3 & TON \\
+		% 1 & TOIT \\
+		% 2 & TOMM \\
+		% 3 & TOSN \\
+		% 4 & CN \\
+		% 5 & TCOM \\
+		% 6 & TWC \\
+		% 2 & CC \\
+		% 3 & TNSM \\
+		% 5 & JNCA \\
+		% 6 & MONET \\
+		% 8 & PPNA \\
+		% 9 & WCMC \\
+		% 11 & IOT \\
+		% 1 & SIGCOMM \\
+		% 2 & MobiCom \\
+		% 3 & INFOCOM \\
+		% 4 & NSDI \\
+		% 1 & SenSys \\
+		% 2 & CoNEXT \\
+		% 3 & SECON \\
+		% 4 & IPSN \\
+		% 5 & MobiSys \\
+		% 6 & ICNP \\
+		% 7 & MobiHoc \\
+		% 8 & NOSSDAV \\
+		% 9 & IWQoS \\
+		% 10 & IMC \\
+	\end{longtable}
+	
+	\Section{Related works}
+
+	\begin{equation}
+		x^2 + y^2 + z^2
+	\end{equation}
+	
+	\Section{System model}
+
+	%% 在“外文资料原文”部分，排版定义、公理、定理、命题、推论、引理、示例、假设需使用对应首字母大写的环境，如下所示
+
+	\begin{Definition}[Name]
+		Later, he escaped from the Quanzhen Sect and met Xiao Longnian at the ancient tomb, where he practised kung fu with Xiao Longnian.
+	\end{Definition}
+
+	\begin{Axiom}[Name]
+		Later, he escaped from the Quanzhen Sect and met Xiao Longnian at the ancient tomb, where he practised kung fu with Xiao Longnian.
+	\end{Axiom}
+	
+	\begin{Theorem}[Name]
+		Later, he escaped from the Quanzhen Sect and met Xiao Longnian at the ancient tomb, where he practised kung fu with Xiao Longnian.
+	\end{Theorem}
+	
+	\begin{Proposition}[Name]
+		Later, he escaped from the Quanzhen Sect and met Xiao Longnian at the ancient tomb, where he practised kung fu with Xiao Longnian.
+	\end{Proposition}
+	
+	\begin{Corollary}[Name]
+		Later, he escaped from the Quanzhen Sect and met Xiao Longnian at the ancient tomb, where he practised kung fu with Xiao Longnian.
+	\end{Corollary}
+	
+	\begin{Lemma}[Name]
+		Later, he escaped from the Quanzhen Sect and met Xiao Longnian at the ancient tomb, where he practised kung fu with Xiao Longnian.
+	\end{Lemma}
+
+	\begin{Example}[Name]
+		Later, he escaped from the Quanzhen Sect and met Xiao Longnian at the ancient tomb, where he practised kung fu with Xiao Longnian.
+	\end{Example}
+
+	\begin{Assumption}[Name]
+		Later, he escaped from the Quanzhen Sect and met Xiao Longnian at the ancient tomb, where he practised kung fu with Xiao Longnian.
+	\end{Assumption}
+
+	\begin{Annotation}[Name]
+		Later, he escaped from the Quanzhen Sect and met Xiao Longnian at the ancient tomb, where he practised kung fu with Xiao Longnian.
+	\end{Annotation}
+	
+	\begin{proof}
+		Later, he escaped from the Quanzhen Sect and met Xiao Longnian at the ancient tomb, where he practised kung fu with Xiao Longnian.
+	\end{proof}
+	
+	\Section{Algorithm design}
+
+	\begin{algo}[!h](8em)
+		\caption{Example of an algorithm}
+		\Input{1) input1; 2) input2.}
+		\Output{result.}
+
+		Pseudocode line 1.
+		
+		\For(\tcc*[f]{for note 1}){Condition 1}{
+			Pseudocode line 2.
+			
+			\tcp{note 2}
+			Pseudocode line 3.
+			
+			\DoWhile(\tcc*[f]{while note 3}){Condition 2}{
+				Pseudocode line 4.
+			}
+			
+			\tcc{loop cycle}
+			\Loop(\tcc*[f]{note 4}){
+				cycle body 1.
+			}
+			
+			\Repeat(\tcc*[f]{repeat note 5}){Condition 3}{
+				cycle body 2.
+			}
+			\eIf(\tcc*[f]{if note 6}){Condition 6}{
+				when true，Pseudocode line 5.
+			}{
+				when false，Pseudocode line 6.\tcp*[f]{repeat cycle}
+			}
+		}
+		\textbf{return} result.
+	\end{algo}
+	
+	\Section{Experiments}
+
+	Example of itemize:
+
+	\begin{itemize}
+		\item When Yang was a teenager, his mother contracted a disease and died, and he then lived a wandering life.
+		\begin{itemize}
+			\item When Yang was a teenager, his mother contracted a disease and died, and he then lived a wandering life.
+			\item When Yang was a teenager, his mother contracted a disease and died, and he then lived a wandering life.
+		\end{itemize}
+		\item When Yang was a teenager, his mother contracted a disease and died, and he then lived a wandering life.
+	\end{itemize}
+
+	\null
+
+	Example of enumerate:
+
+	\begin{enumerate}
+		\item When Yang was a teenager, his mother contracted a disease and died, and he then lived a wandering life.
+		\begin{enumerate}
+			\item When Yang was a teenager, his mother contracted a disease and died, and he then lived a wandering life.
+			\item When Yang was a teenager, his mother contracted a disease and died, and he then lived a wandering life.
+		\end{enumerate}
+		\item When Yang was a teenager, his mother contracted a disease and died, and he then lived a wandering life.
+	\end{enumerate}
+	
+	\Section{Conclusions}
+
+	\begin{figure}[!b]
+		\centering
+		\includegraphics[width=0.4\linewidth]{hongqigong2}
+		\captionsetup{list=no}% 阻止此图片显示在图目录中
+		\caption{Dare you touch it? Little devil}
+	\end{figure}
+	
+	\begin{figure}[!b]
+		\centering
+		\includegraphics[width=0.4\linewidth]{yangguo3}
+		\captionsetup{list=no}% 阻止此图片显示在图目录中
+		\caption{Hard to hold}
+	\end{figure}
+
+
+	%%%%%% 开启“外文资料译文”
+	%% \translatedliterature{<译文标题>}{<原文作者>}
+	\translatedliterature{关于我的杀父仇人疑似是名震天下的
+	大侠时该如何报仇}{杨过}
+
+	%% 这部分内容务必使用模板提供的首字母大写的标题命令生成对应的外文译文标题，
+	%% 否则，对应内容将出现在正文的目录和pdf的书签中，非常冗余。
+	%% 另外，可使用的各级标题有\Section{}、\Subsection{}、\Subsubsection{}，没有chapter
+
+	\textit{摘要}——杨过少年时期母亲染病而亡，随后他便过着四处流浪的生活。后来遇到郭靖夫妇，便由他们照看。但之后因杨过与郭芙等人之间的矛盾，郭靖便送其去全真派习武。
+
+	\textit{关键词}——练武，离经叛道，复仇，抗敌，练武，离经叛道，复仇，抗敌，练武，离经叛道，复仇，抗敌，练武，离经叛道，复仇，抗敌
+
+	\Section{引言}
+
+	\begin{table}[htbp]
+		\captionsetup{list=no}% 阻止此表格显示在表目录中
+		\caption{表格样例}
+		\begin{tabular}{ccccc}
+			\toprule
+			\multirow{2}{*}{Column0} &  \multicolumn{2}{c}{Column1\tnote{1}} & \multicolumn{2}{c}{Column2\tnote{2}} \\
+			\cmidrule(lr){2-3}\cmidrule(l){4-5}
+			~     & subcolumn1 & subcolumn2 & subcolumn1 & subcolumn2 \\
+			\midrule
+			Row1  & element11 & element12 &element13 & element14 \\
+			Row2  & element21 & element22 &element23 & element24 \\
+			\cmidrule{2-3}\cmidrule{4-5}
+			Row3  & element31 & element32 &element33 & element34 \\
+			\bottomrule
+		\end{tabular}
+	\end{table}
+
+
+	\Subsection{贡献}
+
+
+	\Subsubsection{好好好}
+
+	\begin{longtable}{p{2em} p{4.5em}}
+		\captionsetup{list=no}% 阻止此表格显示在表目录中
+		\caption{中科院部分推荐期刊及会议}\\
+		
+		\toprule
+		\textbf{序号} & \textbf{简称} \\
+		\midrule
+		\endfirsthead
+		
+		% 在这里设计首页以外的表题和表头
+		\CPcaption{2}{中科院部分推荐期刊及会议}\\
+		\toprule
+		\textbf{序号} & \textbf{简称} \\
+		\midrule
+		\endhead
+		
+		% 在这里设计首页以外的表尾
+		\bottomrule
+		\multicolumn{2}{l}{续下页} \\  % 如不希望跨页表尾显示任何内容则注释掉即可
+		\endfoot
+		
+		\bottomrule
+		\endlastfoot
+		
+		1 & JSAC \\
+		2 & TMC \\
+		3 & TON \\
+		1 & TOIT \\
+		2 & TOMM \\
+		3 & TOSN \\
+		4 & CN \\
+		5 & TCOM \\
+		6 & TWC \\
+		2 & CC \\
+		3 & TNSM \\
+		5 & JNCA \\
+		6 & MONET \\
+		8 & PPNA \\
+		9 & WCMC \\
+		11 & IOT \\
+		% 1 & SIGCOMM \\
+		% 2 & MobiCom \\
+		% 3 & INFOCOM \\
+		% 4 & NSDI \\
+		% 1 & SenSys \\
+		% 2 & CoNEXT \\
+		% 3 & SECON \\
+		% 4 & IPSN \\
+		% 5 & MobiSys \\
+		% 6 & ICNP \\
+		% 7 & MobiHoc \\
+		% 8 & NOSSDAV \\
+		% 9 & IWQoS \\
+		% 10 & IMC \\
+		% 1 & JSAC \\
+		% 2 & TMC \\
+		% 3 & TON \\
+		% 1 & TOIT \\
+		% 2 & TOMM \\
+		% 3 & TOSN \\
+		% 4 & CN \\
+		% 5 & TCOM \\
+		% 6 & TWC \\
+		% 2 & CC \\
+		% 3 & TNSM \\
+		% 5 & JNCA \\
+		% 6 & MONET \\
+		% 8 & PPNA \\
+		% 9 & WCMC \\
+		% 11 & IOT \\
+		% 1 & SIGCOMM \\
+		% 2 & MobiCom \\
+		% 3 & INFOCOM \\
+		% 4 & NSDI \\
+		% 1 & SenSys \\
+		% 2 & CoNEXT \\
+		% 3 & SECON \\
+		% 4 & IPSN \\
+		% 5 & MobiSys \\
+		% 6 & ICNP \\
+		% 7 & MobiHoc \\
+		% 8 & NOSSDAV \\
+		% 9 & IWQoS \\
+		% 10 & IMC \\
+	\end{longtable}
+	
+	\Section{相关工作}
+
+	\begin{equation}
+		x^2 + y^2 + z^2
+	\end{equation}
+	
+	\Section{系统模型}
+
+	%% 在“外文资料译文”部分，排版定义、公理、定理、命题、推论、引理、示例、假设需使用与正文一致的环境，如下所示
+
+	\begin{definition}[名称]
+		其后，又从全真派逃出，机缘巧合下于古墓遇见小龙女，之后便跟随小龙女练功。他身边有许多红颜知己钟情于他，而他却一心只爱小龙女。
+	\end{definition}
+
+	\begin{axiom}[名称]
+		其后，又从全真派逃出，机缘巧合下于古墓遇见小龙女，之后便跟随小龙女练功。他身边有许多红颜知己钟情于他，而他却一心只爱小龙女。
+	\end{axiom}
+	
+	\begin{theorem}[名称]
+		其后，又从全真派逃出，机缘巧合下于古墓遇见小龙女，之后便跟随小龙女练功。他身边有许多红颜知己钟情于他，而他却一心只爱小龙女。
+	\end{theorem}
+	
+	\begin{proposition}[名称]
+		其后，又从全真派逃出，机缘巧合下于古墓遇见小龙女，之后便跟随小龙女练功。他身边有许多红颜知己钟情于他，而他却一心只爱小龙女。
+	\end{proposition}
+	
+	\begin{corollary}[名称]
+		其后，又从全真派逃出，机缘巧合下于古墓遇见小龙女，之后便跟随小龙女练功。他身边有许多红颜知己钟情于他，而他却一心只爱小龙女。
+	\end{corollary}
+	
+	\begin{lemma}[名称]
+		其后，又从全真派逃出，机缘巧合下于古墓遇见小龙女，之后便跟随小龙女练功。他身边有许多红颜知己钟情于他，而他却一心只爱小龙女。
+	\end{lemma}
+
+	\begin{example}[名称]
+		其后，又从全真派逃出，机缘巧合下于古墓遇见小龙女，之后便跟随小龙女练功。他身边有许多红颜知己钟情于他，而他却一心只爱小龙女。
+	\end{example}
+
+	\begin{assumption}[名称]
+		其后，又从全真派逃出，机缘巧合下于古墓遇见小龙女，之后便跟随小龙女练功。他身边有许多红颜知己钟情于他，而他却一心只爱小龙女。
+	\end{assumption}
+
+	\begin{annotation}[名称]
+		其后，又从全真派逃出，机缘巧合下于古墓遇见小龙女，之后便跟随小龙女练功。他身边有许多红颜知己钟情于他，而他却一心只爱小龙女。
+	\end{annotation}
+	
+	\begin{proof}
+		其后，又从全真派逃出，机缘巧合下于古墓遇见小龙女，之后便跟随小龙女练功。他身边有许多红颜知己钟情于他，而他却一心只爱小龙女。
+	\end{proof}
+	
+	\Section{算法设计}
+
+	\begin{algo}[!h]
+		\caption{algo环境伪码示例}
+		\Input{1) 输入1; 2) 输入2。}
+		\Output{输出结果。}
+
+		伪码行1。
+		
+		\For(\tcc*[f]{循环条件注释1}){循环条件1}{
+			伪码行2。
+			
+			\tcp{注释2}
+			伪码行3。
+			
+			\DoWhile(\tcc*[f]{循环条件注释3}){循环条件2}{
+				伪码行4。
+			}
+			
+			\tcc{loop循环}
+			\Loop(\tcc*[f]{注释4}){
+				循环体1。
+			}
+			
+			\Repeat(\tcc*[f]{循环条件注释5}){循环条件3}{
+				循环体2。
+			}
+			\eIf(\tcc*[f]{条件注释6}){条件语句6}{
+				为真，伪码行5。
+			}{
+				条件为假，伪码行6。\tcp*[f]{repeat循环}
+			}
+		}
+		\textbf{return} 算法结果。
+	\end{algo}
+	
+	\Section{实验}
+
+	itemize示例：
+
+	\begin{itemize}
+		\item 杨过少年时期母亲染病而亡，随后他便过着四处流浪的生活。后来遇到郭靖夫妇，便由他们照看。
+		\begin{itemize}
+			\item 杨过少年时期母亲染病而亡，随后他便过着四处流浪的生活。后来遇到郭靖夫妇，便由他们照看。
+			\item 杨过少年时期母亲染病而亡，随后他便过着四处流浪的生活。后来遇到郭靖夫妇，便由他们照看。
+		\end{itemize}
+		\item 杨过少年时期母亲染病而亡，随后他便过着四处流浪的生活。后来遇到郭靖夫妇，便由他们照看。
+	\end{itemize}
+
+	\null
+
+	enumerate示例：
+
+	\begin{enumerate}
+		\item 杨过少年时期母亲染病而亡，随后他便过着四处流浪的生活。后来遇到郭靖夫妇，便由他们照看。
+		\begin{enumerate}
+			\item 杨过少年时期母亲染病而亡，随后他便过着四处流浪的生活。后来遇到郭靖夫妇，便由他们照看。
+			\item 杨过少年时期母亲染病而亡，随后他便过着四处流浪的生活。后来遇到郭靖夫妇，便由他们照看。
+		\end{enumerate}
+		\item 杨过少年时期母亲染病而亡，随后他便过着四处流浪的生活。后来遇到郭靖夫妇，便由他们照看。
+	\end{enumerate}
+	
+	\Section{结论}
+
+	\begin{figure}[!htb]
+		\centering
+		\includegraphics[width=0.45\linewidth]{hongqigong2}
+		\captionsetup{list=no}% 阻止此图片显示在图目录中
+		\caption{碰都不敢碰啊？小鬼}
+	\end{figure}
+	
+	\begin{figure}[!htb]
+		\centering
+		\includegraphics[width=0.45\linewidth]{yangguo3}
+		\captionsetup{list=no}% 阻止此图片显示在图目录中
+		\caption{难顶}
+	\end{figure}
+\end{document}
