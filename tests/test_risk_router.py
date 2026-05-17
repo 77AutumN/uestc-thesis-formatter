@@ -138,7 +138,7 @@ def test_docxfacts_norm_handles_full_width_space():
 # 集成: 跑 CASE-A 真 docx (skip if not exist)
 # ============================================================
 
-def test_integration_case012_full_router():
+def test_integration_case_anon_full_router():
     """跑 CASE-A docx 应触发 ≥10 项 trigger."""
     repo = os.environ.get("THESIS_REPO_ROOT", "")
     docx = os.path.join(repo, "work", "新case.docx")

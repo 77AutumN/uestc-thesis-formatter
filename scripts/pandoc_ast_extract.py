@@ -734,7 +734,7 @@ def find_chapters(blocks: list) -> list:
 
         normalized = normalize_text(text)
         
-        # HOTFIX for case007: Chapter 3 is formatted as "华北抗日根据地小学教育的历史背景与多重困境"
+        # HOTFIX for case_anon: Chapter 3 is formatted as "华北抗日根据地小学教育的历史背景与多重困境"
         if "华北抗日根据地小学教育的历史背景与多重困境" in normalized and not normalized.startswith("第三章"):
             normalized = "第三章 " + normalized.replace("3.", "").strip()
             text = normalized

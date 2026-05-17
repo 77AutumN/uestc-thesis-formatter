@@ -136,7 +136,7 @@ def test_route_unrecognized_docx(monkeypatch):
 # 集成: CASE-A 真 docx
 # ============================================================
 
-def test_integration_case012_bachelor():
+def test_integration_case_anon_bachelor():
     repo = os.environ.get("THESIS_REPO_ROOT", "")
     docx = os.path.join(repo, "work", "新case.docx")
     if not os.path.isfile(docx):

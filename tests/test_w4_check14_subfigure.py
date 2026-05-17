@@ -4,7 +4,7 @@
 (multi-image docx 较复杂, 需 word/media/*.png 真实文件 + rels 注册;
 核心算法是纯逻辑, 单元测试足以防回归).
 
-CASE-A/015/016 三角的子图问题: docx 一 paragraph 含 N 张 image (subfigure 组),
+CASE-A 三角的子图问题: docx 一 paragraph 含 N 张 image (subfigure 组),
 pandoc 或 recover_figures 只抓第一张. Check 14 advisory 起手, 报漏抓.
 """
 from __future__ import annotations

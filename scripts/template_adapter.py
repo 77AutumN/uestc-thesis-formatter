@@ -352,7 +352,7 @@ def emit_nocite_prelude(cite_map: dict = None) -> str:
     """D24 fix v2 (CASE-A, 2026-05-08): emit \\nocite block BEFORE \\input{chapter}.
 
     bibtex 按 .aux 中 \\citation 出现顺序输出 bbl. 若 \\nocite 块紧贴 \\bibliography 在
-    章节后, 章节内 \\cite 先记录, 作者非 [1]→[N] 顺序引用时 bbl 错位 (case020 ch01 首条
+    章节后, 章节内 \\cite 先记录, 作者非 [1]→[N] 顺序引用时 bbl 错位 (case_anon ch01 首条
     cite 是 [3,4,5]). 把 \\nocite 块提前到 \\begin{document} 后面 (章节 \\input 之前)
     让 cite_map 顺序的 \\nocite 抢先记录, bbl 就跟 cite_map 顺序.
 

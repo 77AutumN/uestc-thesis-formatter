@@ -1050,7 +1050,7 @@ def check_page_bbox_overflow(workdir: str) -> Tuple[bool, List[str]]:
 
 
 # ============================================================
-# Check 14 (W4, CASE-A/015/016 三角): subfigure parity
+# Check 14 (W4, CASE-A 三角): subfigure parity
 # ============================================================
 
 def _refs_max_parity_compute(refs_raw: str, bib_text: str, cite_map: dict) -> dict:
@@ -1103,7 +1103,7 @@ def check_refs_max_parity(workdir: str, extracted_dir: str) -> Tuple[bool, List[
 
     advisory 起手 (不阻断), 客户原稿空 refs / 标记缺失场景下 trivial pass.
     """
-    lines = ["[Check 11] refs max-number parity (W4, CASE-A/019 凝结)"]
+    lines = ["[Check 11] refs max-number parity (W4, CASE-A 凝结)"]
     raw_path = os.path.join(extracted_dir, "references_raw.txt")
     bib_path = os.path.join(workdir, "ref.bib")
     cm_path = os.path.join(extracted_dir, "cite_map.json")
@@ -1189,13 +1189,13 @@ def _subfigure_parity_from_manifest(manifest: dict, chap_refs: Set[str]) -> dict
 def check_subfigure_parity(workdir: str, docx_path: str) -> Tuple[bool, List[str]]:
     """W4 Check 14: docx figures 含多 image (subfigure 组) 应在 chapter 全部 \\includegraphics 引用.
 
-    背景: CASE-A/015/016 三角触发. 客户原稿 docx 一个 paragraph 含 N 张 inline image (作子图),
+    背景: CASE-A 三角触发. 客户原稿 docx 一个 paragraph 含 N 张 inline image (作子图),
     pandoc 或 recover_figures 只抓第一张, 后续 N-1 张丢失. 用户视觉抽查发现"子图 (a)(b)(c) 拆解只剩 (a)".
 
     advisory 起手 (不阻断), 等数据确认再升 P0 hard. ALLOWED_UNREFERENCED (校徽等) 不计.
     核心算法在 `_subfigure_parity_from_manifest`, 单元测试覆盖.
     """
-    lines = ["[Check 14] subfigure parity (W4 三角, CASE-A/015/016)"]
+    lines = ["[Check 14] subfigure parity (W4 三角, CASE-A)"]
     if not docx_path or not os.path.isfile(docx_path):
         lines.append("  ⚠️  --docx 未提供, 跳过")
         return True, lines
@@ -1238,7 +1238,7 @@ def check_subfigure_parity(workdir: str, docx_path: str) -> Tuple[bool, List[str
 
 
 # ============================================================
-# Check 12 (W3, CASE-A/016): equation layout sentinel
+# Check 12 (W3, CASE-A): equation layout sentinel
 # ============================================================
 
 def check_equation_layout(workdir: str) -> Tuple[bool, List[str]]:
@@ -1248,7 +1248,7 @@ def check_equation_layout(workdir: str) -> Tuple[bool, List[str]]:
     替代 \\begin{equation}, 产物左对齐不居中 + 编号无右端 tag, 视觉违 spec.
     应转为 \\begin{equation} ... \\tag{X-Y}.
     """
-    lines = ["[Check 12] equation layout sentinel (W3, CASE-A/016)"]
+    lines = ["[Check 12] equation layout sentinel (W3, CASE-A)"]
     chap_dir = os.path.join(workdir, "chapter")
     if not os.path.isdir(chap_dir):
         lines.append("  ⚠️  chapter/ 不存在, 跳过")

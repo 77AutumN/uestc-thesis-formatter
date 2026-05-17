@@ -521,7 +521,7 @@ def inject_into_chapter(chapter_path: str, records_for_chapter: list,
     # 旧版 ref_re 只排除 \includegraphics/\label, 但 \caption{图X-Y} 出现在 longtable
     # 开头时 (e.g. \begin{longtable}\caption{图4-3 ...}) 会被误判为 body inline ref,
     # 导致 \begin{figure} 块插到 \begin{longtable} 内部 → 非法嵌套 + xelatex 渲染
-    # \toprule 中断为粗黑横线 (case020 ch04 4.2.3 pp.34-38 "诡异下划线" 根源).
+    # \toprule 中断为粗黑横线 (case_anon ch04 4.2.3 pp.34-38 "诡异下划线" 根源).
     table_env_re = re.compile(r"^\s*\\begin\{(longtable|table|tabular)")
     table_end_re = re.compile(r"^\s*\\end\{(longtable|table|tabular)")
     in_table_lines = [False] * len(out_lines)

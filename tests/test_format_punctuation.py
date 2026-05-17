@@ -19,12 +19,12 @@ from format_punctuation import normalize_cjk_punct as N  # noqa: E402
 # 实战触发: lun51 #61 / #68 / #115 / #128 / #140
 # ============================================================
 
-def test_case011_61_citation_then_cjk():
+def test_case_anon_61_citation_then_cjk():
     """ch02:127 '凸优化问题[15],通常' → 中括号后半角逗号 + CJK."""
     assert N("凸优化问题[15],通常表述") == "凸优化问题[15]，通常表述"
 
 
-def test_case011_68_math_then_cjk():
+def test_case_anon_68_math_then_cjk():
     """ch02:248 'θ=[x,y],逐项' → math 内 ',' 不动, math 后 ',' 转全角."""
     src = r"对于位置参数\(\theta=[x,y]\),逐项计算"
     out = N(src)
@@ -33,17 +33,17 @@ def test_case011_68_math_then_cjk():
     assert "\\)，逐" in out
 
 
-def test_case011_128_cjk_period_cjk():
+def test_case_anon_128_cjk_period_cjk():
     """ch04:161 '子.满' → 半角句号 → 全角."""
     assert N("其中拉格朗日乘子.满足：") == "其中拉格朗日乘子。满足："
 
 
-def test_case011_115_cross_consecutive_punct():
+def test_case_anon_115_cross_consecutive_punct():
     """ch04:29 '权重，.是' (full-width comma + half-width period 连续) → '权重，是'."""
     assert N("赋予的权重，.是控制常数") == "赋予的权重，是控制常数"
 
 
-def test_case011_140_cjk_period_then_cjk():
+def test_case_anon_140_cjk_period_then_cjk():
     """case-private: '但.以下' 或 'X等.因此' 类 CJK 间半角句号."""
     assert N("根据该方法.以下分析") == "根据该方法。以下分析"
 

@@ -233,7 +233,7 @@
       ],
       "frequency": 2,
       "fix_location": "scripts/pandoc_ast_extract.py + template_adapter.py:emit_foreign_appendix() + run_v2.py step3_5 子步",
-      "test_coverage": "tests/test_case011_compliance.py",
+      "test_coverage": "<TBD>",
       "detect_signature": "PDF 全文 grep \"外文资料原文\" 计数 0;\nextracted/ 无 foreign_*.txt;\nmain.tex 无 \\input{misc/foreign_*}",
       "triggers": "",
       "related_defects": [
@@ -374,7 +374,7 @@
       ],
       "frequency": 1,
       "fix_location": "scripts/pandoc_ast_extract.py:_classify_foreign_para() + _latex_decorate()",
-      "test_coverage": "tests/test_case011_compliance.py::TestForeignTranslationStructure",
+      "test_coverage": "<TBD>",
       "detect_signature": "PDF 译文论文标题/作者/摘要/节标题与正文同字号;\nmisc/foreign_translation.tex grep `\\begin{center}\\bfseries` / `\\section*` / `\\textit{摘要` 全 0",
       "triggers": "",
       "related_defects": [
@@ -1193,74 +1193,6 @@
     }
   },
   "by_case": {
-    "CASE-A": [
-      "D01",
-      "D02",
-      "D03",
-      "D04",
-      "D05",
-      "D06",
-      "D07",
-      "D08",
-      "D09",
-      "D10",
-      "D11",
-      "D12",
-      "D13",
-      "D14",
-      "D15",
-      "D16",
-      "D33",
-      "D43",
-      "D44",
-      "D45",
-      "D50"
-    ],
-    "CASE-A": [
-      "D06",
-      "D10",
-      "D12",
-      "D17",
-      "D18",
-      "D19",
-      "D20",
-      "D21",
-      "D22",
-      "D23",
-      "D24",
-      "D25",
-      "D26",
-      "D27",
-      "D28",
-      "D29",
-      "D30",
-      "D31"
-    ],
-    "CASE-A": [
-      "D23",
-      "D34",
-      "D35",
-      "D36",
-      "D37",
-      "D38"
-    ],
-    "CASE-A": [
-      "D32",
-      "D40",
-      "D49"
-    ],
-    "CASE-A": [
-      "D32",
-      "D39",
-      "D40"
-    ],
-    "CASE-A": [
-      "D37",
-      "D46",
-      "D47",
-      "D48",
-      "D49"
-    ],
     "CASE-A": [
       "D40",
       "D41",

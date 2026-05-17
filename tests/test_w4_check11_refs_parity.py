@@ -2,7 +2,7 @@
 
 直接测试 `_refs_max_parity_compute` 核心算法, 不依赖文件系统.
 
-CASE-A/019 凝结: refs_to_bib 漏 parse 某条 (D23 格式异常类) 致 cite_map / ref.bib 同步少 1,
+CASE-A 凝结: refs_to_bib 漏 parse 某条 (D23 格式异常类) 致 cite_map / ref.bib 同步少 1,
 Check 5 (bbl vs cite_map) 数量自洽看不出, 但 raw [type] markers 数 vs ref.bib @entries
 数能直接发现.
 """
