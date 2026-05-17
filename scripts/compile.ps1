@@ -1,15 +1,7 @@
 <#
 .SYNOPSIS
-    Standalone Docker Debug Helper — Docker-based LaTeX compilation wrapper.
+    Docker-based LaTeX compilation wrapper for thesis-formatter skill.
 .DESCRIPTION
-    ⚠ ROLE DECLARATION:
-    This script is a STANDALONE DOCKER DEBUG HELPER, NOT a no-Docker fallback.
-    It uses Docker internally (docker info / docker run) and requires Docker Desktop.
-
-    The CANONICAL COMPILE ENGINE is run_v2.py Step 6 (built-in Docker mechanism).
-    Use this script only when you need to compile a .tex project independently,
-    outside of the full run_v2.py pipeline.
-
     Compiles a LaTeX thesis using Docker (TeX Live Full), with automatic
     Windows font mounting for Chinese font support.
     Supports profile-based compile chain selection.
@@ -71,7 +63,10 @@ $chain = @()
 if ($Profile -ne "") {
     # Load from profile using profile_loader.py
     $ScriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
-    $loaderScript = Join-Path $ScriptDir "profile_loader.py"
+    $loaderScript = Join-Path $ScriptDir "scripts\profile_loader.py"
+    if (-not (Test-Path $loaderScript)) {
+        $loaderScript = Join-Path $ScriptDir "profile_loader.py"
+    }
 
     if (Test-Path $loaderScript) {
         Write-Host "Loading compile chain from profile: $Profile" -ForegroundColor Cyan

@@ -12,7 +12,7 @@ refs_to_footnotes.py — 马克思学院 profile: \cite{key} → \footnote{完�
 
 用法:
   python refs_to_footnotes.py <extracted_dir> <chapters_dir>
-  例: python refs_to_footnotes.py "extracted" "output/chapter"
+  例: python refs_to_footnotes.py "./" "./"
 """
 
 import argparse

@@ -18,9 +18,12 @@
 ## ✨ Features / 功能
 
 - **一键 Word → LaTeX**：从 `.docx` 自动提取论文结构（章节、摘要、致谢、参考文献），生成符合 UESTC 规范的 `.tex` 文件
-- **多学院 Profile 支持**：通过 `--profile` 参数切换学院配置（标准理工/马克思主义学院），自动应用对应的引用、文献、标点规则
+- **多 Profile 支持**：`--profile` 参数切换 `uestc`（标准研究生） / `uestc-bachelor`（本科） / `uestc-marxism`（马克思主义学院） / `stem`（理工）四套配置，自动应用对应的引用、文献、标点规则
 - **Pandoc AST 引擎**：基于 Pandoc JSON AST 的深度解析，精确处理图表、公式、交叉引用
-- **自动 QA 校验**：Pre-flight（输入检查）+ Post-flight（PDF 质量审计），含 12 项合规检查点
+- **三层 QA 闭环**：Pre-flight（输入检查 + 风险路由）+ Validate-assembly（编译前硬门禁）+ Product audit（PDF 14 项合规检查），任何 P0 红灯阻断交付
+- **Docx surgery toolkit**：自动恢复缺失的 Heading 样式、图编号、公式块；从 docx XML 直注 `\includegraphics`；WMF→PNG 公式回收（Docker LibreOffice）
+- **Visual geometry audit**：基于 PyMuPDF 全 PDF 扫页面几何异常（大留白 / 越版心 / caption 孤立）+ synctex 反查 .tex 位置
+- **Defect card tracking**：50+ 张 D 卡缺陷索引（按命中频率 / 学位类型 / 修复位置可检索，见 [`docs/defects/INDEX.md`](docs/defects/INDEX.md)），CI 友好的 `dashboard.json` 可 `jq` 检索
 - **Docker 编译**：内置 XeLaTeX 编译脚本，支持 Docker 一键构建
 - **AI-Native**：内置 `AGENTS.md` + `SKILL.md` 契约，支持 Cursor / Claude / Copilot / Antigravity 等 AI IDE 直接操作
 
@@ -126,14 +129,13 @@ uestc-thesis-formatter/
 │   │   └── checklist.md
 │   └── failure-report.md           # 结构化故障报告模板
 │
-├── .agent/                         # AI 知识层
-│   ├── skills/thesis-formatter/
-│   │   └── SKILL.md                # 完整 Pipeline 规范
-│   └── workflows/
-│       └── thesis.md               # 处理 SOP 工作流
-│
+├── SKILL.md                        # 完整 Pipeline 规范 (顶层, AI 入口)
 ├── vendor/DissertationUESTC/       # 上游 LaTeX 模板 (submodule)
-├── docs/redaction-spec.md          # 知识编译脱敏规范
+├── docs/
+│   ├── redaction-spec.md           # 知识编译脱敏规范
+│   └── defects/                    # 50+ 张缺陷卡片 (脱敏) + INDEX + dashboard.json
+├── tools/redact.py                 # PII 脱敏工具 (CI gate 调用)
+├── .github/workflows/              # PII Gate + pytest CI
 ├── requirements.txt
 └── LICENSE
 ```
@@ -142,8 +144,43 @@ uestc-thesis-formatter/
 
 | Profile | 引用方式 | 参考文献 | 编译链 | 状态 |
 |---------|---------|---------|--------|------|
-| **uestc** (标准理工) | `\cite{}` + BibTeX | 编号列表 | xelatex→bibtex→xelatex×2 | ✅ |
+| **uestc** (标准理工硕/博) | `\cite{}` + BibTeX | 编号列表 | xelatex→bibtex→xelatex×2 | ✅ |
+| **uestc-bachelor** (本科) | `\cite{}` + BibTeX (上标 [N]) | 编号列表 | xelatex→bibtex→xelatex×2 | ✅ |
 | **uestc-marxism** (马克思主义学院) | 脚注制 ①-⑳ (每页重置) | 四分类 (著作/期刊/论文/网页) | xelatex×3 | ✅ 已验证 |
+| **stem** (理工通用基础) | `\cite{}` + BibTeX | 编号列表 | xelatex→bibtex→xelatex×2 | 🧪 alpha |
+
+## ⚠️ Known Limitations / 已知限制
+
+- **Vendor template lag**: `vendor/DissertationUESTC` is pinned as a git
+  submodule to upstream `MGG1996/DissertationUESTC`. Small CLS patches
+  introduced during W4-W5 (caption font size, table rule widths, etc.) are
+  **not** redistributed in this public release — they belong to the upstream
+  template and are tracked in a separate PR. OSS clones will compile with
+  the upstream CLS as-is; expected differences are minor (most visibly in
+  bachelor caption rendering).
+- **Bundled compliance suites skip in clean environments**: `tests/test_bachelor_format_compliance.py`
+  and `tests/test_bachelor_spec_compliance.py` require a pre-built thesis
+  artifact under `work/workA/` (cls + main.tex) to verify rendered output.
+  They self-skip when those artifacts are absent. Pipeline + unit tests
+  (515 cases) remain CI-gated.
+- **`stem` profile is alpha**: shipped with the pipeline plumbing but
+  end-to-end fixtures are thin. Expect rough edges on first real use.
+
+## 🔒 Privacy & Public Release
+
+This repository is a **knowledge-compiled public release**. The private skill
+tree it was synced from is not redistributed; only sanitized scripts, docs and
+machine-readable specs ship here.
+
+- All PII is scrubbed before commit via [`tools/redact.py`](tools/redact.py).
+  Concretely: real student names → the sentinel `CASE-A`; 13-digit student
+  IDs → `<STUDENT_ID>`; absolute Windows paths → `./`; non-sentinel case
+  codes (any internal case identifier other than `CASE-A` / `CASE-B`) → the
+  sentinel `CASE-A`.
+- The CI workflow [`.github/workflows/redact-check.yml`](.github/workflows/redact-check.yml)
+  runs both `tools/redact.py --check` and a belt-and-suspenders `git grep`
+  on every PR to `main`. Any reintroduction of PII patterns blocks merge.
+- See [`docs/redaction-spec.md`](docs/redaction-spec.md) for the full rule set.
 
 ## 🤖 AI-Native Support
 

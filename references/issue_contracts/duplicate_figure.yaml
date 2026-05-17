@@ -1,0 +1,52 @@
+# Issue contract: duplicate_figure
+# Phase 0 second batch (Day 4, 2026-05-07).
+schema_version: "0.1"
+issue_code: duplicate_figure
+
+title:
+  zh: "图片重复 (同 image 或同 caption)"
+  en: "Duplicate figure: same image file or identical caption appearing twice"
+
+severity: P0
+risk_class: B
+repairability: trial       # 重复有时是客户故意的内容(C 边界), 必须复检确认非客户意图
+default_confidence: 0.85   # 中等: image 重复明确,但 caption 重复可能客户意图
+
+source_audits:
+  - visual_geometry_audit
+  - source_manifest_audit  # docx 侧 image 引用计数
+
+required_evidence:
+  - duplication_kind             # enum: "same_image_filename" | "same_caption_text" | "same_image_phash"
+  - occurrences                  # list[{pdf_page: int, tex_file?: str, tex_line?: int}], len >= 2
+  - image_filename               # string, 第一次出现
+  - caption_text                 # string, ≤ 120 chars
+
+required_location:
+  - pdf_page                     # 主 location: 第一个 occurrence 的 pdf_page
+
+allowed_repairers:
+  - duplicate_figure_repair
+
+acceptance:
+  rerun_audit: visual_geometry_audit
+  must_disappear: true
+  invariants:
+    - field: evidence.occurrences_count_after   # checker 计算
+      operator: "<="
+      value: 1
+
+fixtures: []                     # backlog: F_duplicate_figure 待写
+
+tags: [structure, figure, duplication]
+
+introduced_in: 2026-05-07
+origin_case: |
+  CASE-A round 3.5 fix2 (ch01 重复 figure) +
+  round 3.5 fix3 (ch04 末尾 4 张挂尾 figure) +
+  round 4 fix2 (4-7 image21 与 4-6 image26 重复 caption)
+related_defects: []
+notes: |
+  Day 4 calibration 显示 fraction_changed (visual diff) 无法检测重复 figure
+  因为是结构问题不是像素问题, 此 contract 必须靠 source-side 计数和 PDF
+  pHash + caption 字符串 fuzzy match. 不能从 visual_pdf_diff 直接派生.

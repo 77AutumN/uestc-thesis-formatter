@@ -1,10 +1,8 @@
 {
   "name": "uestc-marxism",
-  "parent": "uestc",
   "display_name": "电子科技大学 — 马克思主义学院",
+  "parent": "uestc",
   "description": "马克思主义学院硕士论文格式，与标准 UESTC 模板的主要区别：脚注引用制 + 分类参考文献",
-  "quote_style": "fullwidth_chinese",
-  "abstract_keywords_delimiter": "；",
 
   "citation_style": "footnote-per-page",
   "citation_details": {
@@ -76,7 +74,35 @@
     "uestc_patches_sty": "REMOVED — 新模板原生支持所有马院需求"
   },
 
-  "golden_reference_pdf": "",
+  "golden_reference_pdf": "references/golden_huabei_marxism.pdf",
 
-  "verified_cases": []
+  "verified_cases": [
+    {
+      "id": "CASE-A",
+      "date": "2026-04-04",
+      "engine": "thesis-uestc (v1)",
+      "result": "success",
+      "note": "First Marxism pipeline run"
+    },
+    {
+      "id": "CASE-A",
+      "date": "2026-04-07",
+      "engine": "thesis-uestc (v1)",
+      "result": "success",
+      "pages": 77,
+      "footnotes": 83,
+      "references": 99,
+      "note": "Production-grade v1"
+    },
+    {
+      "id": "CASE-A",
+      "date": "2026-04-09",
+      "engine": "DissertUESTC (v2)",
+      "result": "success",
+      "pages": 73,
+      "note": "Golden reference PDF. Validated by thesis_validator.py 3-Gate audit (23/23 pass). Tables standardized to booktabs 三线表."
+    }
+  ],
+
+  "knowledge_item": "uestc_marxism_thesis_pipeline"
 }

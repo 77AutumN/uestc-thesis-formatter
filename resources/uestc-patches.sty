@@ -1,0 +1,48 @@
+%% uestc-patches.sty — 马院格式运行时补丁
+%% 在 main.tex 导言区通过 \usepackage{uestc-patches} 加载
+%% 替代物理修改 thesis-uestc.cls，提高模板稳定性
+%%
+%% 补丁内容:
+%%   1. 脚注编号扩展: ①-⑩ → ①-⑳ (每页最多 20 条脚注)
+%%   2. 消除空白页: \cleardoublepage → \clearpage
+%%   3. 添加 enumitem 宏包 (分类参考文献列表)
+%%   4. 列表后段落缩进恢复
+%%   5. 电子版消除摘要间空白页
+
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{uestc-patches}[2026/04/07 UESTC Thesis Patches v2]
+
+\RequirePackage{etoolbox}
+
+%% --- Patch 1: 脚注编号 ①-⑳ ---
+%% 直接覆盖 \thefootnote，无需定位原始定义
+\renewcommand{\thefootnote}{%
+  \ifcase\value{footnote}%
+  \or\ding{172}\or\ding{173}\or\ding{174}\or\ding{175}\or\ding{176}%
+  \or\ding{177}\or\ding{178}\or\ding{179}\or\ding{180}\or\ding{181}%
+  \or\ding{192}\or\ding{193}\or\ding{194}\or\ding{195}\or\ding{196}%
+  \or\ding{197}\or\ding{198}\or\ding{199}\or\ding{200}\or\ding{201}%
+  \fi%
+}
+
+%% --- Patch 2: 消除空白页 ---
+%% 将 \cleardoublepage 重定义为 \clearpage，防止目录与正文间出现空白页
+\let\cleardoublepage\clearpage
+
+%% --- Patch 3: enumitem 宏包 ---
+%% 分类参考文献需要自定义列表编号
+\RequirePackage{enumitem}
+
+%% --- Patch 4: 列表后段落缩进恢复 ---
+%% ctexbook 配合 indentfirst 应自动缩进，但 enumerate 后可能失效
+%% 通过 etoolbox hook 在列表结束后重置缩进状态
+\AfterEndEnvironment{enumerate}{\@afterindenttrue\@afterheading}
+\AfterEndEnvironment{itemize}{\@afterindenttrue\@afterheading}
+
+%% --- Patch 5: 电子版消除摘要间空白页 ---
+%% CLS 默认在摘要末尾 \checkoddpage → \blankpage，为印刷双面排版设计
+%% 电子版 §3.4 脚注①: "电子版不得有空白页"
+%% 解决: 将 \blankpage 重定义为 \newpage
+\renewcommand{\blankpage}{\newpage}
+
+\endinput

@@ -1,0 +1,1261 @@
+{
+  "schema_version": 1,
+  "total_defects": 50,
+  "by_defect": {
+    "D01": {
+      "id": "D01",
+      "title": "inlines_to_text 漏 Underline 容器 → 封面元数据全空",
+      "status": "shared_code_fixed",
+      "severity": "P0",
+      "applies_to_degree": [
+        "bachelor",
+        "master",
+        "doctor",
+        "marxism"
+      ],
+      "introduced_in": "CASE-A",
+      "cases": [
+        "CASE-A"
+      ],
+      "frequency": 1,
+      "fix_location": "scripts/pandoc_ast_extract.py:inlines_to_text() line 85",
+      "test_coverage": "tests/test_cover_metadata_ast.py",
+      "detect_signature": "pandoc -t json AST 含 Strong>Underline>Str 嵌套;\ncover_metadata.json 仅含 degree_type 字段, 其它 6 字段空",
+      "triggers": "",
+      "related_defects": [
+        "D09"
+      ],
+      "card_path": "reference/defects/D01.md"
+    },
+    "D02": {
+      "id": "D02",
+      "title": "run_v2.py Step 3 与 Step 3.5 顺序倒置 → vendor 默认 ref.bib 覆盖案例 bib",
+      "status": "shared_code_fixed",
+      "severity": "P0",
+      "applies_to_degree": [
+        "bachelor",
+        "master",
+        "doctor",
+        "marxism"
+      ],
+      "introduced_in": "CASE-A",
+      "cases": [
+        "CASE-A"
+      ],
+      "frequency": 1,
+      "fix_location": "scripts/run_v2.py 把 step3_5_assemble 提到 step3_generate_bib 之前",
+      "test_coverage": "TODO",
+      "detect_signature": "case ref.bib 含 vendor 模板默认条目 (hu2014domain, bergamasco2015adopting 等);\nbibtex 大量 cite key undefined",
+      "triggers": "",
+      "related_defects": [],
+      "card_path": "reference/defects/D02.md"
+    },
+    "D03": {
+      "id": "D03",
+      "title": "refs_to_bib.py cite key 含空格逗号 → bibtex 解析崩",
+      "status": "shared_code_fixed",
+      "severity": "P0",
+      "applies_to_degree": [
+        "bachelor",
+        "master",
+        "doctor",
+        "marxism"
+      ],
+      "introduced_in": "CASE-A",
+      "cases": [
+        "CASE-A"
+      ],
+      "frequency": 1,
+      "fix_location": "scripts/refs_to_bib.py:sanitize_citekey()",
+      "test_coverage": "TODO",
+      "detect_signature": "ref.bib 任一 @type{KEY,} 中 KEY 包含空格/逗号/中文字符;\nbibtex 报 \"White space in argument\"",
+      "triggers": "",
+      "related_defects": [],
+      "card_path": "reference/defects/D03.md"
+    },
+    "D04": {
+      "id": "D04",
+      "title": "refs_to_bib.py author 字段用逗号分隔 → bibtex 报 \"Too many commas in name 1\"",
+      "status": "shared_code_fixed",
+      "severity": "P0",
+      "applies_to_degree": [
+        "bachelor",
+        "master",
+        "doctor",
+        "marxism"
+      ],
+      "introduced_in": "CASE-A",
+      "cases": [
+        "CASE-A"
+      ],
+      "frequency": 1,
+      "fix_location": "scripts/refs_to_bib.py:sanitize_author_list()",
+      "test_coverage": "TODO",
+      "detect_signature": "bibtex 报 \"Too many commas in name 1 of ...\";\nref.bib author 字段含 `,` 分多个名字",
+      "triggers": "",
+      "related_defects": [],
+      "card_path": "reference/defects/D04.md"
+    },
+    "D05": {
+      "id": "D05",
+      "title": "format_abstract.py 字面 \\\\n 换行 + forbidden 旧宏 → validate_assembly 必失败",
+      "status": "shared_code_fixed",
+      "severity": "P0",
+      "applies_to_degree": [
+        "bachelor",
+        "master",
+        "doctor",
+        "marxism"
+      ],
+      "introduced_in": "CASE-A",
+      "cases": [
+        "CASE-A"
+      ],
+      "frequency": 1,
+      "fix_location": "scripts/hooks/format_abstract.py (完全重写)",
+      "test_coverage": "TODO",
+      "detect_signature": "misc/*_abstract.tex 含字面 `\\n` 字符 (hex 检查);\ngrep `\\chineseabstract` 或 `\\chinesekeyword` 出现",
+      "triggers": "",
+      "related_defects": [],
+      "card_path": "reference/defects/D05.md"
+    },
+    "D06": {
+      "id": "D06",
+      "title": "pandoc 把 docx 图当 inline Image 不打 Figure block → 流水线 0 figure",
+      "status": "shared_code_fixed",
+      "severity": "P0",
+      "applies_to_degree": [
+        "bachelor",
+        "master",
+        "doctor",
+        "marxism"
+      ],
+      "introduced_in": "CASE-A",
+      "cases": [
+        "CASE-A",
+        "CASE-A"
+      ],
+      "frequency": 2,
+      "fix_location": "scripts/recover_figures.py (新建独立脚本, 集成 run_v2.py step3_8)",
+      "test_coverage": "TODO",
+      "detect_signature": "AST 报 'Figure: 0';\nextracted/media/ 多 PNG 但 chapters/*.tex 0 \\includegraphics",
+      "triggers": "",
+      "related_defects": [
+        "D21"
+      ],
+      "card_path": "reference/defects/D06.md"
+    },
+    "D07": {
+      "id": "D07",
+      "title": "公式 = WMF 回退渲染 pandoc 完全丢 → ~30 公式编号无本体",
+      "status": "shared_code_fixed",
+      "severity": "P0",
+      "applies_to_degree": [
+        "bachelor",
+        "master",
+        "doctor",
+        "marxism"
+      ],
+      "introduced_in": "CASE-A",
+      "cases": [
+        "CASE-A"
+      ],
+      "frequency": 1,
+      "fix_location": "scripts/recover_equations.py (新建, 集成 run_v2.py step3_9)",
+      "test_coverage": "TODO",
+      "detect_signature": "chapters/*.tex 出现裸 `(X.Y)` 单行编号无公式块;\nAST Math 数 << docx 实际公式数;\nword/media/ 含大量 WMF 文件",
+      "triggers": "",
+      "related_defects": [
+        "D13"
+      ],
+      "card_path": "reference/defects/D07.md"
+    },
+    "D08": {
+      "id": "D08",
+      "title": "Word 章节标题不用 Heading 样式 → AST 检不出章节",
+      "status": "case_private",
+      "severity": "P0",
+      "applies_to_degree": [
+        "bachelor",
+        "master",
+        "doctor",
+        "marxism"
+      ],
+      "introduced_in": "CASE-A",
+      "cases": [
+        "CASE-A"
+      ],
+      "frequency": 1,
+      "fix_location": "当前: 手工备份 docx + python-docx 注入 Heading 1 段; 长远: ToC 反向匹配 (Track A2 未实现)",
+      "test_coverage": "TODO",
+      "detect_signature": "pandoc AST `block.t` 分布 {Para: N, OrderedList: M, BlockQuote: K} 无 Header;\nfind_chapters() 返回 0 章节",
+      "triggers": "",
+      "related_defects": [],
+      "card_path": "reference/defects/D08.md"
+    },
+    "D09": {
+      "id": "D09",
+      "title": "inlines_to_text 漏 Underline 容器(D1 验证) — 封面元数据为空",
+      "status": "shared_code_fixed",
+      "severity": "P0",
+      "applies_to_degree": [
+        "bachelor",
+        "master",
+        "doctor",
+        "marxism"
+      ],
+      "introduced_in": "CASE-A",
+      "cases": [
+        "CASE-A"
+      ],
+      "frequency": 1,
+      "fix_location": "scripts/pandoc_ast_extract.py:inlines_to_text() (D01 修复的应用)",
+      "test_coverage": "tests/test_cover_metadata_ast.py",
+      "detect_signature": "同 D01",
+      "triggers": "",
+      "related_defects": [
+        "D01"
+      ],
+      "card_path": "reference/defects/D09.md"
+    },
+    "D10": {
+      "id": "D10",
+      "title": "extractor 不识别\"外文资料原文/译文\" section → main.tex 不 \\input PDF 缺章",
+      "status": "shared_code_fixed",
+      "severity": "P0",
+      "applies_to_degree": [
+        "bachelor"
+      ],
+      "introduced_in": "CASE-A",
+      "cases": [
+        "CASE-A",
+        "CASE-A"
+      ],
+      "frequency": 2,
+      "fix_location": "scripts/pandoc_ast_extract.py + template_adapter.py:emit_foreign_appendix() + run_v2.py step3_5 子步",
+      "test_coverage": "<TBD>",
+      "detect_signature": "PDF 全文 grep \"外文资料原文\" 计数 0;\nextracted/ 无 foreign_*.txt;\nmain.tex 无 \\input{misc/foreign_*}",
+      "triggers": "",
+      "related_defects": [
+        "D11",
+        "D14",
+        "D15",
+        "D16"
+      ],
+      "card_path": "reference/defects/D10.md"
+    },
+    "D11": {
+      "id": "D11",
+      "title": "extractor refs boundary 不含 foreign → references_raw.txt 误吞外文段",
+      "status": "shared_code_fixed",
+      "severity": "P0",
+      "applies_to_degree": [
+        "bachelor"
+      ],
+      "introduced_in": "CASE-A",
+      "cases": [
+        "CASE-A"
+      ],
+      "frequency": 1,
+      "fix_location": "scripts/pandoc_ast_extract.py Step 9 boundary 链",
+      "test_coverage": "TODO",
+      "detect_signature": "refs_to_bib 大量 SKIP 警告 (≥10 条);\nSKIP 列表含非引用风格段落 (全中文叙述, 无 [J]/[M] 标志)",
+      "triggers": "",
+      "related_defects": [],
+      "card_path": "reference/defects/D11.md"
+    },
+    "D12": {
+      "id": "D12",
+      "title": "refs_to_bib 不处理 IEEE 格式英文文献 → 6 条参考文献被丢",
+      "status": "shared_code_fixed",
+      "severity": "P0",
+      "applies_to_degree": [
+        "bachelor",
+        "master",
+        "doctor"
+      ],
+      "introduced_in": "CASE-A",
+      "cases": [
+        "CASE-A",
+        "CASE-A"
+      ],
+      "frequency": 2,
+      "fix_location": "scripts/refs_to_bib.py IEEE_FALLBACK 启发式 + template_adapter.py:emit_bibliography_standard() \\nocite{*}",
+      "test_coverage": "TODO",
+      "detect_signature": "refs_report.json 含 'type': 'SKIP' 警告;\nref.bib 条目数 < cite_map 条目数;\nPDF 参考文献页编号不连续",
+      "triggers": "",
+      "related_defects": [
+        "D02"
+      ],
+      "card_path": "reference/defects/D12.md"
+    },
+    "D13": {
+      "id": "D13",
+      "title": "LibreOffice WMF→PNG 输出整页 letter-canvas → 公式被缩成不可见",
+      "status": "shared_code_fixed",
+      "severity": "P0",
+      "applies_to_degree": [
+        "bachelor",
+        "master",
+        "doctor",
+        "marxism"
+      ],
+      "introduced_in": "CASE-A",
+      "cases": [
+        "CASE-A"
+      ],
+      "frequency": 1,
+      "fix_location": "scripts/recover_equations.py PIL auto-crop + render_equation_block height 2.6em + keepaspectratio",
+      "test_coverage": "TODO",
+      "detect_signature": "PIL probe 任意公式 PNG: 尺寸 ≥600px 且非白像素 < 1%;\nPDF 公式编号出现但本体空白",
+      "triggers": "",
+      "related_defects": [
+        "D07"
+      ],
+      "card_path": "reference/defects/D13.md"
+    },
+    "D14": {
+      "id": "D14",
+      "title": "外文 \\includegraphics 强 width=0.95\\textwidth + \\\\[1ex] → 末尾连续图挤满空白页",
+      "status": "shared_code_fixed",
+      "severity": "P1",
+      "applies_to_degree": [
+        "bachelor"
+      ],
+      "introduced_in": "CASE-A",
+      "cases": [
+        "CASE-A"
+      ],
+      "frequency": 1,
+      "fix_location": "scripts/pandoc_ast_extract.py:_emit_foreign_section (PIL probe + 智能 width)",
+      "test_coverage": "TODO",
+      "detect_signature": "PDF 外文末尾页几乎全空, 仅显示 1-2 公式;\nmisc/foreign_*.tex 含 `\\\\[1ex]`",
+      "triggers": "",
+      "related_defects": [
+        "D10",
+        "D15"
+      ],
+      "card_path": "reference/defects/D14.md"
+    },
+    "D15": {
+      "id": "D15",
+      "title": "_emit_foreign_section 先 emit 文字后 emit 图 → 公式与文字段落分离",
+      "status": "shared_code_fixed",
+      "severity": "P1",
+      "applies_to_degree": [
+        "bachelor"
+      ],
+      "introduced_in": "CASE-A",
+      "cases": [
+        "CASE-A"
+      ],
+      "frequency": 1,
+      "fix_location": "scripts/pandoc_ast_extract.py:_emit_foreign_section (paragraph-stream 模式)",
+      "test_coverage": "TODO",
+      "detect_signature": "PDF 视觉对比 — 译文连续多段文字后接连续多个公式 而非自然交错",
+      "triggers": "",
+      "related_defects": [
+        "D10",
+        "D14"
+      ],
+      "card_path": "reference/defects/D15.md"
+    },
+    "D16": {
+      "id": "D16",
+      "title": "外文译文段落扁平化 → PDF 缺层级 (启发式恢复)",
+      "status": "shared_code_fixed",
+      "severity": "P1",
+      "applies_to_degree": [
+        "bachelor"
+      ],
+      "introduced_in": "CASE-A",
+      "cases": [
+        "CASE-A"
+      ],
+      "frequency": 1,
+      "fix_location": "scripts/pandoc_ast_extract.py:_classify_foreign_para() + _latex_decorate()",
+      "test_coverage": "<TBD>",
+      "detect_signature": "PDF 译文论文标题/作者/摘要/节标题与正文同字号;\nmisc/foreign_translation.tex grep `\\begin{center}\\bfseries` / `\\section*` / `\\textit{摘要` 全 0",
+      "triggers": "",
+      "related_defects": [
+        "D10",
+        "D15"
+      ],
+      "card_path": "reference/defects/D16.md"
+    },
+    "D17": {
+      "id": "D17",
+      "title": "profile.degree_type 不注入 meta dict → adapter 总出 [master,nonprint] cls 错位",
+      "status": "shared_code_fixed",
+      "severity": "P0",
+      "applies_to_degree": [
+        "bachelor",
+        "doctor"
+      ],
+      "introduced_in": "CASE-A",
+      "cases": [
+        "CASE-A"
+      ],
+      "frequency": 1,
+      "fix_location": "scripts/run_v2.py:357-363 (assemble_main_tex 调用前注入 meta['degree_type'])",
+      "test_coverage": "TODO",
+      "detect_signature": "main.tex 第 1-3 行 documentclass option ≠ profile.json 的 degree_type;\nPDF page 1 显示 degree label 与 profile 不符;\nmain.tex 找不到 \\input{misc/foreign_original} 但 profile.has_foreign_literature=true",
+      "triggers": "",
+      "related_defects": [
+        "D10"
+      ],
+      "card_path": "reference/defects/D17.md"
+    },
+    "D18": {
+      "id": "D18",
+      "title": "表格模式 fallback `if cover_meta:` 太宽松 → 正文数据表污染封面",
+      "status": "shared_code_fixed",
+      "severity": "P0",
+      "applies_to_degree": [
+        "bachelor"
+      ],
+      "introduced_in": "CASE-A",
+      "cases": [
+        "CASE-A"
+      ],
+      "frequency": 1,
+      "fix_location": "scripts/pandoc_ast_extract.py:1685-1700 (Step 6.5 fallback 链白名单核心字段)",
+      "test_coverage": "TODO",
+      "detect_signature": "cover_metadata.json 仅 1-2 字段且全是辅助 (title_en/major_en) 缺 title_cn/author_cn/advisor;\ndocx tables ≥ 3 但都是 numeric data",
+      "triggers": "",
+      "related_defects": [],
+      "card_path": "reference/defects/D18.md"
+    },
+    "D19": {
+      "id": "D19",
+      "title": "abstract_en 结束边界仅认\"目录\"段 → 吞 TOC 章节列表",
+      "status": "shared_code_fixed",
+      "severity": "P0",
+      "applies_to_degree": [
+        "bachelor",
+        "master",
+        "doctor"
+      ],
+      "introduced_in": "CASE-A",
+      "cases": [
+        "CASE-A"
+      ],
+      "frequency": 1,
+      "fix_location": "scripts/pandoc_ast_extract.py:1807-1819 (用 abstract_en_kw_idx + 1 做 end boundary)",
+      "test_coverage": "TODO",
+      "detect_signature": "extracted/abstract_en.txt 含 \"第一章\" / \"第二章\" 中文章节标题;\nmisc/english_abstract.tex Keywords 行后还有非英文段",
+      "triggers": "",
+      "related_defects": [],
+      "card_path": "reference/defects/D19.md"
+    },
+    "D20": {
+      "id": "D20",
+      "title": "Windows GBK 控制台无法打印 emoji → run_v2.py 第一行立即崩",
+      "status": "shared_code_fixed",
+      "severity": "P0",
+      "applies_to_degree": [
+        "bachelor",
+        "master",
+        "doctor",
+        "marxism"
+      ],
+      "introduced_in": "CASE-A",
+      "cases": [
+        "CASE-A"
+      ],
+      "frequency": 1,
+      "fix_location": "scripts/run_v2.py:11-19 (模块顶层 set os.environ + reconfigure stdout)",
+      "test_coverage": "TODO (CI 需加 PYTHONIOENCODING=cp936 模拟测试)",
+      "detect_signature": "Windows 用户首次跑 `python run_v2.py` 立即:\nUnicodeEncodeError: 'gbk' codec can't encode character '\\U0001f4cb' (📋) 或 '⚠'",
+      "triggers": "",
+      "related_defects": [],
+      "card_path": "reference/defects/D20.md"
+    },
+    "D21": {
+      "id": "D21",
+      "title": "recover_figures.py 多子图 + caption-in-same-paragraph 漏 → 8 张图未引用",
+      "status": "case_private",
+      "severity": "P0",
+      "applies_to_degree": [
+        "bachelor",
+        "master",
+        "doctor"
+      ],
+      "introduced_in": "CASE-A",
+      "cases": [
+        "CASE-A"
+      ],
+      "frequency": 1,
+      "fix_location": "scripts/recover_figures.py 多处 (caption 探测策略 + multi-subfig 合并 + placeholder caption)",
+      "test_coverage": "TODO",
+      "detect_signature": "figure_recovery_report.json 含 \"drawing@paraN has no caption — skipped\";\nproduct_audit Check 1 报 unreferenced > 1",
+      "triggers": "",
+      "related_defects": [
+        "D06"
+      ],
+      "card_path": "reference/defects/D21.md"
+    },
+    "D22": {
+      "id": "D22",
+      "title": "摘要/关键词含 % 字符未转义 → LaTeX 注释吃掉整段",
+      "status": "shared_code_fixed",
+      "severity": "P0",
+      "applies_to_degree": [
+        "bachelor",
+        "master",
+        "doctor"
+      ],
+      "introduced_in": "CASE-A",
+      "cases": [
+        "CASE-A"
+      ],
+      "frequency": 1,
+      "fix_location": "scripts/template_adapter.py:200-210 (emit_abstract_zh/en + escape_latex_specials_in_prose 新增)",
+      "test_coverage": "tests/test_abstract_escape.py (TODO 待补)",
+      "detect_signature": "PyMuPDF 提取产物 PDF 摘要文本与 abstract_*.txt 比对, 段落字数骤降 50%+;\nproduct_audit 未来加 abstract length parity check 可前置抓",
+      "triggers": "",
+      "related_defects": [],
+      "card_path": "reference/defects/D22.md"
+    },
+    "D23": {
+      "id": "D23",
+      "title": "refs_to_bib.py 漏 [C]/[S]/[R]/[P]/[Z] 文献类型 → 部分条目不入 ref.bib",
+      "status": "shared_code_fixed",
+      "severity": "P0",
+      "applies_to_degree": [
+        "bachelor",
+        "master",
+        "doctor"
+      ],
+      "introduced_in": "CASE-A",
+      "cases": [
+        "CASE-A",
+        "CASE-A"
+      ],
+      "frequency": 2,
+      "fix_location": "scripts/refs_to_bib.py (新增 parse_proceedings/parse_standard/parse_report + main 5 个 elif 分支; CASE-A expansion: parse_proceedings 优先 split '[C]//', 兜底 '[C].', 且容忍 '<Year>: <Pages>' 冒号分隔)",
+      "test_coverage": "tests/test_refs_to_bib_parsers.py (含 D23 原版 + CASE-A expansion 3 个 [C]// 形 fixture)",
+      "detect_signature": "ref.bib 含 \"% WARNING: 未知文献类型\" 注释行;\nref.bib `@` 条数 < references_raw.txt 真实条数;\nrefs_report.json `success / total` < 1.0;\nproduct_audit 未来可加 bib parity check",
+      "triggers": "",
+      "related_defects": [
+        "D34",
+        "D35"
+      ],
+      "card_path": "reference/defects/D23.md"
+    },
+    "D24": {
+      "id": "D24",
+      "title": "\\nocite{*} 致 bbl 顺序按 ref.bib 字典序而非 docx 原 [1]-[N] 顺序",
+      "status": "shared_code_fixed",
+      "severity": "P0",
+      "applies_to_degree": [
+        "bachelor",
+        "master",
+        "doctor"
+      ],
+      "introduced_in": "CASE-A",
+      "cases": [
+        "CASE-A"
+      ],
+      "frequency": 1,
+      "fix_location": "scripts/template_adapter.py:emit_bibliography_standard 移除 \\nocite{*}, 改读 cite_map 按顺序逐条 \\nocite{key}",
+      "test_coverage": "tests/test_template_adapter.py:test_d24_bibliography_uses_cite_map_order + test_d24_bibliography_fallback_no_cite_map",
+      "detect_signature": "PDF 参考文献第一条不是 docx 原 [1] 的同一文献;\n客户视觉对照原稿与产物 reference 列表错位;\nproduct_audit Check 5 抓 bbl 顺序 vs cite_map 一致性",
+      "triggers": "",
+      "related_defects": [
+        "D23",
+        "D25"
+      ],
+      "card_path": "reference/defects/D24.md"
+    },
+    "D25": {
+      "id": "D25",
+      "title": "refs_to_bib 英文作者 'Sun Y' 空格分隔致 BST 把 'Y' 当姓 → 渲染 'S. Y'",
+      "status": "shared_code_fixed",
+      "severity": "P0",
+      "applies_to_degree": [
+        "bachelor",
+        "master",
+        "doctor"
+      ],
+      "introduced_in": "CASE-A",
+      "cases": [
+        "CASE-A"
+      ],
+      "frequency": 1,
+      "fix_location": "scripts/refs_to_bib.py:_fix_one_author + sanitize_author_list (Round 8)",
+      "test_coverage": "tests/test_refs_to_bib_parsers.py:test_d25_western_author_normalized + test_d25_chinese_author_unchanged + test_d25_western_double_initial",
+      "detect_signature": "ref.bib author 字段含 'Lastname GivenInitial' 而非 'Lastname, G. I.';\nbbl 第一行作者输出形如 'X.{~} Y' (last name 是单字母)",
+      "triggers": "",
+      "related_defects": [
+        "D24",
+        "D29",
+        "D30",
+        "D31"
+      ],
+      "card_path": "reference/defects/D25.md"
+    },
+    "D26": {
+      "id": "D26",
+      "title": "摘要/正文 ~ 字符被 LaTeX 当不间断空格吞 → 范围号 0~3% 渲染成 0 3%",
+      "status": "shared_code_fixed",
+      "severity": "P0",
+      "applies_to_degree": [
+        "bachelor",
+        "master",
+        "doctor"
+      ],
+      "introduced_in": "CASE-A",
+      "cases": [
+        "CASE-A"
+      ],
+      "frequency": 1,
+      "fix_location": "scripts/template_adapter.py:escape_latex_specials_in_prose (Round 8 加 ~ → \\textasciitilde{})",
+      "test_coverage": "tests/test_refs_to_bib_parsers.py:test_d22_escape_percent_basic + tests/test_template_adapter.py:test_d26_tilde_escape_in_abstract",
+      "detect_signature": "docx 原稿含 '数字~数字' 范围号;\n产物 PDF 该处 ~ 不见, 变空格;\n客户视觉发现\"少了符号\"",
+      "triggers": "",
+      "related_defects": [
+        "D22"
+      ],
+      "card_path": "reference/defects/D26.md"
+    },
+    "D27": {
+      "id": "D27",
+      "title": "本科 \\cite 默认行内不上标, 不符 spec \"上标 [n] 12pt\"",
+      "status": "shared_code_fixed",
+      "severity": "P0",
+      "applies_to_degree": [
+        "bachelor",
+        "master",
+        "doctor"
+      ],
+      "introduced_in": "CASE-A",
+      "cases": [
+        "CASE-A"
+      ],
+      "frequency": 1,
+      "fix_location": "scripts/template_adapter.py:assemble_main_tex preamble (Round 8 加 \\let\\origcite=\\cite + \\renewcommand)",
+      "test_coverage": "tests/test_template_adapter.py:test_standard_assembly + test_d27_cite_redirect_skipped_for_marxism",
+      "detect_signature": "PyMuPDF dict 模式扫 PDF 正文 [N] span size 等于 body size (= 12pt) 而非 ~8pt;\nproduct_audit Check 6 报\"非上标 (size 应 < line max * 0.85)\"",
+      "triggers": "",
+      "related_defects": [],
+      "card_path": "reference/defects/D27.md"
+    },
+    "D28": {
+      "id": "D28",
+      "title": "documentclass 缺 noreminder 选项 → CLS 内置红字\"摘要超 1 页\"等提示泄漏到产物",
+      "status": "shared_code_fixed",
+      "severity": "P0",
+      "applies_to_degree": [
+        "bachelor",
+        "master",
+        "doctor"
+      ],
+      "introduced_in": "CASE-A",
+      "cases": [
+        "CASE-A"
+      ],
+      "frequency": 1,
+      "fix_location": "scripts/template_adapter.py:emit_documentclass (Round 8 总加 noreminder 选项)",
+      "test_coverage": "tests/test_template_adapter.py:test_standard_assembly (含 noreminder 断言)",
+      "detect_signature": "PyMuPDF 全文扫 \"has exceeded the maximum limit\" / \"Chinese Abstract has\";\nproduct_audit Check 7 抓",
+      "triggers": "",
+      "related_defects": [],
+      "card_path": "reference/defects/D28.md"
+    },
+    "D29": {
+      "id": "D29",
+      "title": "BST sentence-case 把 ref.bib title 中化学式/缩写小写化 → \"11B NMR Sb2O3\" 变 \"11b nmr sb2o3\"",
+      "status": "shared_code_fixed",
+      "severity": "P0",
+      "applies_to_degree": [
+        "bachelor",
+        "master",
+        "doctor"
+      ],
+      "introduced_in": "CASE-A",
+      "cases": [
+        "CASE-A"
+      ],
+      "frequency": 1,
+      "fix_location": "scripts/refs_to_bib.py:postprocess_bib_for_render (Round 8 title 整体 {{...}} 包)",
+      "test_coverage": "tests/test_refs_to_bib_parsers.py:test_d29_title_protected_from_sentence_case + test_d29_title_protected_content_preserved",
+      "detect_signature": "视觉对照 docx vs 产物 PDF, 化学式/缩写被小写;\nref.bib title 字段未用 {{...}} 包整体",
+      "triggers": "",
+      "related_defects": [
+        "D25",
+        "D30",
+        "D31"
+      ],
+      "card_path": "reference/defects/D29.md"
+    },
+    "D30": {
+      "id": "D30",
+      "title": "ref.bib publisher/journal 字段裸 & 字符未 escape → BibTeX 编译时 & 被吃, 产物缺字符",
+      "status": "shared_code_fixed",
+      "severity": "P0",
+      "applies_to_degree": [
+        "bachelor",
+        "master",
+        "doctor"
+      ],
+      "introduced_in": "CASE-A",
+      "cases": [
+        "CASE-A"
+      ],
+      "frequency": 1,
+      "fix_location": "scripts/refs_to_bib.py:postprocess_bib_for_render (Round 8 publisher/journal/howpublished/booktitle 字段裸 & → \\&)",
+      "test_coverage": "tests/test_refs_to_bib_parsers.py:test_d30_publisher_amp_escaped + test_d30_journal_amp_escaped + test_d30_already_escaped_not_doubled",
+      "detect_signature": "ref.bib `grep ' & '` 命中即风险;\n产物 PDF 该 publisher 段缺 & 字符",
+      "triggers": "",
+      "related_defects": [
+        "D25",
+        "D29",
+        "D31"
+      ],
+      "card_path": "reference/defects/D30.md"
+    },
+    "D31": {
+      "id": "D31",
+      "title": "ref.bib 中文机构作者含 () 被 BST 当人名拆 → 渲染崩 \"□. 178)\"",
+      "status": "shared_code_fixed",
+      "severity": "P0",
+      "applies_to_degree": [
+        "bachelor",
+        "master",
+        "doctor"
+      ],
+      "introduced_in": "CASE-A",
+      "cases": [
+        "CASE-A"
+      ],
+      "frequency": 1,
+      "fix_location": "scripts/refs_to_bib.py:_fix_one_author (Round 8 中文+括号 → 双花括号包)",
+      "test_coverage": "tests/test_refs_to_bib_parsers.py:test_d31_chinese_org_with_paren_wrapped + test_d31_chinese_person_no_paren_unchanged",
+      "detect_signature": "ref.bib author 字段含中文 + ()/;\n产物 PDF 该条目作者位置含 □ 缺字符 / 数字) 残块",
+      "triggers": "",
+      "related_defects": [
+        "D25",
+        "D29",
+        "D30"
+      ],
+      "card_path": "reference/defects/D31.md"
+    },
+    "D32": {
+      "id": "D32",
+      "title": "caption 字号默认 12pt, 应 10.5pt 五号",
+      "status": "shared_code_fixed",
+      "severity": "P1",
+      "applies_to_degree": [
+        "bachelor",
+        "master",
+        "doctor"
+      ],
+      "introduced_in": "CASE-A",
+      "cases": [
+        "CASE-A",
+        "CASE-A"
+      ],
+      "frequency": 2,
+      "fix_location": "scripts/template_adapter.py:assemble_main_tex preamble 加 \\captionsetup{font={small}}",
+      "test_coverage": "TODO (回归 caption 字号 fixture)",
+      "detect_signature": "PDF caption 文字 fontsize 12.0 而非 10.5\nmain.tex preamble 不含 \\captionsetup{font=small}",
+      "triggers": "",
+      "related_defects": [],
+      "card_path": "reference/defects/D32.md"
+    },
+    "D33": {
+      "id": "D33",
+      "title": "OrderedList item 内 Para 漏走 classify_paragraph 致章节标题压进 list",
+      "status": "shared_code_fixed",
+      "severity": "P1",
+      "applies_to_degree": [
+        "bachelor",
+        "master",
+        "doctor"
+      ],
+      "introduced_in": "CASE-A",
+      "cases": [
+        "CASE-A"
+      ],
+      "frequency": 1,
+      "fix_location": "scripts/pandoc_ast_extract.py:1159 OrderedList 分支 — item 内 Para 走 classify_paragraph 判断是否 heading-like",
+      "test_coverage": "TODO",
+      "detect_signature": "outline.json 章节数 < 期望; chapter/*.tex 含本应是 \\chapter / \\section 的文字被包在 \\item 里",
+      "triggers": "",
+      "related_defects": [
+        "D08"
+      ],
+      "card_path": "reference/defects/D33.md"
+    },
+    "D34": {
+      "id": "D34",
+      "title": "refs_to_bib 不识别 [EB/OL] 在线资源 + 公式高度按 PNG 自适应",
+      "status": "shared_code_fixed",
+      "severity": "P0",
+      "applies_to_degree": [
+        "bachelor",
+        "master",
+        "doctor"
+      ],
+      "introduced_in": "CASE-A",
+      "cases": [
+        "CASE-A"
+      ],
+      "frequency": 1,
+      "fix_location": "scripts/refs_to_bib.py:473 parse_electronic — [EB/OL] 类型识别 + dispatch\nscripts/recover_equations.py:200 — 按 PNG 实际宽高比自适应高度",
+      "test_coverage": "tests/test_refs_to_bib_parsers.py (D34 ×2 fixtures)",
+      "detect_signature": "ref.bib 缺 @misc 条目或 [EB/OL] 类型未被识别; 产物 PDF 公式图被压扁/拉伸",
+      "triggers": "",
+      "related_defects": [
+        "D23",
+        "D29"
+      ],
+      "card_path": "reference/defects/D34.md"
+    },
+    "D35": {
+      "id": "D35",
+      "title": "refs 前缀正则不容忍 [N] 内/旁空格 (客户原稿手打瑕疵)",
+      "status": "shared_code_fixed",
+      "severity": "P1",
+      "applies_to_degree": [
+        "bachelor",
+        "master",
+        "doctor"
+      ],
+      "introduced_in": "CASE-A",
+      "cases": [
+        "CASE-A"
+      ],
+      "frequency": 1,
+      "fix_location": "scripts/refs_to_bib.py:612 — 把 `^\\[(\\d+)\\]\\s*` 放宽为 `^\\[\\s*(\\d+)\\s*\\]\\s*`",
+      "test_coverage": "tests/test_refs_to_bib_parsers.py (D35 ×2 fixtures)",
+      "detect_signature": "references_raw 行匹配 `^\\[\\s*\\d+\\s*\\]\\s+`; 用旧严格 `^\\[(\\d+)\\]\\s*` 正则会 miss 这些行致 cite_map 缺 key",
+      "triggers": "",
+      "related_defects": [
+        "D23",
+        "D34"
+      ],
+      "card_path": "reference/defects/D35.md"
+    },
+    "D36": {
+      "id": "D36",
+      "title": "latexmkrc max_repeat=1 致 natbib \\cite 渲染 [?]",
+      "status": "shared_code_fixed",
+      "severity": "P0",
+      "applies_to_degree": [
+        "bachelor",
+        "master",
+        "doctor"
+      ],
+      "introduced_in": "CASE-A",
+      "cases": [
+        "CASE-A"
+      ],
+      "frequency": 1,
+      "fix_location": "vendor/DissertationUESTC/latexmkrc — `$max_repeat = 5` (旧 1)",
+      "test_coverage": "TODO",
+      "detect_signature": "PDF 正文 \\cite{} 渲染 [?]; main.log 含 \"LaTeX Warning: Citation ... undefined\" + \"Rerun to get cross-references right\"",
+      "triggers": "",
+      "related_defects": [],
+      "card_path": "reference/defects/D36.md"
+    },
+    "D37": {
+      "id": "D37",
+      "title": "assemble main.tex 早于 refs_to_bib 致 \\nocite 用占位假 key",
+      "status": "shared_code_fixed",
+      "severity": "P0",
+      "applies_to_degree": [
+        "bachelor",
+        "master",
+        "doctor"
+      ],
+      "introduced_in": "CASE-A",
+      "cases": [
+        "CASE-A",
+        "CASE-A"
+      ],
+      "frequency": 2,
+      "fix_location": "scripts/run_v2.py:235 step3_generate_bib — refs_to_bib 跑完后再调 assemble_main_tex 重写 main.tex 让 \\nocite 用真 cite_map keys",
+      "test_coverage": "TODO",
+      "detect_signature": "main.tex 含 \\nocite{ref1, ref2, ...} 用 ref<N> 假 key (extract 阶段占位); 真实 cite_map.json 用 author-year keys; 编译警告 \"Warning: empty bibliography after \\nocite\"",
+      "triggers": "",
+      "related_defects": [
+        "D24"
+      ],
+      "card_path": "reference/defects/D37.md"
+    },
+    "D38": {
+      "id": "D38",
+      "title": "recover_figures placement 算法致图序错位 + product_audit Check 8",
+      "status": "shared_code_fixed",
+      "severity": "P0",
+      "applies_to_degree": [
+        "bachelor",
+        "master",
+        "doctor"
+      ],
+      "introduced_in": "CASE-A",
+      "cases": [
+        "CASE-A"
+      ],
+      "frequency": 1,
+      "fix_location": "scripts/recover_figures.py:211 placement 算法重写 — caption-only 段是图位置锚, 原位 figure 块替换, fallback 按 subnum 排序 append\nscripts/product_audit.py:545,592 Check 8 — _docx_body_image_order vs _pdf_includegraphics_order parity",
+      "test_coverage": "tests/test_product_audit.py (D38 ×5 fixtures)",
+      "detect_signature": "PDF 内 \\includegraphics 顺序与 docx body 内图顺序不一致; product_audit Check 8 报错",
+      "triggers": "",
+      "related_defects": [],
+      "card_path": "reference/defects/D38.md"
+    },
+    "D39": {
+      "id": "D39",
+      "title": "Word textbox (w:txbxContent) 装图 caption 致 pandoc 完全不解析",
+      "status": "shared_code_fixed",
+      "severity": "P0",
+      "applies_to_degree": [
+        "bachelor",
+        "master",
+        "doctor"
+      ],
+      "introduced_in": "CASE-A",
+      "cases": [
+        "CASE-A"
+      ],
+      "frequency": 1,
+      "fix_location": "scripts/pandoc_ast_extract.py:collect_textbox_captions — 直接读 docx XML 抓 txbxContent 文本\nscripts/recover_figures.py:merge_textbox_captions — 给缺 caption 的 record 用 textbox_captions.json 兜底\nscripts/preflight_risk_router.py:_rule_d39_textbox_caption — input-side P0 预警\nscripts/product_audit.py:check_figure_caption_parity — output-side Check 9 兜底",
+      "test_coverage": "tests/test_*.py (textbox fixture + 4 个回归)",
+      "detect_signature": "docx 内含 `<w:txbxContent>` 且文本以 \"图X-Y\" 前缀; pandoc AST 无对应 Header/Plain caption; PDF \\caption{} 全空或与图错位",
+      "triggers": "",
+      "related_defects": [
+        "D38"
+      ],
+      "card_path": "reference/defects/D39.md"
+    },
+    "D40": {
+      "id": "D40",
+      "title": "整段 inline `$math$ + (X-Y)/（X-Y）` 应转 \\\\begin{equation} \\\\tag{X-Y}",
+      "status": "shared_code_fixed",
+      "severity": "P0",
+      "applies_to_degree": [
+        "bachelor",
+        "master",
+        "doctor"
+      ],
+      "introduced_in": "CASE-A",
+      "cases": [
+        "CASE-A",
+        "CASE-A",
+        "CASE-A"
+      ],
+      "frequency": 3,
+      "fix_location": "scripts/pandoc_ast_extract.py:_maybe_emit_inline_numbered_equation + generate_chapter_tex Para body emit",
+      "test_coverage": "tests/test_w3_mutants.py:test_d40_inline_eq_* (4 个)",
+      "detect_signature": "chapter/*.tex 含 ^[\\s 　]*\\\\$.*\\\\$\\\\s*[（(]\\\\d+[-－.]\\\\d+[）)][\\s 　]*$ 整行匹配",
+      "triggers": "",
+      "related_defects": [],
+      "card_path": "reference/defects/D40.md"
+    },
+    "D41": {
+      "id": "D41",
+      "title": "caption 含 inline 数学 (Word `<m:oMath>` 或 inline `$...$`) 在 caption emit 时丢失",
+      "status": "shared_code_fixed",
+      "severity": "P0",
+      "applies_to_degree": [
+        "bachelor",
+        "master",
+        "doctor"
+      ],
+      "introduced_in": "CASE-A",
+      "cases": [
+        "CASE-A"
+      ],
+      "frequency": 1,
+      "fix_location": "scripts/recover_figures.py:_text_of_paragraph — 抓 <w:t> 与 <m:oMath> 内 <m:t> 按 XML 顺序混合, 公式包 $..$\nscripts/pandoc_ast_extract.py:inlines_to_text — 已处理 Math 节点 ($math$), 适用 Pandoc Figure caption 路径",
+      "test_coverage": "tests/test_w3_mutants.py:test_d41_caption_oMath_recovered + test_d41_source_manifest_has_omath_field",
+      "detect_signature": "source_manifest.paragraphs[].has_omath=true 且 caption_role 段; 产物 chapter \\\\caption{} 字面缺 `$` 或 math 部分",
+      "triggers": "",
+      "related_defects": [
+        "D39"
+      ],
+      "card_path": "reference/defects/D41.md"
+    },
+    "D42": {
+      "id": "D42",
+      "title": "\"图X-Y 给出了...\"解说正文段被 recover_figures 误识别为 caption-only 而 strip",
+      "status": "shared_code_fixed",
+      "severity": "P0",
+      "applies_to_degree": [
+        "bachelor",
+        "master",
+        "doctor"
+      ],
+      "introduced_in": "CASE-A",
+      "cases": [
+        "CASE-A"
+      ],
+      "frequency": 1,
+      "fix_location": "scripts/recover_figures.py:inject_into_chapter — `cap_only_re` 拆 `LABEL_RE` + `classify_figure_line` 三分类",
+      "test_coverage": "tests/test_w3_mutants.py:test_d42_caption_role_classifier_* (2 个)",
+      "detect_signature": "docx body 段以 \"图X-Y\" 开头 + tail 长 > 60 / 含 给出/展示/表明/说明/可以看出/如图 + tail > 25 / 含句末标点; 产物 chapter 该段缺失 (整段 strip)",
+      "triggers": "",
+      "related_defects": [
+        "D38"
+      ],
+      "card_path": "reference/defects/D42.md"
+    },
+    "D43": {
+      "id": "D43",
+      "title": "refs_to_bib parse_thesis 不补 address, lun51 报学位论文\"缺少出版年/出版地\"严重错误",
+      "status": "shared_code_fixed",
+      "severity": "P1",
+      "applies_to_degree": [
+        "bachelor",
+        "master",
+        "doctor"
+      ],
+      "introduced_in": "CASE-A",
+      "cases": [
+        "CASE-A"
+      ],
+      "frequency": 1,
+      "fix_location": "scripts/refs_to_bib.py — 新增 SCHOOL_TO_CITY 映射表 (60+ 985/211/常见综合大学) + parse_thesis 调 _infer_address_from_school 兜底, 客户显式写 \"city: school\" 时尊重客户原值",
+      "test_coverage": "tests/test_refs_to_bib_parsers.py::test_dthesis_address_*  (5 项)",
+      "detect_signature": "ref.bib 中 @mastersthesis 或 @phdthesis 条目缺 address 字段, BST 渲染输出无城市前缀; lun51 检测严重错误码\"缺少出版地\"",
+      "triggers": "",
+      "related_defects": [
+        "D34"
+      ],
+      "card_path": "reference/defects/D43.md"
+    },
+    "D44": {
+      "id": "D44",
+      "title": "parse_abstract_text 关键词分隔符不归一, lun51 报\"分隔符不符合规范\"",
+      "status": "shared_code_fixed",
+      "severity": "P0",
+      "applies_to_degree": [
+        "bachelor",
+        "master",
+        "doctor"
+      ],
+      "introduced_in": "CASE-A",
+      "cases": [
+        "CASE-A"
+      ],
+      "frequency": 1,
+      "fix_location": "scripts/template_adapter.py — parse_abstract_text 抽取 keywords 后调 _normalize_keyword_separator (ZH 用 '，', EN 用 '; ')",
+      "test_coverage": "tests/test_template_adapter.py::TestKeywordSeparator (5 项)",
+      "detect_signature": "extracted/abstract_zh.txt 关键词行含 '、'/';'/','; main.tex 中 \\\\zhkeywords{...} 内非纯 '，' 分隔; lun51 检测严重错误码\"KEYWORD_SEPARATOR\"",
+      "triggers": "",
+      "related_defects": [
+        "D46"
+      ],
+      "card_path": "reference/defects/D44.md"
+    },
+    "D45": {
+      "id": "D45",
+      "title": "format_punctuation 不归一 CJK 段中半角逗号/句号, lun51 提醒\"中文段落出现英文半角\"",
+      "status": "shared_code_fixed",
+      "severity": "P2",
+      "applies_to_degree": [
+        "bachelor",
+        "master",
+        "doctor"
+      ],
+      "introduced_in": "CASE-A",
+      "cases": [
+        "CASE-A"
+      ],
+      "frequency": 1,
+      "fix_location": "scripts/hooks/format_punctuation.py — 新增 normalize_cjk_punct() lookbehind+lookahead 双保险归一规则, 在 fix_quotes/fix_allowbreak 之前调用",
+      "test_coverage": "tests/test_format_punctuation.py (16 项 — 5 实战 + 11 negative)",
+      "detect_signature": "chapter/*.tex 中存在 (?<=[CJK\\\\]\\\\)，。])\\\\s*[,.]\\\\s*(?=[CJK]) 模式; lun51 提醒码\"CJK_HALFWIDTH_PUNCT\"",
+      "triggers": "",
+      "related_defects": [],
+      "card_path": "reference/defects/D45.md"
+    },
+    "D46": {
+      "id": "D46",
+      "title": "parse_abstract_text 不 strip 摘要段头尾占位, 致 PDF 双\"摘要\" + Abstract 跨页 + 双 Keywords",
+      "status": "shared_code_fixed",
+      "severity": "P0",
+      "applies_to_degree": [
+        "bachelor",
+        "master",
+        "doctor"
+      ],
+      "introduced_in": "CASE-A",
+      "cases": [
+        "CASE-A"
+      ],
+      "frequency": 1,
+      "fix_location": "scripts/template_adapter.py — 新加 parse_abstract_text(content, lang) helper, leading \"摘要\"/\"ABSTRACT\" + trailing \"Abstract\"/\"Keywords\" strip + keywords 抽取截 body; scripts/run_v2.py 两条 path (step3.5 + D37 reassemble) 都改用此 helper",
+      "test_coverage": "TODO (mutant docx fixture 待加)",
+      "detect_signature": "PDF 摘要页正文首段含字面\"摘要\"/\"ABSTRACT\", 或正文末跨节出现\"Abstract\"行; \\zhkeywords{} / \\enkeywords{} 为空但关键词字面留在 body",
+      "triggers": "",
+      "related_defects": [
+        "D44"
+      ],
+      "card_path": "reference/defects/D46.md"
+    },
+    "D47": {
+      "id": "D47",
+      "title": "refs_to_bib parse_article 漏 \"Y (N):P\" 格式 + parse_report [Z] note 字面\"其它\", 致 PDF 双 year + [Z] 其它 trailer",
+      "status": "shared_code_fixed",
+      "severity": "P0",
+      "applies_to_degree": [
+        "bachelor",
+        "master",
+        "doctor"
+      ],
+      "introduced_in": "CASE-A",
+      "cases": [
+        "CASE-A"
+      ],
+      "frequency": 1,
+      "fix_location": "scripts/refs_to_bib.py — parse_article 加 \"Y (N):P\" regex (`,\\s*\\d{4}\\s*,?\\s*\\(...\\)`) + journal 字段末尾 cleanup `re.sub(r',\\s*\\d{4}\\b.*$', '', journal)`; parse_report [Z] type_note = '' (不写 note), howpublished 仅含年份时清空",
+      "test_coverage": "TODO (mutant ref entries fixture 待加)",
+      "detect_signature": "PDF 参考文献条目尾部出现 \"[Z] 其它.\" 字面 trailer; 期刊条目出现 \", 2018., 2018.\" 双年份",
+      "triggers": "",
+      "related_defects": [
+        "D23"
+      ],
+      "card_path": "reference/defects/D47.md"
+    },
+    "D48": {
+      "id": "D48",
+      "title": "product_audit Check 10 v2 normalize 漏 html.unescape, XML &quot; 误报 32 段 missing",
+      "status": "shared_code_fixed",
+      "severity": "P2",
+      "applies_to_degree": [
+        "bachelor",
+        "master",
+        "doctor"
+      ],
+      "introduced_in": "CASE-A",
+      "cases": [
+        "CASE-A"
+      ],
+      "frequency": 1,
+      "fix_location": "scripts/product_audit.py — _normalize 起手加 s = html.unescape(s) (新 import html)",
+      "test_coverage": "现有 W3 mutants (331 passed 0 回归)",
+      "detect_signature": "product_audit Check 10 v2 高置信 missing 段大量含 &quot; / &amp; / &lt; XML entity, chapter 里却已是字面引号, 比较前未 unescape",
+      "triggers": "",
+      "related_defects": [],
+      "card_path": "reference/defects/D48.md"
+    },
+    "D49": {
+      "id": "D49",
+      "title": "docx_surgery W4-C — inject_heading_before + delete_orphan_title_paragraph 主体, anchor 上移到章引言段, 删客户手写裸章名段",
+      "status": "shared_code_fixed",
+      "severity": "P0",
+      "applies_to_degree": [
+        "bachelor",
+        "master",
+        "doctor"
+      ],
+      "introduced_in": "CASE-A",
+      "cases": [
+        "CASE-A",
+        "CASE-A"
+      ],
+      "frequency": 2,
+      "fix_location": "scripts/docx_surgery.py:_apply_inject_heading_before — 用 anchor_text_match 查找 anchor + addprevious;\n_apply_delete_orphan_title_paragraph — 用 target_text_match remove;\n_detector_inject_heading_before 加 anchor 上移逻辑 (倒序扫 5 段, 撞空段/section/chapter 停, 第一个长 body 段设 preface_idx);\n_detector_orphan_title_paragraph 实现 (扫 body \"第N章 X\" 抽 X 部分, 找匹配的裸章名段配 delete op)",
+      "test_coverage": "tests/test_w4_docx_surgery_inject.py (8 项: detector early-exit / anchor preface / orphan / apply 真实 + 错误处理)",
+      "detect_signature": "chapter/*.tex 出现 \\\\chapter{X} 后立即跟一个普通段落字面 == X (内容重复); 或 \\\\chapter{X} 之前的段落内容是\"针对...本章提出...\"类引言但被前一章吞",
+      "triggers": "",
+      "related_defects": [],
+      "card_path": "reference/defects/D49.md"
+    },
+    "D50": {
+      "id": "D50",
+      "title": "refs_to_bib IEEE_FALLBACK 不补类型标识 [C]/[J] + 不 strip title 尾逗号, lun51 报\"无类型标识\"+\"连续标点\"",
+      "status": "shared_code_fixed",
+      "severity": "P2",
+      "applies_to_degree": [
+        "bachelor",
+        "master",
+        "doctor"
+      ],
+      "introduced_in": "CASE-A",
+      "cases": [
+        "CASE-A"
+      ],
+      "frequency": 1,
+      "fix_location": "scripts/refs_to_bib.py — IEEE_FALLBACK 启发式补 [C]/[J]/[N] 类型标识 (Conference/Transactions 关键词分类) + strip title 尾逗号",
+      "test_coverage": "tests/test_refs_to_bib_parsers.py::test_ieee_fallback_* (4 项)",
+      "detect_signature": "ref.bib @misc 条目 title 字段不含 '[C]'/'[J]'/'[N]'; lun51 提醒\"没有找到参考文献类型标识\" + \"出现连续标点 ,,\"",
+      "triggers": "",
+      "related_defects": [
+        "D12",
+        "D43"
+      ],
+      "card_path": "reference/defects/D50.md"
+    }
+  },
+  "by_case": {
+    "CASE-A": [
+      "D40",
+      "D41",
+      "D42"
+    ]
+  },
+  "stats": {
+    "severity": {
+      "P0": 40,
+      "P1": 7,
+      "P2": 3
+    },
+    "status": {
+      "shared_code_fixed": 48,
+      "case_private": 2
+    },
+    "applies_to_degree": {
+      "bachelor": 50,
+      "master": 43,
+      "doctor": 44,
+      "marxism": 11
+    },
+    "top_frequency": [
+      [
+        "D40",
+        3
+      ],
+      [
+        "D06",
+        2
+      ],
+      [
+        "D10",
+        2
+      ],
+      [
+        "D12",
+        2
+      ],
+      [
+        "D23",
+        2
+      ],
+      [
+        "D32",
+        2
+      ],
+      [
+        "D37",
+        2
+      ],
+      [
+        "D49",
+        2
+      ],
+      [
+        "D01",
+        1
+      ],
+      [
+        "D02",
+        1
+      ]
+    ]
+  }
+}

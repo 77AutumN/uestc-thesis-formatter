@@ -251,7 +251,7 @@ def extract_cover_metadata(docx_path):
                     meta['author_cn'] = unique_cells[i + 1].replace(' ', '')
                 elif '指导教师' in cell_text and i + 1 < len(unique_cells):
                     raw = unique_cells[i + 1].replace(' ', '')
-                    # 拆分姓名和职称："张三教授" 或 "张三　教授"
+                    # 拆分姓名和职称："CASE-A教授" 或 "CASE-A　教授"
                     meta['advisor_cn_raw'] = unique_cells[i + 1]
                 elif '学科专业' == cell_text or '学科专业' in cell_text:
                     if i + 1 < len(unique_cells) and '学科' not in unique_cells[i + 1]:
@@ -325,7 +325,7 @@ def extract_cover_metadata(docx_path):
     # === 清理导师信息 ===
     if 'advisor_cn_raw' in meta:
         raw = meta['advisor_cn_raw']
-        # 常见格式: "张三　　教　授" 或 "张三 教授"
+        # 常见格式: "CASE-A　　教　授" 或 "CASE-A 教授"
         import re
         cleaned = re.sub(r'[\s\u3000]+', ' ', raw).strip()
         parts = cleaned.split(' ')

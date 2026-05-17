@@ -1,0 +1,54 @@
+# Issue contract: large_vertical_gap
+# Phase 0 first batch (Day 3, 2026-05-07).
+# Loader: scripts/audit_issue_schema.py
+# Reference design: docs/v5_phase0_issue_schema_draft.md §2.1
+schema_version: "0.1"
+issue_code: large_vertical_gap
+
+title:
+  zh: "段间异常空白"
+  en: "Large vertical gap between blocks"
+
+severity: P0           # P0 / P1 / P2
+risk_class: B          # B 结构 / C 客户内容 / D 不可恢复
+repairability: deterministic   # deterministic / trial / manual
+default_confidence: 0.95
+
+# Audits that may emit this issue_code
+source_audits:
+  - visual_geometry_audit
+
+# Required fields on the issue *instance* (validation enforced by validator)
+required_evidence:
+  - gap_pt           # number, the measured gap in pt
+  - threshold_pt     # number, the threshold that classified it as P0
+  - prev_block_text  # string, ≤ 80 chars, abbreviated end of preceding block
+  - next_block_text  # string, ≤ 80 chars, abbreviated start of following block
+
+required_location:
+  - pdf_page         # int, 1-based
+
+# Repairers allowed to consume this issue (Phase 2+; not active Day 3)
+allowed_repairers:
+  - float_policy_repair
+  - blank_line_compact_repair
+
+# Acceptance for the rerun audit after a repair attempt
+acceptance:
+  rerun_audit: visual_geometry_audit
+  must_disappear: true
+  invariants:
+    - field: evidence.gap_pt
+      operator: "<"
+      value: 50
+
+# Mutant fixture IDs that should reproduce this issue
+fixtures:
+  - F9_h_float_overflow
+
+tags: [geometry, float, gap, vertical_space]
+
+# Origin & history (informational, not validated)
+introduced_in: 2026-05-07
+origin_case: CASE-A round 3 (ch01 §1.2.2 ~100pt 段间空白用户截图反馈)
+related_defects: []      # reference/defects/D??.md cross-refs (none yet)

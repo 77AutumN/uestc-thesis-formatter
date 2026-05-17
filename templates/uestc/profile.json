@@ -10,11 +10,8 @@
   "degree_options": ["bachelor", "master", "promaster", "doctor", "prodoctor", "doublebachelor", "intmaster", "intdoctor"],
   "compile_chain": ["xelatex", "bibtex", "xelatex", "xelatex"],
   "use_latexmk": true,
-  "docker_image": "ghcr.io/xu-cheng/texlive-full:latest",
-  "quote_style": "mixed",
-  "abstract_keywords_delimiter": ",",
-  "citation_style": "inline_bracket",
-  "bibliography_style": "bibtex",
+  "docker_image": "ghcr.io/xu-cheng/texlive-full:20240101",
+  "font_mount": "C:\\Windows\\Fonts:/thesis/fonts:ro",
   "meta_fields": {
     "title": {"zh": true, "en": true},
     "author": {"zh": true, "en": true},
@@ -32,6 +29,7 @@
   },
   "blind_review": false,
   "bib_files": ["ref.bib"],
+  "allowed_packages": [],
   "engine": "DissertUESTC",
   "engine_note": "v2 adapter — no CLS patching needed, all macros via template_adapter.py"
 }
