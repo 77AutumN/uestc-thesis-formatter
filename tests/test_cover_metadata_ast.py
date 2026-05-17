@@ -55,12 +55,12 @@ class TestExtractCoverMetadataFromAst:
             _para("学士学位论文"),                        # 2: degree type
             _para("BACHELOR THESIS"),                     # 3
             _para(""),                                    # 4: empty
-            _para("论文题目\t<THESIS_TITLE>"),         # 5: title field
-            _para("<THESIS_TITLE>"),                    # 6: title continuation
+            _para("论文题目\t一种通用学位论文"),         # 5: title field
+            _para("题目示例"),                    # 6: title continuation
             _blockquote([                                 # 7: metadata in BlockQuote
-                "学\u3000院\t电子科学与工程学院",
-                "专\u3000业\t电子科学与技术",
-                "学\u3000号\t<STUDENT_ID>",
+                "学\u3000院\t示例学院",
+                "专\u3000业\t示例专业",
+                "学\u3000号\t0000000000000",
                 "作者姓名\tCASE-A",
                 "指导教师\tCASE-A 副研究员",
             ]),
@@ -73,10 +73,10 @@ class TestExtractCoverMetadataFromAst:
         first_ch_idx = 8  # 摘要
         meta = extract_cover_metadata_from_ast(blocks, first_ch_idx)
 
-        assert meta["title_cn"] == "<THESIS_TITLE>"
-        assert meta["school_cn"] == "电子科学与工程学院"
-        assert meta["major_cn"] == "电子科学与技术"
-        assert meta["student_id"] == "<STUDENT_ID>"
+        assert meta["title_cn"] == "一种通用学位论文题目示例"
+        assert meta["school_cn"] == "示例学院"
+        assert meta["major_cn"] == "示例专业"
+        assert meta["student_id"] == "0000000000000"
         assert meta["author_cn"] == "CASE-A"
         assert meta["advisor_name_cn"] == "CASE-A"
         assert meta["advisor_title_cn"] == "副研究员"
@@ -198,7 +198,7 @@ class TestStripCoverAndTocBlocks:
 # Integration test: full pipeline with real docx (skip if not available)
 # ============================================================
 
-STEM_DOCX = None
+STEM_DOCX = ""
 @pytest.mark.skipif(not os.path.exists(STEM_DOCX), reason="STEM docx not found")
 class TestRealStemDocx:
     """Integration tests using the actual STEM thesis document."""
@@ -223,7 +223,7 @@ class TestRealStemDocx:
         assert "title_cn" in meta
         assert "author_cn" in meta
         assert "school_cn" in meta
-        assert meta["student_id"] == "<STUDENT_ID>"
+        assert meta["student_id"] == "0000000000000"
 
     def test_real_stem_block_stripping(self, chapters_and_blocks):
         import copy

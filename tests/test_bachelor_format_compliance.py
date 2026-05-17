@@ -34,6 +34,18 @@ MAIN_TEX_PATH = os.path.join(WORK_DIR, "main.tex")
 PROFILE_PATH = os.path.join(SKILL_DIR, "templates", "uestc-bachelor", "profile.json")
 SPEC_PATH = os.path.join(SKILL_DIR, "references", "uestc_bachelor_format_spec.md")
 
+# OSS-friendly: this suite expects a pre-built workA/ artifact (DissertUESTC.cls
+# + main.tex from a real bachelor compile). In clean environments without that
+# fixture (the public-release CI, third-party clones), skip the entire module
+# rather than raising IO errors from every test.
+if not os.path.isfile(CLS_PATH) or not os.path.isfile(MAIN_TEX_PATH):
+    pytest.skip(
+        f"workA artifact missing (CLS_PATH={CLS_PATH}); "
+        "this compliance suite requires a pre-built bachelor PDF — run the "
+        "pipeline first or skip in clean environments.",
+        allow_module_level=True,
+    )
+
 
 # ---------------------------------------------------------------------------
 # Fixtures

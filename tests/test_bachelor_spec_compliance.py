@@ -35,7 +35,7 @@ except ImportError:
     fitz = None
 
 
-CASE011_PDF = None
+CASE011_PDF = ""
 def _pdf_path():
     return os.environ.get("PDF_PATH", CASE011_PDF)
 
