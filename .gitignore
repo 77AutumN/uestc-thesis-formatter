@@ -37,3 +37,7 @@ overrides/
 # Local review/audit notes (not for upstream)
 REVIEW_REPORT.md
 PR_BODY.md
+
+# Private redaction name list — loaded at runtime by tools/redact.py;
+# CI injects from the REDACT_NAMES secret. NEVER commit.
+.redact-names.local.txt
