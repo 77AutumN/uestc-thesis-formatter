@@ -24,7 +24,7 @@ from pathlib import Path
 PATTERNS: list[tuple[re.Pattern[str], str]] = [
     (re.compile(r"\b20\d{11}\b"), "<STUDENT_ID>"),
     # Known real names from historical case data; extend when new cases are added.
-    (re.compile(r"黄子瀚|朱启彰|刘莹|郭芙蕊"), "CASE-A"),
+    (re.compile(r"黄子瀚|朱启彰|刘莹|郭芙蕊|陈金伟|江明"), "CASE-A"),
     # Real English transliterations of the above (Liu Ying / Guo Furui), case-insensitive.
     (re.compile(r"\b(Liu Ying|Guo Furui)\b", re.IGNORECASE), "CASE-A"),
     # Non-greedy character class avoids swallowing trailing string delimiters
