@@ -32,7 +32,7 @@ def _set_pstyle(p, style_id: str):
 
 
 def build_relabel():
-    """custom 1-1级 → Heading 1 路径 (case015 模式)."""
+    """custom 1-1级 → Heading 1 路径 (case_anon 模式)."""
     out = HERE / "surgery_relabel_minimal.docx"
     if out.exists():
         out.unlink()
@@ -55,7 +55,7 @@ def build_relabel():
 
 
 def build_inject():
-    """body 含 "第一章" 但 style=Normal, 期望 inject_heading_before (case014 模式)."""
+    """body 含 "第一章" 但 style=Normal, 期望 inject_heading_before (case_anon 模式)."""
     out = HERE / "surgery_inject_minimal.docx"
     if out.exists():
         out.unlink()

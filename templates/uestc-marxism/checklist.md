@@ -61,11 +61,11 @@
 - [ ] 表题居中置于表的正上方，五号 (10.5pt)（§2.4.2 [CHECKABLE]）
 - [ ] 表题段前 12 磅，段后 6 磅（§2.4.2 [CHECKABLE]）
 - [ ] 表格采用三线表：上下边线 **1.5 磅**，表内线 **0.75 磅**（§2.4.2 [CHECKABLE]）
-- [ ] ⚡ 表题含脚注时必须使用 `\caption[短标题]{长标题\footnote{...}}` 模式，否则编译报错 `Argument of \caption@ydblarg has an extra }` (CASE-HUABEI)
-- [ ] ⚡ 列数 ≥10 的宽表须检查右侧是否溢出页边距，必要时局部缩小 `\tabcolsep` (CASE-HUABEI)
-- [ ] ⚡ 所有 `\begin{table}` 必须使用 `[H]` 定位（非 `[htbp]`），防止表格飘离引用正文 (CASE-HUABEI Hotfix)
-- [ ] ⚡ 所有 `\begin{figure}` 必须使用 `[H]` 定位（非 `[htbp]`），防止图片跨页漂移 (CASE-HUABEI Hotfix)
-- [ ] ⚡ `main.tex` 必须包含 `\usepackage{float}`（`template_adapter.py` 已自动注入）(CASE-HUABEI Hotfix)
+- [ ] ⚡ 表题含脚注时必须使用 `\caption[短标题]{长标题\footnote{...}}` 模式，否则编译报错 `Argument of \caption@ydblarg has an extra }` (CASE-A)
+- [ ] ⚡ 列数 ≥10 的宽表须检查右侧是否溢出页边距，必要时局部缩小 `\tabcolsep` (CASE-A)
+- [ ] ⚡ 所有 `\begin{table}` 必须使用 `[H]` 定位（非 `[htbp]`），防止表格飘离引用正文 (CASE-A Hotfix)
+- [ ] ⚡ 所有 `\begin{figure}` 必须使用 `[H]` 定位（非 `[htbp]`），防止图片跨页漂移 (CASE-A Hotfix)
+- [ ] ⚡ `main.tex` 必须包含 `\usepackage{float}`（`template_adapter.py` 已自动注入）(CASE-A Hotfix)
 - [ ] 公式居中，编号右端对齐，分章编号（§2.5 [CHECKABLE]）
 - [ ] 公式/编号字号小四 (12pt)，段前 6 磅，段后 6 磅，单倍行距（§2.5 [CHECKABLE]）
 - [ ] 图表公式所在行均用单倍行距（§2.3.4 [CHECKABLE]）
@@ -130,7 +130,7 @@
 
 ## 🔒 文本保真规则（CRITICAL）
 
-> **说明**：case004 中因 AI 误添加摘要文本导致 P0 事故。
+> **说明**：case_anon 中因 AI 误添加摘要文本导致 P0 事故。
 > 所有内容必须与 Word 原文逐字一致，禁止任何形式的改写、补全或优化。
 
 - [ ] 🔴 中文摘要与 `extracted/abstract_zh.txt` 逐字一致（禁止 AI 补全/改写）

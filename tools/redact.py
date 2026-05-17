@@ -27,15 +27,41 @@ PATTERNS: list[tuple[re.Pattern[str], str]] = [
     (re.compile(r"黄子瀚|朱启彰|刘莹|郭芙蕊|陈金伟|江明"), "CASE-A"),
     # Real English transliterations of the above (Liu Ying / Guo Furui), case-insensitive.
     (re.compile(r"\b(Liu Ying|Guo Furui)\b", re.IGNORECASE), "CASE-A"),
-    # Non-greedy character class avoids swallowing trailing string delimiters
-    # (e.g. r"D:\open claw\X.pdf" must collapse to r"./" not r"./).
-    (re.compile(r"D:[\\/]+[Oo]pen claw[\\/][^\s'\"`,)]+"), "./"),
+    # Collapse CASE-NNN/NNN/NNN sequences first so partial-redacts don't leave 015/016 dangling.
+    (re.compile(r"\bCASE-0\d{2}(?:[/,\s]+0\d{2})+\b"), "CASE-A"),
+    (re.compile(r"\bCASE-A[/,\s]+0\d{2}(?:[/,\s]+0\d{2})*\b"), "CASE-A"),
+    # Drive-letter path (case-insensitive D:/d:; non-greedy class avoids eating string delimiters).
+    (re.compile(r"[Dd]:[\\/]+[Oo]pen claw[\\/][^\s'\"`,)]+"), "./"),
+    # Bare project-name reference (no drive prefix) — collapse to ./ as well.
+    (re.compile(r"\b[Oo]pen claw\b[\\/]?[^\s'\"`,)]*"), "./"),
+    # Internal case codes: numeric CASE-NNN, alpha CASE-LETTERS (exclude legitimate CASE-A/B sentinels).
+    (re.compile(r"\bCASE-(?!A\b|B\b)[A-Z]{2,}\b"), "CASE-A"),
     (re.compile(r"\bCASE-0\d{2}\b"), "CASE-A"),
+    # Lowercase case-id forms (case011, _case015_round1_fixN_*) that bypass the upper-case pattern.
+    # `_` is a word-char so \b fails inside identifiers like test_case011_compliance.py;
+    # use negative digit-boundaries instead so we still catch substrings.
+    (re.compile(r"_case\d{3}_round\d+_[a-zA-Z0-9_]+"), "_case_anon"),
+    (re.compile(r"(?<!\d)case0\d{2,3}(?!\d)"), "case_anon"),
 ]
 
 EXTS = {".py", ".md", ".json", ".yaml", ".yml", ".txt", ".tex"}
-SKIP_DIRS = {"vendor", ".git", ".github", ".pytest_cache", "__pycache__", "tools",
+# Narrowed: only skip directories that genuinely contain pattern literals or are
+# git/cache scaffolding. We DO want to scan .github/*.md (e.g. copilot-instructions.md).
+SKIP_DIRS = {"vendor", ".git", ".pytest_cache", "__pycache__", "tools",
              ".agent", ".codex_ipc", ".gemini_ipc"}
+# File-level skip: the workflow + redaction-spec themselves contain pattern literals.
+SKIP_FILES = {
+    ".github/workflows/redact-check.yml",
+    "docs/redaction-spec.md",
+}
+
+
+def _is_skipped_file(p: Path, root: Path) -> bool:
+    try:
+        rel = p.relative_to(root).as_posix()
+    except ValueError:
+        return False
+    return rel in SKIP_FILES
 
 
 def iter_files(root: Path):
@@ -45,6 +71,8 @@ def iter_files(root: Path):
         if p.suffix.lower() not in EXTS:
             continue
         if any(part in SKIP_DIRS for part in p.parts):
+            continue
+        if _is_skipped_file(p, root):
             continue
         yield p
 

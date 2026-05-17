@@ -33,3 +33,7 @@ overrides/
 *.nlo
 *.synctex(busy)
 *.xdv
+
+# Local review/audit notes (not for upstream)
+REVIEW_REPORT.md
+PR_BODY.md

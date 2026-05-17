@@ -46,7 +46,7 @@ from template_adapter import (
 
 @pytest.fixture
 def master_meta():
-    """标准硕士论文元数据 (case009 马院)"""
+    """标准硕士论文元数据 (case_anon 马院)"""
     return {
         "title_cn": "华北抗日根据地小学教育经费工作研究",
         "title_en": "Research on the Funding of Primary Education in the North China Base Areas",

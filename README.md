@@ -129,14 +129,13 @@ uestc-thesis-formatter/
 │   │   └── checklist.md
 │   └── failure-report.md           # 结构化故障报告模板
 │
-├── .agent/                         # AI 知识层
-│   ├── skills/thesis-formatter/
-│   │   └── SKILL.md                # 完整 Pipeline 规范
-│   └── workflows/
-│       └── thesis.md               # 处理 SOP 工作流
-│
+├── SKILL.md                        # 完整 Pipeline 规范 (顶层, AI 入口)
 ├── vendor/DissertationUESTC/       # 上游 LaTeX 模板 (submodule)
-├── docs/redaction-spec.md          # 知识编译脱敏规范
+├── docs/
+│   ├── redaction-spec.md           # 知识编译脱敏规范
+│   └── defects/                    # 50+ 张缺陷卡片 (脱敏) + INDEX + dashboard.json
+├── tools/redact.py                 # PII 脱敏工具 (CI gate 调用)
+├── .github/workflows/              # PII Gate + pytest CI
 ├── requirements.txt
 └── LICENSE
 ```
@@ -145,8 +144,26 @@ uestc-thesis-formatter/
 
 | Profile | 引用方式 | 参考文献 | 编译链 | 状态 |
 |---------|---------|---------|--------|------|
-| **uestc** (标准理工) | `\cite{}` + BibTeX | 编号列表 | xelatex→bibtex→xelatex×2 | ✅ |
+| **uestc** (标准理工硕/博) | `\cite{}` + BibTeX | 编号列表 | xelatex→bibtex→xelatex×2 | ✅ |
+| **uestc-bachelor** (本科) | `\cite{}` + BibTeX (上标 [N]) | 编号列表 | xelatex→bibtex→xelatex×2 | ✅ |
 | **uestc-marxism** (马克思主义学院) | 脚注制 ①-⑳ (每页重置) | 四分类 (著作/期刊/论文/网页) | xelatex×3 | ✅ 已验证 |
+| **stem** (理工通用基础) | `\cite{}` + BibTeX | 编号列表 | xelatex→bibtex→xelatex×2 | ✅ |
+
+## 🔒 Privacy & Public Release
+
+This repository is a **knowledge-compiled public release**. The private skill
+tree it was synced from is not redistributed; only sanitized scripts, docs and
+machine-readable specs ship here.
+
+- All PII is scrubbed before commit via [`tools/redact.py`](tools/redact.py).
+  Concretely: real student names → the sentinel `CASE-A`; 13-digit student
+  IDs → `<STUDENT_ID>`; absolute Windows paths → `./`; non-sentinel case
+  codes (any internal case identifier other than `CASE-A` / `CASE-B`) → the
+  sentinel `CASE-A`.
+- The CI workflow [`.github/workflows/redact-check.yml`](.github/workflows/redact-check.yml)
+  runs both `tools/redact.py --check` and a belt-and-suspenders `git grep`
+  on every PR to `main`. Any reintroduction of PII patterns blocks merge.
+- See [`docs/redaction-spec.md`](docs/redaction-spec.md) for the full rule set.
 
 ## 🤖 AI-Native Support
 

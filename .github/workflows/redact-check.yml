@@ -1,4 +1,4 @@
-name: PII Gate
+name: PII Gate + Tests
 
 on:
   pull_request:
@@ -28,10 +28,34 @@ jobs:
       - name: Final raw-grep belt-and-suspenders
         run: |
           # Exit 0 only if no PII patterns match anywhere in the tracked tree.
-          # Patterns mirror docs/redaction-spec.md.
-          if git grep -nE '\b20[0-9]{11}\b|黄子瀚|朱启彰|D:[\\/][Oo]pen claw|CASE-0[0-9]{2}' \
+          # Patterns mirror docs/redaction-spec.md. Case-insensitive on the drive
+          # letter and on Open claw bare references; covers numeric + alpha case codes.
+          if git grep -nE '\b20[0-9]{11}\b|黄子瀚|朱启彰|刘莹|郭芙蕊|陈金伟|江明|[Dd]:[\\/][Oo]pen claw|\b[Oo]pen claw\b|CASE-0[0-9]{2}|CASE-(HUABEI|ZHU)|(?<!\d)case0[0-9]{2,3}(?!\d)|_case[0-9]{3}_round[0-9]+' \
               -- ':!tools/redact.py' ':!docs/redaction-spec.md' ':!.github/workflows/redact-check.yml'; then
             echo "::error::PII patterns detected — see grep matches above."
             exit 1
           fi
           echo "CLEAN — no PII patterns in tracked tree"
+
+  pytest:
+    name: pytest in clean container
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: false
+          fetch-depth: 1
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.10"
+
+      - name: Install pandoc + Python deps
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq pandoc
+          pip install --quiet -r requirements.txt
+
+      - name: Run pytest
+        run: python -m pytest tests/ -q --tb=line

@@ -451,7 +451,7 @@ def test_d34_parse_electronic_with_url():
 
 
 # CASE-A: arxiv ID / DOI digits in URL must not be picked up as year
-def test_case017_arxiv_id_not_year():
+def test_case_anon_arxiv_id_not_year():
     """arxiv URL 'abs/2207.02696' contains 4-digit substring '2207' which
     must NOT override the real year that follows the URL."""
     text = ("C.-Y.Wang.YOLOv7[EB/OL].https://arxiv.org/abs/2207.02696,"
@@ -462,7 +462,7 @@ def test_case017_arxiv_id_not_year():
     assert "year = {2207}" not in bib
 
 
-def test_case017_doi_digits_not_year():
+def test_case_anon_doi_digits_not_year():
     """DOI URL '10.48550/arXiv.1704.04861' contains '4855' / '1704' / '0486'
     4-digit substrings (not year-shaped). Real year '2017' from trailing date."""
     text = ("A.G.Howard.MobileNets[EB/OL].https://doi.org/10.48550/"
@@ -474,7 +474,7 @@ def test_case017_doi_digits_not_year():
     assert "year = {1704}" not in bib
 
 
-def test_case017_arxiv_2004_id_not_year():
+def test_case_anon_arxiv_2004_id_not_year():
     """arxiv URL 'abs/2004.10934' has '2004' which IS year-shaped — but the
     real year is in the trailing date. Stripping URL ensures we read the
     trailing date, not the arxiv ID."""

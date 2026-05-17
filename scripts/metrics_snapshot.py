@@ -1,7 +1,7 @@
 """Compute 北极星 rolling-window metrics + reverse stopping-criteria.
 
 Reads `docs/thesis_registry.md` (case ledger) and `work/output_*/` (live signals)
-for heuristic estimates, then overrides them with `docs/case_adjudication/CASE-XXX.yaml`
+for heuristic estimates, then overrides them with `docs/case_adjudication/CASE-A.yaml`
 (ground truth) when available.
 
 Outputs JSON snapshot with:
@@ -27,7 +27,7 @@ Usage:
 
 Without `--output`, snapshot is written to stdout as pretty JSON.
 
-`adjudication_dir` defaults to `docs/case_adjudication/`. If a `CASE-XXX.yaml`
+`adjudication_dir` defaults to `docs/case_adjudication/`. If a `CASE-A.yaml`
 exists there, its `round_1` values override heuristic estimates and the case
 is marked `source: "adjudicated"`.
 """
@@ -67,14 +67,14 @@ B_P0_LEAK_KEYWORDS = [
 def split_cases(text: str) -> list[tuple[str, str, str]]:
     """Return [(case_id, header_tail, body), ...].
 
-    Skips the template entry "CASE-XXX". `header_tail` is the remainder of
+    Skips the template entry "CASE-A". `header_tail` is the remainder of
     the header line after the case_id (typically " : name (school, degree)").
     """
     matches = list(CASE_HEADER_RE.finditer(text))
     out = []
     for i, m in enumerate(matches):
         case_id = m.group(1)
-        if case_id == "CASE-XXX":
+        if case_id == "CASE-A":
             continue
         head_tail = m.group(2)
         start = m.end()

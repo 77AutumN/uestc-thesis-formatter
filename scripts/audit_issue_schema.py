@@ -35,7 +35,7 @@ def _default_contracts_dir() -> Path:
 
     Resolved as ``Path(__file__).parent.parent / "references" / "issue_contracts"``.
     Note: deliberately uses the un-resolved ``__file__`` so a Windows junction
-    on ``thesis/.agents`` (which points to ``Open claw/.agent`` in this
+    on ``thesis/.agents`` (which points to ``./`` in this
     checkout) does not warp us out of the project tree. ``.resolve()`` would
     follow the junction and break.
 

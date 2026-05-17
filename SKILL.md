@@ -414,11 +414,11 @@ Pipeline 失败
 - **❌ NEVER declare completion without Definition of Done confirmation.** 交付前必须等待用户明确确认。
 - **❌ NEVER modify the original .docx without user approval and backup.** 热修复原稿属于越权操作，必须先备份、再请求授权。
 - **❌ NEVER skip Phase 1.5 Pre-flight Probe.** MarkItDown 预检是防止 AST 引擎吃脏数据的最后一道廉价防线。
-- **❌ NEVER use `\footnote{}` directly inside `\caption{}`.** 必须使用 `\caption[短标题]{长标题\footnote{...}}` 保护模式，否则编译崩溃 (CASE-HUABEI)。
-- **❌ NEVER ignore wide tables (≥10 columns) without checking overflow.** 默认 `\tabcolsep=6pt` 可能导致右侧溢出。必要时局部缩小 `\tabcolsep` (CASE-HUABEI)。
-- **❌ NEVER use `[htbp]` for `\begin{table}` or `\begin{figure}`.** UESTC 规范 §2.4 要求表格/图片不得跨页漂移。必须使用 `[H]`（需 `\usepackage{float}`）强制就地定位。`template_adapter.py` 已自动注入 `float` 宏包，`pandoc_ast_extract.py` 已默认输出 `[H]` (CASE-HUABEI Hotfix)。
-- **❌ NEVER assume 1 caption = 1 image file.** Word figures 可能在一个 caption 下包含多张并排子图。提取引擎可能只抓取第一张，导致后续所有图片引用**全局偏移 +1/+2**。必须用 Figure Audit Protocol 逐图与 Word 原文交叉验证 (CASE-ZHU)。
-- **❌ NEVER skip per-figure visual verification after image remapping.** 即使修复了 N-1 张图，第 N 张仍可能错误（因复合偏移：单图遗漏 → +1，双图遗漏 → +2）。修复后必须逐页渲染验证 (CASE-ZHU)。
+- **❌ NEVER use `\footnote{}` directly inside `\caption{}`.** 必须使用 `\caption[短标题]{长标题\footnote{...}}` 保护模式，否则编译崩溃 (CASE-A)。
+- **❌ NEVER ignore wide tables (≥10 columns) without checking overflow.** 默认 `\tabcolsep=6pt` 可能导致右侧溢出。必要时局部缩小 `\tabcolsep` (CASE-A)。
+- **❌ NEVER use `[htbp]` for `\begin{table}` or `\begin{figure}`.** UESTC 规范 §2.4 要求表格/图片不得跨页漂移。必须使用 `[H]`（需 `\usepackage{float}`）强制就地定位。`template_adapter.py` 已自动注入 `float` 宏包，`pandoc_ast_extract.py` 已默认输出 `[H]` (CASE-A Hotfix)。
+- **❌ NEVER assume 1 caption = 1 image file.** Word figures 可能在一个 caption 下包含多张并排子图。提取引擎可能只抓取第一张，导致后续所有图片引用**全局偏移 +1/+2**。必须用 Figure Audit Protocol 逐图与 Word 原文交叉验证 (CASE-A)。
+- **❌ NEVER skip per-figure visual verification after image remapping.** 即使修复了 N-1 张图，第 N 张仍可能错误（因复合偏移：单图遗漏 → +1，双图遗漏 → +2）。修复后必须逐页渲染验证 (CASE-A)。
 - **❌ NEVER 修改客户内容 (C 类) 来掩盖客户原稿瑕疵 (CASE-A round 3, 2026-05-04 决策)**: 项目本质 = "结构标准化", 不是"内容修改". **B 类结构标记**(段落 style / Heading / 字体 / 字号 / 封面表格化 / ToC 自动生成) 是 Word 内部技术属性, 客户根本不知道, 我们**代做** — 这是项目核心价值. **C 类内容文字** (章节标题文字 / 正文 / 摘要 / 致谢字数 / 关键词 / ToC 错别字 / 客户在每章重复写的标题段 / 缺失的公式体 / 错填封面字段) 是客户写的字, **绝不动, 退回客户**. 退回硬触发: 致谢字数超 200 / ToC 错别字 / 章正文有重复标题段 / 缺章节内容 / 缺封面必填字段. 写 `client_feedback_<round>.md` 草稿给客户. **D 类损坏** (公式 r:embed 全断链 等 Word 保存 bug) 尽力恢复, 失败也退回. 判断: 改这个会不会动到客户的字 → 会 = C 退回, 不会 = B 代做.
 
 ## Scripts
