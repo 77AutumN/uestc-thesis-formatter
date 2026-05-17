@@ -178,39 +178,39 @@ def test_dthesis_pg_parse_thesis_single_range():
 
 
 def test_dthesis_pg_parse_thesis_two_ranges():
-    """彭琳[D]. 杭州:浙江大学, 2007, 45-49, 51-56. → 含两段页码."""
-    text = "彭琳. 铝硼硅系玻璃结构与性能的研究[D]. 杭州:浙江大学,2007,45-49, 51-56."
-    bib, warning = refs_to_bib.parse_thesis(text, "peng2007")
+    """张三[D]. 杭州:浙江大学, 2007, 45-49, 51-56. → 含两段页码."""
+    text = "张三. 示例研究主题[D]. 杭州:浙江大学,2007,45-49, 51-56."
+    bib, warning = refs_to_bib.parse_thesis(text, "zhangsan2007")
     assert warning is None
     assert "45-49" in bib
     assert "51-56" in bib
 
 
 # ============================================================
-# CASE-A round 4 lun51 fix — D-thesis-address: SCHOOL_TO_CITY 自动补 address
+# D-thesis-address: SCHOOL_TO_CITY 自动补 address
 # 防 lun51 "缺少出版年, 或者出版者和出版年未用逗号分隔" 严重错误.
 # ============================================================
 
 def test_dthesis_address_auto_inject_from_school():
     """[D]. 北京邮电大学,2019. → address={北京} 由 SCHOOL_TO_CITY 推断."""
-    text = "张书楠. 基于5G毫米波信号的TOA估计及定位算法的研究[D]. 北京邮电大学,2019."
-    bib, warning = refs_to_bib.parse_thesis(text, "zhang2019")
+    text = "李四. 示例研究主题[D]. 北京邮电大学,2019."
+    bib, warning = refs_to_bib.parse_thesis(text, "lisi2019")
     assert warning is None
     assert "school = {北京邮电大学}" in bib
     assert "address = {北京}" in bib
 
 
 def test_dthesis_address_pla_info_eng():
-    """解放军信息工程大学 → 郑州 (CASE-A [5] 郝林喆 实战)."""
-    text = "郝林喆. 基于无线传感器网络的目标定位技术研究[D]. 解放军信息工程大学,2013."
-    bib, _ = refs_to_bib.parse_thesis(text, "hao2013")
+    """解放军信息工程大学 → 郑州 (SCHOOL_TO_CITY fallback)."""
+    text = "王五. 示例研究主题[D]. 解放军信息工程大学,2013."
+    bib, _ = refs_to_bib.parse_thesis(text, "wangwu2013")
     assert "address = {郑州}" in bib
 
 
 def test_dthesis_address_explicit_respected():
     """客户显式写出版地 '成都:电子科技大学' → 尊重客户 address, 不查表."""
-    text = "余央. NLOS条件下TOA/TDOA定位优化方法[D]. 成都:电子科技大学,2018."
-    bib, _ = refs_to_bib.parse_thesis(text, "yu2018")
+    text = "赵六. 示例研究主题[D]. 成都:电子科技大学,2018."
+    bib, _ = refs_to_bib.parse_thesis(text, "zhaoliu2018")
     assert "address = {成都}" in bib
     assert "school = {电子科技大学}" in bib
 
@@ -225,9 +225,9 @@ def test_dthesis_address_unknown_school_no_inject():
 
 
 def test_dthesis_existing_pg_test_still_passes():
-    """回归: 显式 address+pages 形式 (彭琳 双段页码) 仍正确."""
-    text = "彭琳. 铝硼硅系玻璃结构与性能的研究[D]. 杭州:浙江大学,2007,45-49, 51-56."
-    bib, _ = refs_to_bib.parse_thesis(text, "peng2007")
+    """回归: 显式 address+pages 形式 (双段页码) 仍正确."""
+    text = "张三. 示例研究主题[D]. 杭州:浙江大学,2007,45-49, 51-56."
+    bib, _ = refs_to_bib.parse_thesis(text, "zhangsan2007")
     assert "address = {杭州}" in bib
     assert "school = {浙江大学}" in bib
     assert "45-49" in bib
@@ -382,8 +382,8 @@ def test_d31_chinese_org_with_paren_wrapped():
 
 def test_d31_chinese_person_no_paren_unchanged():
     """中文人名不含 () 不动."""
-    out = refs_to_bib.sanitize_author_list("彭琳")
-    assert out == "彭琳"
+    out = refs_to_bib.sanitize_author_list("张三")
+    assert out == "张三"
 
 
 # ============================================================
@@ -538,7 +538,7 @@ def test_pipeline_smoke_all_30_types():
     raw = """[1] Tummala R R. Test[C]. Conf,2005,3-7.
 [2] Sun Y, et al. Test[J]. Journal,2022,33(15):11847-11865.
 [3] 林宗寿. 测试[M]. 武汉:出版社,2008,120-135.
-[4] 彭琳. 测试[D]. 杭州:浙江大学,2007,45-56.
+[4] 张三. 测试[D]. 杭州:浙江大学,2007,45-56.
 [5] 委员会. 标准[S]. 北京:出版社,2023.
 """
     import tempfile

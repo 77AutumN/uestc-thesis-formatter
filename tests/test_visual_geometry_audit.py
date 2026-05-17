@@ -446,62 +446,62 @@ def test_composed_instance_passes_contract_validation():
 
 
 # ---------------------------------------------------------------------------
-# Day 13A: large_vertical_gap subtype分型 (equation_gap vs float_gap)
-# Freezes the 9 wrong-fix samples from Day 12 case 11/16 advisory smoke.
-# Every sample was a real ≥70pt gap in the PDF, but the next block was a
-# bare equation tag — they should be classified equation_gap (diagnostic)
-# and NEVER routed to float_policy_repair.
+# large_vertical_gap subtype 分型 (equation_gap vs float_gap)
+# Synthetic regression samples: a ≥70pt gap whose next block is a bare equation
+# tag must classify as equation_gap (diagnostic) and NEVER route to
+# float_policy_repair. Math + caption text are synthetic placeholders — only
+# the input shape (tail-anchored regex / paragraph length) is contractual.
 # ---------------------------------------------------------------------------
 
 
 @pytest.mark.parametrize("prev_text,next_text,case_label", [
-    # case 11 — 7 wrong-fix candidates (next_block_text = bare (N.M) tag)
-    ("& s.t.g_i2 = ∥x −a_i∥2, i = 1, ..., N", "(3.6)",  "case11_p17_VE-0001"),
-    ("1",                                      "(3.7)",  "case11_p17_VE-0002"),
-    ("& s.t.∥x∥2 = ∂",                          "(3.10)", "case11_p19_VE-0003"),
-    ("& s.t.yTDy + 2f Ty = 0",                  "(3.11)", "case11_p19_VE-0004"),
-    ("& ATA + λD≻0",                            "(3.18)", "case11_p20_VE-0005"),
-    ("& s.t.yTDy + 2f Ty = 0",                  "(4.5)",  "case11_p25_VE-0006"),
-    ("& s.t.yTDy + 2f Ty = 0",                  "(4.16)", "case11_p29_VE-0007"),
-    # case 16 — 2 wrong-fix candidates. PDF actually rendered the formula
-    # on a single PyMuPDF block: full math expression + trailing (N-M) tag.
+    # Group A — 7 bare-tag samples (next_block_text = bare (N.M) tag)
+    ("& s.t. f_1(x) = ‖x − u‖2, x ∈ R^n", "(3.6)",  "synth_eq_3.6_idx0"),
+    ("1",                                  "(3.7)",  "synth_eq_3.7_idx1"),
+    ("& s.t. ‖x‖2 = θ",                    "(3.10)", "synth_eq_3.10_idx2"),
+    ("& s.t. y^T D y + 2 c^T y = 0",       "(3.11)", "synth_eq_3.11_idx3"),
+    ("& A^T A + λD ≻ 0",                   "(3.18)", "synth_eq_3.18_idx4"),
+    ("& s.t. y^T D y + 2 c^T y = 0",       "(4.5)",  "synth_eq_4.5_idx5"),
+    ("& s.t. y^T D y + 2 c^T y = 0",       "(4.16)", "synth_eq_4.16_idx6"),
+    # Group B — 2 full-line samples. PDF renders the formula on a single
+    # PyMuPDF block: full math expression + trailing (N-M) tag.
     # The detector's tail-anchored regex catches this shape too.
-    ("于每个频点fq，期望信号经过整个空时结构的传输函数应当满足：",
-     "Hd(fq, θ0) = e−j2πfqTs(L−1)/2(3-8)", "case16_p19_VE-0001_full_line"),
-    ("按列拼接，构成联合约束矩阵：",
-     "C = [aST(f1, θ0), aST(f2, θ0), . . . , aST(fQ, θ0)] ∈CML×Q(3-9)",
-     "case16_p19_VE-0002_full_line"),
+    ("对于每个测量点 fq, 输入信号经过通用传输模型的响应函数满足:",
+     "H_d(fq, θ_0) = e^(−j2πfq Ts(L−1)/2)(3-8)", "synth_eq_3.8_full_line_idx7"),
+    ("按列拼接, 构成示例约束矩阵:",
+     "C = [v_1(f_1, θ_0), v_2(f_2, θ_0), ..., v_Q(f_Q, θ_0)] ∈ R^(M×Q)(3-9)",
+     "synth_eq_3.9_full_line_idx8"),
 ])
-def test_day12_formula_wrong_fix_samples_classified_as_equation_gap(
+def test_formula_wrong_fix_samples_classified_as_equation_gap(
         prev_text, next_text, case_label):
-    """Frozen regression: Day 12 surfaced 9 wrong-fix candidates where
-    next_block_text was a bare (N.M) equation tag. All 9 must classify as
-    equation_gap so float_policy_repair refuses them."""
+    """Frozen regression: 9 samples where next_block_text is a bare (N.M)
+    equation tag. All 9 must classify as equation_gap so float_policy_repair
+    refuses them."""
     subtype = vga._classify_gap_subtype(prev_text, False, next_text, False)
     assert subtype == "equation_gap", (
         f"{case_label}: next={next_text!r} should be equation_gap but got {subtype}")
 
 
 @pytest.mark.parametrize("prev_text,next_text,case_label", [
-    # case 17 gap-1 — figure → next section heading (real float gap)
-    ("图4-9", "4.6.4 饰品色彩差异导致的检测偏差", "case17_p33_VE-0001"),
-    # case 16 gap-3 — caption → caption text (huge 351pt float gap)
-    ("图3-4 ：不同采样频率下各阵元的m", "图3-4 给出了不同fs/B 取值下各阵元| ∆τm | 的分布。随着采样频率的提高，",
-     "case16_p25_VE-0003"),
-    # case 16 gap-4 — caption → caption text (140pt float gap)
-    ("图3-7 波束形成前后频谱对比", "图3-7(a) 为波束形成前的总接收信号频谱，其中期望信号和两个强干扰分量",
-     "case16_p28_VE-0004"),
-    # case 11 gap-8 — caption → body para (88pt float gap)
-    ("图4-3 各算法的RMSE 与高斯白噪声标准差的关系", "在图4.3 中可以看到，当不存在离群值测量，仅存在高斯白噪声时，最小二乘",
-     "case11_p34_VE-0008"),
-    # heading-body 73pt sample (case 17 gap-2, 'unsure' class — must NOT
-    # be misclassified as equation_gap; stays float_gap by current policy)
-    ("4.6.4 饰品色彩差异导致的检测偏差", "色彩是模型区分饰品类别的重要线索，但也可能成为误判的来源。本文数据",
-     "case17_p33_VE-0002_unsure"),
+    # Group C sample 1 — figure → next section heading (real float gap)
+    ("图4-9", "4.6.4 示例方法的检测偏差", "synth_float_idx0"),
+    # Group C sample 2 — caption → caption text (huge 351pt float gap)
+    ("图3-4 ：示例图的某指标分布", "图3-4 给出了不同参数取值下示例指标的分布。随着参数的提高，",
+     "synth_float_idx1"),
+    # Group C sample 3 — caption → caption text (140pt float gap)
+    ("图3-7 示例处理前后对比", "图3-7(a) 为示例处理前的信号频谱, 其中期望分量和干扰分量",
+     "synth_float_idx2"),
+    # Group C sample 4 — caption → body para (88pt float gap)
+    ("图4-3 各算法的示例指标与示例参数的关系", "在图4.3 中可以看到, 当满足特定条件时, 方法 A 表现稳定",
+     "synth_float_idx3"),
+    # heading-body 73pt sample ('unsure' class — must NOT be misclassified
+    # as equation_gap; stays float_gap by current policy)
+    ("4.6.4 示例方法的检测偏差", "示例分析说明该指标可能成为误差的来源。本文方法的实验数据",
+     "synth_float_idx4_unsure"),
 ])
-def test_day12_real_float_samples_remain_float_gap(prev_text, next_text, case_label):
-    """Frozen regression: real figure-float gaps in case 11/16/17 must
-    stay float_gap so float_policy_repair retains them as candidates."""
+def test_real_float_samples_remain_float_gap(prev_text, next_text, case_label):
+    """Frozen regression: real figure-float gap shapes must stay float_gap so
+    float_policy_repair retains them as candidates."""
     subtype = vga._classify_gap_subtype(prev_text, False, next_text, False)
     assert subtype == "float_gap", (
         f"{case_label}: next={next_text!r} should be float_gap but got {subtype}")

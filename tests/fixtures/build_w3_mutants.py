@@ -44,13 +44,13 @@ def _write_docx(path: Path, doc_xml: str):
 
 
 def build_mutant_caption_math():
-    """D41: figure caption 含 OOXML <m:oMath> 公式 |Δτ_m|.
+    """D41: figure caption 含 OOXML <m:oMath> 公式 (合成 |f(x)|).
     期望: source_manifest 检测 has_omath; recover_figures._text_of_paragraph
     抓 <m:t> 内容拼 $...$.
     """
     body = """
 <w:p><w:r><w:t>正文段示意.</w:t></w:r></w:p>
-<w:p><w:r><w:t>图3-4：不同采样频率下各阵元的</w:t></w:r><m:oMath><m:r><m:t>|Δτ_m|</m:t></m:r></m:oMath></w:p>
+<w:p><w:r><w:t>图3-4：示例图说明含公式</w:t></w:r><m:oMath><m:r><m:t>|f(x)|</m:t></m:r></m:oMath></w:p>
 <w:p><w:r><w:t>下文段.</w:t></w:r></w:p>
 """
     _write_docx(HERE / "mutant_caption_math.docx", _wrap_doc(body))
@@ -61,7 +61,7 @@ def build_mutant_caption_lookalike():
     body = """
 <w:p><w:r><w:t>第三章.</w:t></w:r></w:p>
 <w:p><w:r><w:t>图3-4：测试 caption</w:t></w:r></w:p>
-<w:p><w:r><w:t>图3-4 给出了不同 fs/B 取值下各阵元的分布, 随着采样频率的提高, 各阵元的残余时延整体呈下降趋势, 逐步向零靠近。</w:t></w:r></w:p>
+<w:p><w:r><w:t>图3-4 给出了不同参数取值下示例指标的分布, 随着参数的提高, 示例指标整体呈下降趋势, 逐步向零靠近。</w:t></w:r></w:p>
 """
     _write_docx(HERE / "mutant_caption_lookalike.docx", _wrap_doc(body))
 

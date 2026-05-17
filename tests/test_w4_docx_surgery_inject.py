@@ -57,11 +57,11 @@ def test_inject_detector_anchor_preface_logic_unit():
             {"id": "p001", "text": "前一章末尾段, 是上一章的结论或最后内容, 长度足够触发引言段判定 (>30字符).",
              "zone_guess": "body", "style_name": "Normal"},
             {"id": "p_blank", "text": "", "zone_guess": "body", "style_name": "Normal"},  # chapter 边界空段
-            {"id": "p002", "text": "针对当前空间管理短板, 本章提出优化对策, 推动空间管理政策的进一步完善.",
+            {"id": "p002", "text": "针对当前测试方法工具组合存在的短板, 结合应用场景的实际情况, 本文提出以下优化对策建议, 推动测试方法体系的进一步完善.",
              "zone_guess": "body", "style_name": "Normal"},  # 章引言段
-            {"id": "p003", "text": "第六章 空间管理政策工具组合优化路径",
+            {"id": "p003", "text": "第六章 测试方法体系优化路径",
              "zone_guess": "body", "style_name": "Normal"},  # body 第N章 段
-            {"id": "p004", "text": "6.1 优化工具内部结构", "zone_guess": "body", "style_name": "Normal"},
+            {"id": "p004", "text": "6.1 优化方法内部结构", "zone_guess": "body", "style_name": "Normal"},
         ],
     }
     ops = ds._detector_inject_heading_before(fake_manifest)
@@ -69,18 +69,18 @@ def test_inject_detector_anchor_preface_logic_unit():
     op = ops[0]
     # anchor 应上移到引言段 p002, 不是 p003 (第N章段 itself)
     assert op["params"]["anchor_paragraph_id"] == "p002"
-    assert "针对当前空间管理" in op["params"]["anchor_text_match"]
+    assert "针对当前测试方法" in op["params"]["anchor_text_match"]
     assert op["visible_text_change"] is True
-    assert op["params"]["title"] == "第六章 空间管理政策工具组合优化路径"
+    assert op["params"]["title"] == "第六章 测试方法体系优化路径"
 
 
 def test_orphan_detector_finds_naked_chapter_name():
-    """裸章名段 '空间管理政策工具组合优化路径' 应被识别为 delete 候选."""
+    """裸章名段 '测试方法体系优化路径' 应被识别为 delete 候选."""
     _need(FX_INJECT_ORPHAN)
     manifest = sm.build_probe_manifest(FX_INJECT_ORPHAN)
     ops = ds._detector_orphan_title_paragraph(manifest)
     targets = [op["params"]["target_text_match"] for op in ops]
-    assert any("空间管理政策工具组合优化路径" == t for t in targets), \
+    assert any("测试方法体系优化路径" == t for t in targets), \
         f"expected naked chapter name in targets, got: {targets}"
 
 
@@ -106,7 +106,7 @@ def test_apply_inject_heading_before_inserts_paragraph():
         shutil.copy(FX_INJECT_ORPHAN, tmp)
         params = {
             "anchor_paragraph_id": "?",
-            "anchor_text_match": "6.1 优化工具内部结构",
+            "anchor_text_match": "6.1 优化方法内部结构",
             "title": "TEST 第六章 X",
             "level": 1,
         }
@@ -118,7 +118,7 @@ def test_apply_inject_heading_before_inserts_paragraph():
         texts = [p.text for p in d.paragraphs]
         # inject 段应当出现在 anchor 段之前
         idx_inject = next(i for i, t in enumerate(texts) if t == "TEST 第六章 X")
-        idx_anchor = next(i for i, t in enumerate(texts) if t == "6.1 优化工具内部结构")
+        idx_anchor = next(i for i, t in enumerate(texts) if t == "6.1 优化方法内部结构")
         assert idx_inject == idx_anchor - 1, f"inject @ {idx_inject}, anchor @ {idx_anchor}"
 
 
@@ -130,7 +130,7 @@ def test_apply_delete_orphan_removes_paragraph():
         shutil.copy(FX_INJECT_ORPHAN, tmp)
         params = {
             "target_paragraph_id": "?",
-            "target_text_match": "空间管理政策工具组合优化路径",
+            "target_text_match": "测试方法体系优化路径",
         }
         result = ds._apply_delete_orphan_title_paragraph(tmp, params)
         assert result["paragraphs_deleted"] == 1
@@ -139,8 +139,8 @@ def test_apply_delete_orphan_removes_paragraph():
         d = Document(tmp)
         texts = [p.text.strip() for p in d.paragraphs]
         # 裸段已删, "第六章 X" 全 prefix 段应仍在
-        assert "空间管理政策工具组合优化路径" not in texts
-        assert any("第六章" in t and "空间管理政策工具组合优化路径" in t for t in texts)
+        assert "测试方法体系优化路径" not in texts
+        assert any("第六章" in t and "测试方法体系优化路径" in t for t in texts)
 
 
 def test_apply_inject_missing_anchor_raises():

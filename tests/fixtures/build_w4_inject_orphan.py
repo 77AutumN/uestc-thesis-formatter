@@ -33,17 +33,17 @@ def build_w4_inject_orphan():
     d.add_paragraph("2.1.1 正文段, 长度足以让 sentence_like 启发命中.")
 
     # 第四章 (有 prefix) — 不需 surgery
-    d.add_paragraph("第四章 各阶段政策工具组合特征与现存问题")
-    d.add_paragraph("4.1 政策文本编码")
+    d.add_paragraph("第四章 测试方法特征与现存问题")
+    d.add_paragraph("4.1 数据采集方法")
 
-    # ===== 关键场景: 第六章 case19 模式 =====
+    # ===== 关键场景: 第六章 inject-orphan 模式 =====
     # 客户手写"裸章名段" (无 "第六章" prefix) — 需要 detector 标 delete
-    d.add_paragraph("空间管理政策工具组合优化路径")
+    d.add_paragraph("测试方法体系优化路径")
     # 章引言段 — anchor 应上移到这里
-    d.add_paragraph("针对当前临汾政策工具组合存在的短板, 结合临汾的实际情况, 本文提出以下优化对策建议, 推动空间管理政策的进一步完善.")
+    d.add_paragraph("针对当前测试方法工具组合存在的短板, 结合应用场景的实际情况, 本文提出以下优化对策建议, 推动测试方法体系的进一步完善.")
     # "第六章 Z" 章标题段 (有 prefix) — detector 找到此, anchor 应上移到上面引言
-    d.add_paragraph("第六章 空间管理政策工具组合优化路径")
-    d.add_paragraph("6.1 优化工具内部结构")
+    d.add_paragraph("第六章 测试方法体系优化路径")
+    d.add_paragraph("6.1 优化方法内部结构")
     d.add_paragraph("6.1 正文段足够长触发启发判定阈值, 这是用于 zone_guess 的判断.")
 
     d.save(out)

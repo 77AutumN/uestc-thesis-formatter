@@ -50,7 +50,7 @@ def _text_of_paragraph(p_xml: str) -> str:
     """W3 D41: 按 XML 顺序混合 <w:t> 文本 + <m:oMath> 公式 (粗糙 LaTeX 化).
 
     pandoc 不解析 <m:oMath>, recover_figures 之前只抓 <w:t> 致 caption 含数学的
-    docx (CASE-A fig 3-4 `|Δτ_m|`) 公式部分丢失. 简化策略: 抓 oMath
+    docx (例: 图 caption 含 `|f(x)|` 形公式) 公式部分丢失. 简化策略: 抓 oMath
     内 <m:t> 文字 join, 包 $...$ (子上标等结构丢失, 但视觉上保留可读性, 优于完全空).
     """
     out: List[str] = []

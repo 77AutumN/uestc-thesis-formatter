@@ -46,13 +46,13 @@ from template_adapter import (
 
 @pytest.fixture
 def master_meta():
-    """标准硕士论文元数据 (case_anon 马院)"""
+    """标准硕士论文元数据 (合成示例 — 马院 profile)"""
     return {
-        "title_cn": "华北抗日根据地小学教育经费工作研究",
-        "title_en": "Research on the Funding of Primary Education in the North China Base Areas",
+        "title_cn": "示例研究: 理论基础与应用",
+        "title_en": "Example Research: Theory and Application",
         "author_cn": "张三",
         "author_en": "Zhang San",
-        "student_id": "202321180153",
+        "student_id": "0000000000000",
         "major_cn": "马克思主义理论",
         "major_en": "Marxist Theory",
         "school_cn": "马克思主义学院",
@@ -88,7 +88,7 @@ def minimal_meta():
         "school_cn": "马克思主义学院",
         "title_cn": "某研究",
         "major_en": "Marxist Theory",
-        "student_id": "202321180153",
+        "student_id": "0000000000000",
         "school_en": "School of Marxism",
         "title_en": "Some Research",
     }

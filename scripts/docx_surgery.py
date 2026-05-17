@@ -224,7 +224,7 @@ def _detector_orphan_title_paragraph(manifest: Dict) -> List[Dict]:
     """W4-C: 检测客户手写的"裸章名段" (与 inject_heading_before 即将插入的 chapter title 重复).
 
     场景 (case19 round 2b): 客户 docx 在某 N.1 段之前手写了"X章名"段 (无"第N章"前缀),
-    例如 "空间管理政策工具组合优化路径". inject_heading_before 会插 "第六章 空间管理政策工具组合优化路径",
+    例如 "测试方法体系优化路径". inject_heading_before 会插 "第六章 测试方法体系优化路径",
     与该段重复. 此 detector 输出 delete op 与 inject op 配对, apply 时同时清除.
 
     判定: paragraphs[].text 是某 inject_heading_before op 的 title 去掉"第N章 "前缀后的字面.
@@ -399,7 +399,7 @@ def _apply_inject_heading_before(temp_path: str, params: Dict) -> Dict:
     params 必含:
       - anchor_paragraph_id: manifest 段 id (e.g. "p000130")
       - anchor_text_match: anchor 段当前 text (apply 时用 text 重新查找, 避 idx 偏移问题)
-      - title: 待插入的 chapter title (e.g. "第六章 空间管理政策工具组合优化路径")
+      - title: 待插入的 chapter title (e.g. "第六章 测试方法体系优化路径")
       - level: int (1/2/3, default 1)
 
     实现:
@@ -463,7 +463,7 @@ def _apply_delete_orphan_title_paragraph(temp_path: str, params: Dict) -> Dict:
       - target_paragraph_id: manifest 段 id (advisory, 不严格)
 
     用法: 与 inject_heading_before 配对, 删客户原稿"裸章名段"
-    (e.g. "空间管理政策工具组合优化路径" 与 inject 的"第六章 空间管理政策工具组合优化路径" 重复).
+    (e.g. "测试方法体系优化路径" 与 inject 的"第六章 测试方法体系优化路径" 重复).
     """
     from docx import Document
 

@@ -733,12 +733,21 @@ def find_chapters(blocks: list) -> list:
             continue
 
         normalized = normalize_text(text)
-        
-        # HOTFIX for case_anon: Chapter 3 is formatted as "华北抗日根据地小学教育的历史背景与多重困境"
-        if "华北抗日根据地小学教育的历史背景与多重困境" in normalized and not normalized.startswith("第三章"):
-            normalized = "第三章 " + normalized.replace("3.", "").strip()
-            text = normalized
-        
+
+        # 数字编号章标题规范化: 客户用 "N. 中文标题" 写法代替 "第N章 中文标题".
+        # 触发条件: 段首是 1-9 + 点 + 空格 + 连续 CJK 字符 (排除 "1.4 子小节"
+        # 因其无空格分隔, 且排除 "3. 1 something" 因 title 首位是数字).
+        # 仅当 normalized 尚未以"第"开头时改写, 避免重复 prefix.
+        m_chapter_num = re.match(r"^([1-9])\.\s+([一-鿿]{2,}.*)$", normalized)
+        if m_chapter_num and not normalized.startswith("第"):
+            _num = int(m_chapter_num.group(1))
+            _title = m_chapter_num.group(2).strip()
+            _cn = {1: "一", 2: "二", 3: "三", 4: "四", 5: "五",
+                   6: "六", 7: "七", 8: "八", 9: "九"}.get(_num)
+            if _cn:
+                normalized = f"第{_cn}章 {_title}"
+                text = normalized
+
         # 跳过目录泄漏：如果结尾是数字，大概率是目录
         if re.search(r"\s+\d+$", normalized.strip()):
             continue
