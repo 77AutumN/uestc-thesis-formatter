@@ -45,10 +45,9 @@ try:
 except ImportError:
     yaml = None  # adjudication will be skipped with warning
 
-DEFAULT_REGISTRY = r"./
-DEFAULT_WORK_ROOT = r"./
-DEFAULT_ADJUDICATION_DIR = r"./
-
+DEFAULT_REGISTRY = None
+DEFAULT_WORK_ROOT = None
+DEFAULT_ADJUDICATION_DIR = None
 CASE_HEADER_RE = re.compile(r"^#{2,4}\s+(CASE-[\w-]+)([^\n]*)", re.MULTILINE)
 FIELD_BULLET_RE = re.compile(r"^\s*-\s*\*\*([^*]+?)\*\*\s*[:：]\s*(.*)", re.MULTILINE)
 FIELD_TABLE_RE = re.compile(r"^\|\s*([^|]+?)\s*\|\s*(.+?)\s*\|", re.MULTILINE)

@@ -16,7 +16,7 @@ if SCRIPTS not in sys.path:
 
 # repo root 解析: skill 可能跑在 .agent/skills/(单) 或 .agents/skills/(复) 副本
 # 兜底用绝对硬编码 + env override
-REPO_ROOT = os.environ.get("THESIS_REPO_ROOT", r"./
+REPO_ROOT = os.environ.get("THESIS_REPO_ROOT", "")
 DEFECTS_DIR = os.path.join(REPO_ROOT, "reference", "defects")
 if not os.path.isdir(DEFECTS_DIR):
     import pytest

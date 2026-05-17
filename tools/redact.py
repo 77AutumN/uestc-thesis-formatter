@@ -27,7 +27,9 @@ PATTERNS: list[tuple[re.Pattern[str], str]] = [
     (re.compile(r"CASE-A|CASE-A|CASE-A|CASE-A"), "CASE-A"),
     # Real English transliterations of the above (CASE-A / CASE-A), case-insensitive.
     (re.compile(r"\b(CASE-A|CASE-A)\b", re.IGNORECASE), "CASE-A"),
-    (re.compile(r"D:[\\/]+[Oo]pen claw[\\/]+\S+"), "./"),
+    # Non-greedy character class avoids swallowing trailing string delimiters
+    # (e.g. r"D:\open claw\X.pdf" must collapse to r"./" not r"./).
+    (re.compile(r"D:[\\/]+[Oo]pen claw[\\/][^\s'\"`,)]+"), "./"),
     (re.compile(r"\bCASE-0\d{2}\b"), "CASE-A"),
 ]
 
