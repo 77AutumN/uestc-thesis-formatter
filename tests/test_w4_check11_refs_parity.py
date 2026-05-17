@@ -21,7 +21,7 @@ import product_audit as pa  # noqa: E402
 def test_check11_perfect_parity_3_entries():
     """3 条 refs, 全 parity → 0 mismatches."""
     refs_raw = (
-        "陈振明.政策工具[M].北京: 中国人民大学, 2018.\n"
+        "张三.示例著作[M].北京: 示例出版社, 2018.\n"
         "李四.示例论文[J].学报, 2019, 1(1):1-10.\n"
         "Smith J. Example[D]. Boston: MIT, 2020.\n"
     )

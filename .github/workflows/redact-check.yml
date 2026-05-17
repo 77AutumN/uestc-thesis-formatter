@@ -23,7 +23,9 @@ jobs:
           python-version: "3.10"
 
       - name: Install Python deps (for .docx + .pdf scanning)
-        run: pip install --quiet python-docx PyMuPDF
+        # Pin to the same versions as requirements.txt to avoid silent
+        # extractor drift if the runner image updates.
+        run: pip install --quiet "python-docx>=0.8.11" "PyMuPDF>=1.23.0"
 
       - name: Inject private name list from secret (fail-closed on trusted runs)
         env:

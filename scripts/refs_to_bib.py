@@ -441,7 +441,7 @@ def parse_proceedings(text, citekey):
 
 
 def parse_standard(text, citekey):
-    """解析 [S] 标准 (D23: CASE-A 漏 [29] GB/T 28209 / [30] IPC-TM-650).
+    """解析 [S] 标准 (D23: 客户漏 [S]/[C]/[R] 等非 MJDN 类型).
 
     GB/T 7714 §8.4.3 标准格式: 责任者. 标准名称: 标准编号[S]. 出版地: 出版者, 出版年.
     """

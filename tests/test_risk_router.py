@@ -95,9 +95,9 @@ def test_rule_d30_amp_in_refs():
 
 
 def test_rule_d31_chinese_org_with_paren():
-    f = FakeFacts(references=["全国玻璃仪器标准化技术委员会(SAC/TC 178). 标准[S]. 北京, 2023."])
+    f = FakeFacts(references=["示例标准化技术委员会(SAC/TC 999). 标准[S]. 北京, 2023."])
     assert router._rule_d31(f) is not None
-    f2 = FakeFacts(references=["梁天鹏. 论文[D]. 成都: 电子科技大学, 2021."])
+    f2 = FakeFacts(references=["张三. 论文[D]. 成都: 电子科技大学, 2021."])
     assert router._rule_d31(f2) is None
 
 

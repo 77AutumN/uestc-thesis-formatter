@@ -20,9 +20,9 @@ def normalize_cjk_punct(text: str) -> str:
     """CASE-A round 4 lun51 fix: CJK 段落里半角 ',' '.' → 全角 '，' '。'.
 
     触发条件 (二者皆需): 半角标点 lookbehind 是 CJK / 全角标点 / 右括号, 且 lookahead 是 CJK.
-       这样 'Yin, F.' / '[x,y]' / '1.5' / '\\cite{a,b}' / '$x, y$' 都不动 — 西文/数字/数学
+       这样 'Smith, J.' / '[x,y]' / '1.5' / '\\cite{a,b}' / '$x, y$' 都不动 — 西文/数字/数学
        内的逗号几乎从不接 CJK, lookahead 自动过滤.
-    后处理: 连续相同标点 dedupe + 跨标点 '，.' '.，' (CASE-A ch04 '权重，.是控制' 实战) 收为单字.
+    后处理: 连续相同标点 dedupe + 跨标点 '，.' '.，' (CASE-A 实战示例 '示例，.示例') 收为单字.
     """
     text = _RE_HALFWIDTH_COMMA_TO_FULL.sub('，', text)
     text = _RE_HALFWIDTH_DOT_TO_FULL.sub('。', text)

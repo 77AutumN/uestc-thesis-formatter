@@ -81,11 +81,11 @@ def test_d23_parse_proceedings_pages_required():
 # ============================================================
 
 def test_d23_parse_standard_basic():
-    """委员会(SAC/TC 178). GB/T 28209-2023[S]. 北京: 出版社, 2023. → @misc + note."""
-    text = "全国玻璃仪器标准化技术委员会(SAC/TC 178). 硼硅酸盐玻璃化学分析方法: GB/T 28209-2023[S]. 北京:中国标准出版社,2023."
-    bib, warning = refs_to_bib.parse_standard(text, "r2820")
+    """委员会(SAC/TC 999). GB/T 99999-2023[S]. 北京: 出版社, 2023. → @misc + note."""
+    text = "示例标准化技术委员会(SAC/TC 999). 示例标准技术内容: GB/T 99999-2023[S]. 北京:示例标准出版社,2023."
+    bib, warning = refs_to_bib.parse_standard(text, "synth_std")
     assert warning is None
-    assert "@misc{r2820" in bib
+    assert "@misc{synth_std" in bib
     assert "note = {[S] 标准}" in bib
     assert "year = {2023}" in bib
 
@@ -148,9 +148,9 @@ def test_dvol_no_paren_paren_required_for_number():
 # ============================================================
 
 def test_dbook_pg_parse_book_pages():
-    """林宗寿. 无机非金属材料学[M]. 武汉:出版社, 2008, 120-135. → pages 字段."""
-    text = "林宗寿. 无机非金属材料学[M]. 武汉:武汉理工大学出版社,2008,120-135."
-    bib, warning = refs_to_bib.parse_book(text, "lin2008")
+    """张三. 示例著作[M]. 武汉:出版社, 2008, 120-135. → pages 字段."""
+    text = "张三. 示例著作[M]. 武汉:示例出版社,2008,120-135."
+    bib, warning = refs_to_bib.parse_book(text, "zhangsan2008")
     assert warning is None
     assert "pages = {120-135}" in bib
     assert "year = {2008}" in bib
@@ -158,8 +158,8 @@ def test_dbook_pg_parse_book_pages():
 
 def test_dbook_pg_no_pages_still_works():
     """没页码的著作仍能解析, 只是无 pages 字段."""
-    text = "Shelby J E. Introduction to Glass Science and Technology[M]. Cambridge:Royal Society of Chemistry,2005."
-    bib, warning = refs_to_bib.parse_book(text, "shelbyje2005")
+    text = "Author A B. Example Book Title[M]. Cambridge:Example Publishing,2005."
+    bib, warning = refs_to_bib.parse_book(text, "authorab2005")
     assert warning is None
     assert "year = {2005}" in bib
     assert "pages" not in bib
@@ -170,9 +170,9 @@ def test_dbook_pg_no_pages_still_works():
 # ============================================================
 
 def test_dthesis_pg_parse_thesis_single_range():
-    """梁天鹏[D]. 成都:电子科技大学, 2021, 1-15. → pages 字段."""
-    text = "梁天鹏. 低损耗可光刻玻璃及通孔技术研究[D]. 成都:电子科技大学,2021,1-15."
-    bib, warning = refs_to_bib.parse_thesis(text, "liang2021")
+    """张三[D]. 成都:电子科技大学, 2021, 1-15. → pages 字段."""
+    text = "张三. 示例研究主题[D]. 成都:电子科技大学,2021,1-15."
+    bib, warning = refs_to_bib.parse_thesis(text, "zhangsan2021")
     assert warning is None
     assert "pages = {1-15}" in bib
 
@@ -325,9 +325,9 @@ def test_d25_western_author_normalized():
 
 
 def test_d25_chinese_author_unchanged():
-    """中文人名(无括号)不应被改: '梁天鹏' 原样."""
-    out = refs_to_bib.sanitize_author_list("梁天鹏")
-    assert out == "梁天鹏"
+    """中文人名(无括号)不应被改: '张三' 原样."""
+    out = refs_to_bib.sanitize_author_list("张三")
+    assert out == "张三"
 
 
 def test_d25_western_double_initial():
@@ -375,9 +375,9 @@ def test_d30_already_escaped_not_doubled():
 
 def test_d31_chinese_org_with_paren_wrapped():
     """D31 shared: 中文机构含 () 自动加 {} 防 BST 拆为 first/last 名."""
-    out = refs_to_bib.sanitize_author_list("全国玻璃仪器标准化技术委员会(SAC/TC 178)")
+    out = refs_to_bib.sanitize_author_list("示例标准化技术委员会(SAC/TC 999)")
     assert out.startswith("{") and out.endswith("}")
-    assert "全国玻璃" in out
+    assert "示例标准化" in out
 
 
 def test_d31_chinese_person_no_paren_unchanged():
@@ -537,7 +537,7 @@ def test_pipeline_smoke_all_30_types():
     """smoke test: 喂入 5 类条目混合, 全部应解析为对应 entry 类型."""
     raw = """[1] Tummala R R. Test[C]. Conf,2005,3-7.
 [2] Sun Y, et al. Test[J]. Journal,2022,33(15):11847-11865.
-[3] 林宗寿. 测试[M]. 武汉:出版社,2008,120-135.
+[3] 张三. 测试[M]. 武汉:出版社,2008,120-135.
 [4] 张三. 测试[D]. 杭州:浙江大学,2007,45-56.
 [5] 委员会. 标准[S]. 北京:出版社,2023.
 """

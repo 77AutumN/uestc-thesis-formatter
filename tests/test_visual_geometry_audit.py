@@ -583,13 +583,13 @@ def test_compose_instance_downgrades_equation_gap_to_diagnostic():
 
 def test_compose_instance_keeps_float_gap_deterministic():
     """Float_gap path must NOT be downgraded — preserves auto-repair pipeline
-    for genuine figure-float gaps (case 16 gap-3/4, case 11 gap-8)."""
+    for genuine figure-float gaps (synthetic regression samples)."""
     import audit_issue_schema as ais
     contracts = ais.load_all_contracts()
 
     page = _page(1, text_blocks=[
-        _text_block(100, 120, "图4-3 RMSE 与噪声标准差的关系"),
-        _text_block(300, 320, "在图4.3 中可以看到"),
+        _text_block(100, 120, "图4-3 示例图标题"),
+        _text_block(300, 320, "在图4.3 中可以看到示例内容"),
     ])
     detections = vga.detect_large_vertical_gap([page], gap_threshold_pt=70.0)
     assert detections[0]["evidence"]["subtype"] == "float_gap"
