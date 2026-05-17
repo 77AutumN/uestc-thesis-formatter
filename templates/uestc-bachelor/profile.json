@@ -1,0 +1,26 @@
+{
+  "college": "本科通用",
+  "degree_type": "bachelor",
+  "parent": "stem",
+  "citation_style": "inline_bracket",
+  "bibliography_style": "bibtex",
+  "quote_style": "mixed",
+  "abstract_keywords_delimiter": ",",
+  "format_spec": "references/uestc_bachelor_format_spec.md",
+  "table_line_style": "single_0.5bp",
+  "header_even_page": "电子科技大学学士学位论文",
+  "has_foreign_literature": true,
+  "has_title_page": false,
+  "has_originality_declaration": false,
+  "has_research_results": false,
+  "abstract_max_words": 500,
+  "acknowledgement_max_words": 200,
+  "foreign_translation_min_words": null,
+  "build_chain": [
+    "xelatex",
+    "bibtex",
+    "xelatex",
+    "xelatex"
+  ],
+  "compile_timeout": 300
+}

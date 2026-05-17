@@ -144,7 +144,7 @@ class TestHandleFigureBlock:
     def test_basic_figure(self):
         block = _make_figure_block(
             "图2-1 RWG基函数模型示意图",
-            "fake/path/to/media/image2.png",
+            "D:\\output\\media/media/image2.png",
             width="2.5in",
         )
         result = handle_figure_block(block)
@@ -484,6 +484,18 @@ class TestH3LongTextDemotion:
         ]
         result = generate_chapter_tex(blocks, 0, 2, "基本理论")
         assert "\\subsection{矩量法概述}" in result
+
+    def test_h3_unnumbered_short_title_kept_as_subsection(self):
+        """CASE-A fix: H3 短标题无 'X.Y.Z' 前缀 → 仍当 \\subsection (LaTeX 自动编号).
+        旧版降级为正文丢结构, 致 ToC 缺二级节. 客户用 Heading 3 样式即为标题意图."""
+        blocks = [
+            self._make_header(1, "第一章 绪论"),
+            self._make_header(3, "无人机低空安全监测需求"),
+            self._make_header(3, "红外成像无人机目标检测中的应用价值"),
+        ]
+        result = generate_chapter_tex(blocks, 0, 3, "绪论")
+        assert "\\subsection{无人机低空安全监测需求}" in result
+        assert "\\subsection{红外成像无人机目标检测中的应用价值}" in result
 
     def test_h2_long_body_demoted(self):
         """H2 with sentence text → body paragraph, NOT \\section."""

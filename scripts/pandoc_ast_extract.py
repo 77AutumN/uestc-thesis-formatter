@@ -24,6 +24,43 @@ import unicodedata
 
 
 # ============================================================
+# 0. Shared guards (W5 Wave 2 Item 2, 2026-05-16, CASE-A)
+# ============================================================
+
+_REFS_N_MARKER_RE = re.compile(r"\[\s*\d+\s*\]")
+
+
+def split_merged_refs_if_needed(text: str) -> str:
+    """Defensive split: if references_raw is a single Para with multiple [N]
+    markers (signal of pandoc custom-style merge — CASE-A pathology), split
+    on each [N] boundary so refs_to_bib can parse individual entries.
+
+    Returns text unchanged when:
+    - input is empty
+    - input is already line-by-line (>2 non-empty lines)
+    - input has <3 [N] markers (e.g., APA-style refs)
+    - split would produce <3 parts (safety against edge cases)
+
+    See `tests/fixtures/d_refs_merged/README.md` for the failure mode.
+    """
+    if not text:
+        return text
+    non_empty = [line.strip() for line in text.splitlines() if line.strip()]
+    n_markers = _REFS_N_MARKER_RE.findall(text)
+    looks_merged = len(non_empty) <= 2 and len(n_markers) >= 3
+    if not looks_merged:
+        return text
+    parts = [
+        p.strip()
+        for p in re.split(r"(?=\[\s*\d+\s*\])", text)
+        if p.strip()
+    ]
+    if len(parts) < 3:
+        return text
+    return "\n".join(parts)
+
+
+# ============================================================
 # 1. Pandoc 调用层
 # ============================================================
 
@@ -82,8 +119,11 @@ def inlines_to_text(inlines: list) -> str:
             parts.append(" ")
         elif t == "LineBreak":
             parts.append("\n")
-        elif t in ("Emph", "Strong", "Strikeout", "SmallCaps", "Superscript", "Subscript"):
+        elif t in ("Emph", "Strong", "Strikeout", "SmallCaps",
+                   "Superscript", "Subscript", "Underline"):
             # 容器型 inline，递归提取子节点文本
+            # CASE-A: Underline 加入 — UESTC 封面值常用 Strong>Underline 包装(下划线对齐),
+            # 漏掉它会让 cover_metadata_from_ast 提取不到 title/学院/专业/学号/作者/导师
             parts.append(inlines_to_text(c))
         elif t == "Quoted":
             # c = [quote_type, inlines]
@@ -301,7 +341,17 @@ def classify_paragraph(text: str):
     if m:
         return ("chapter", m.group(1).strip())
 
-    # 正文降级检测：在匹配 section/subsection 编号前先检查
+    # CASE-A: H3 标题 "X.Y.Z 与 Recall‑Confidence 和 Precision‑Confidence 的关系"
+    # 长度 48 > is_body_text 的 40 字符阈值, 旧代码把它判 body 致 \subsection
+    # 没渲染 → lun51 报"目录中未找到标题". 在 is_body_text 之前先 trial X.Y.Z
+    # / X.Y 编号前缀: 命中且段尾无句末标点 (。; ; 等) 时, 当作标题, 不受长度限制.
+    SENTENCE_END = set("。；！？")  # 半角 . 留给数字后, 不当 sentence-end
+    sub_m = RE_SUBSECTION.match(normalized)
+    if sub_m and not (set(normalized) & SENTENCE_END):
+        return ("subsection",
+                sub_m.group(4).strip() if sub_m.group(4).strip() else normalized.strip())
+
+    # 正文降级检测：在匹配 section 编号前先检查
     # 这防止 "3.4.1 我们使用SMW算法对这个矩阵求逆得到..." 被当 subsection
     if is_body_text(normalized):
         return None
@@ -442,9 +492,14 @@ def handle_figure_block(block: dict, media_base: str = "media") -> str:
 # ============================================================
 
 _global_table_idx = 1
-def handle_table_block(block: dict) -> str:
+def handle_table_block(block: dict, caption_override: str = "") -> str:
     """提取 Table 的纯文本内容并构造简化版 \begin{table}。
     增加复杂表格预警和 Override 占位符。
+
+    CASE-A: docx 中 "表X-Y ..." caption 段是表格上方的独立段落, pandoc Table
+    AST 不会自动 link 进 caption 字段. caller (generate_chapter_tex) 检测到
+    pending caption 时通过 caption_override 注入, 让 lun51 Check 34-36 不报
+    "表格上方未找到表题".
     """
     global _global_table_idx
     idx = _global_table_idx
@@ -464,7 +519,7 @@ def handle_table_block(block: dict) -> str:
             if len(cap) > 1 and cap[1]:
                 return escape_latex(block_to_text(cap[1][0]))
             return ""
-        cap_text = extract_caption(caption)
+        cap_text = caption_override.strip() or extract_caption(caption)
 
         is_complex = False
 
@@ -538,20 +593,51 @@ def handle_table_block(block: dict) -> str:
         res += "  \\bottomrule\n"
         res += "  \\endlastfoot\n"
         
+        # CASE-A: pandoc AST omits cells from continuation rows that are
+        # vertically merged by a previous row's \multirow. Naive join leaves
+        # those rows short of col_count (e.g. 4 cells in a 6-column table)
+        # and LaTeX render columns shift. Track remaining_rowspan per column
+        # and inject empty cells where prior multirow still occupies the slot.
+        remaining_rowspan = [0] * col_count
+
+        def emit_row(row_cells: list) -> str:
+            out = []
+            cell_iter = iter(row_cells)
+            col_i = 0
+            while col_i < col_count:
+                if remaining_rowspan[col_i] > 0:
+                    out.append("")
+                    remaining_rowspan[col_i] -= 1
+                    col_i += 1
+                    continue
+                try:
+                    cell = next(cell_iter)
+                except StopIteration:
+                    out.append("")
+                    col_i += 1
+                    continue
+                cell_rs = cell[2] if len(cell) >= 5 else 1
+                cell_cs = cell[3] if len(cell) >= 5 else 1
+                out.append(cell_to_latex(cell))
+                if cell_rs > 1:
+                    remaining_rowspan[col_i] = cell_rs - 1
+                col_i += max(1, cell_cs)
+            return "  " + " & ".join(out) + " \\\\\n"
+
         if head:
             for row in iter_rows(head):
-                res += "  " + " & ".join(cell_to_latex(cell) for cell in row) + " \\\\\n"
+                res += emit_row(row)
             res += "  \\midrule\n"
-            
+
         if bodies:
             for body in bodies:
                 for row in iter_rows(body):
-                    res += "  " + " & ".join(cell_to_latex(cell) for cell in row) + " \\\\\n"
-                    
+                    res += emit_row(row)
+
         if foot:
             res += "  \\midrule\n"
             for row in iter_rows(foot):
-                res += "  " + " & ".join(cell_to_latex(cell) for cell in row) + " \\\\\n"
+                res += emit_row(row)
                 
         res += "\\end{longtable}\n"
         res += f"% [/TABLE-{idx}]\n"
@@ -577,6 +663,35 @@ def _cn_to_int(cn: str) -> int:
     if cn.isdigit():
         return int(cn)
     return _CN_NUMS.get(cn, 0)
+
+
+# 结构描述段落正则："第X章 标题：描述文本..." 或 "第X章 标题:描述文本..."
+RE_CHAPTER_WITH_DESC = re.compile(
+    r"^\s*第[一二三四五六七八九十百\d]+章\s+[^：:]+[：:]\s*.{10,}", re.UNICODE
+)
+
+def _is_structural_description(text: str) -> bool:
+    """判断匹配 '第X章' 的段落是否为 '论文结构安排' 中的描述性手稿段落。
+
+    这类段落通常出现在正文的 '1.4 论文结构安排' 小节中，形如：
+      '第一章 绪论：阐述课题背景，梳理可靠性分析及多保真度代理模型的研究现状。'
+      '第二章 圆柱齿轮参数化建模与多保真度有限元分析：基于 SolidWorks 建立...'
+
+    它们不是真正的章节标题，但会匹配 RE_CHAPTER_CN 正则，导致假阳性。
+
+    过滤规则：
+      1. 章名后跟中文/英文冒号且冒号后有 >=10 字描述 → True
+      2. 章名后的标题文本超过 40 字符（含句号等正文标点） → True
+    """
+    normalized = normalize_text(text).strip()
+    # Rule 1: 冒号 + 长描述
+    if RE_CHAPTER_WITH_DESC.match(normalized):
+        return True
+    # Rule 2: 章名后标题部分包含句号等正文终结标点
+    title_part = re.sub(r"^第[一二三四五六七八九十百\d]+章\s*", "", normalized).strip()
+    if any(p in title_part for p in "。；！？"):
+        return True
+    return False
 
 
 def find_chapters(blocks: list) -> list:
@@ -619,11 +734,10 @@ def find_chapters(blocks: list) -> list:
 
         normalized = normalize_text(text)
         
-        # NOTE: Some chapters may lack the "第X章" prefix in the source document.
-        # If your document has this issue, add a case-specific normalization here.
-        # Example: if "<chapter title>" in normalized and not normalized.startswith("第三章"):
-        #     normalized = "第三章 " + normalized.replace("3.", "").strip()
-        #     text = normalized
+        # HOTFIX for case007: Chapter 3 is formatted as "华北抗日根据地小学教育的历史背景与多重困境"
+        if "华北抗日根据地小学教育的历史背景与多重困境" in normalized and not normalized.startswith("第三章"):
+            normalized = "第三章 " + normalized.replace("3.", "").strip()
+            text = normalized
         
         # 跳过目录泄漏：如果结尾是数字，大概率是目录
         if re.search(r"\s+\d+$", normalized.strip()):
@@ -631,6 +745,12 @@ def find_chapters(blocks: list) -> list:
 
         m = RE_CHAPTER_CN.match(normalized)
         if m:
+            # P0 FIX: 跳过 "论文结构安排" 中的描述性段落
+            # 这类段落形如 "第一章 绪论：阐述课题背景..."，
+            # 虽然匹配 RE_CHAPTER_CN 但不是真正的章节标题
+            if t == "Para" and _is_structural_description(normalized):
+                continue
+
             # 提取章号
             num_match = RE_CHAPTER_NUM.search(normalized)
             if not num_match:
@@ -656,7 +776,42 @@ def find_chapters(blocks: list) -> list:
                 by_chapter_num[ch_num_str] = []
             by_chapter_num[ch_num_str].append(candidate)
 
-    # 第二遍：按章号去重，每个章号只保留 block index 最大的（正文中的）
+    # 第二遍：簇群检测 — 如果 3+ 个不同章号的候选在连续密集 block 内出现，
+    # 它们很可能是 "1.4 论文结构安排" 中的提纲段落，不是真正的章节标题。
+    # 策略：使用**相邻间距**检测（每对相邻候选 ≤3 blocks），而非相对首个候选。
+    # 这样不会误杀距离簇群较远的真正章节标题。
+    all_candidates = []
+    for candidates in by_chapter_num.values():
+        all_candidates.extend(candidates)
+    all_candidates.sort(key=lambda c: c["idx"])
+
+    cluster_indices_to_remove = set()
+    if len(all_candidates) >= 3:
+        # 用相邻间距分组：相邻候选 idx 差 ≤ 3 → 同一簇
+        groups = [[all_candidates[0]]]
+        for k in range(1, len(all_candidates)):
+            if all_candidates[k]["idx"] - groups[-1][-1]["idx"] <= 3:
+                groups[-1].append(all_candidates[k])
+            else:
+                groups.append([all_candidates[k]])
+        # 每个组中如果有 3+ 个不同章号 → 提纲簇
+        for group in groups:
+            unique_chapters = set(c["ch_num_str"] for c in group)
+            if len(unique_chapters) >= 3:
+                for c in group:
+                    cluster_indices_to_remove.add(c["idx"])
+
+    # 从候选中移除簇群命中
+    if cluster_indices_to_remove:
+        for ch_num_str in list(by_chapter_num.keys()):
+            by_chapter_num[ch_num_str] = [
+                c for c in by_chapter_num[ch_num_str]
+                if c["idx"] not in cluster_indices_to_remove
+            ]
+            if not by_chapter_num[ch_num_str]:
+                del by_chapter_num[ch_num_str]
+
+    # 第三遍：按章号去重，每个章号只保留 block index 最大的（正文中的）
     deduped = []
     for ch_num_str, candidates in by_chapter_num.items():
         # 优先 Header，然后取 block index 最大的
@@ -713,6 +868,14 @@ def find_special_sections(blocks: list, first_chapter_idx: int) -> dict:
         # 攻读成果
         if i > first_chapter_idx and "攻读" in normalized and "成果" in normalized:
             sections["accomplishments"] = i
+
+        # 外文资料原文 (本科必含, spec §1.1 #20)
+        if i > first_chapter_idx and "外文资料原文" in normalized and len(normalized) <= 12:
+            sections["foreign_original"] = i
+
+        # 外文资料译文 (本科必含, spec §1.1 #21)
+        if i > first_chapter_idx and "外文资料译文" in normalized and len(normalized) <= 12:
+            sections["foreign_translation"] = i
 
     # 参考文献的特殊检测：在马院论文中，参考文献没有独立的 "参考文献" 标题块，
     # 而是致谢后面紧跟 OrderedList。需要检测这种模式。
@@ -825,6 +988,8 @@ def find_special_sections(blocks: list, first_chapter_idx: int) -> dict:
         sections["abstract_zh"] = abstract_zh_start
     if abstract_en_start is not None:
         sections["abstract_en"] = abstract_en_start
+    if abstract_en_kw_idx is not None:
+        sections["abstract_en_kw"] = abstract_en_kw_idx
 
     return sections
 
@@ -889,6 +1054,37 @@ def generate_cite_map(references_raw: str, ref_count: int = 0) -> dict:
 # 7. LaTeX 章节生成
 # ============================================================
 
+# W3 D40: whole-paragraph inline math + 编号 → equation 块
+_INLINE_NUMBERED_EQ_RE = re.compile(
+    r"^\s*\$(?P<body>.+?)\$\s*[（(](?P<tag>\d+[-－.]\d+)[）)]\s*$",
+    re.DOTALL,
+)
+
+
+def _maybe_emit_inline_numbered_equation(latex_text: str):
+    """W3 D40: 整段 `$math$ (X-Y)` 或 `$math$（X-Y）` → \\begin{equation}...\\tag{X-Y}.
+
+    边界:
+    - 严格整段 (^...$ 锚定), 不匹配正文 inline ref 如 "如式 $x+y$ (3-2) 所示"
+    - 半角 (X-Y) + 全角 （X-Y） + 中文连字符归一化为 X-Y
+    - body 取已 escape 的 LaTeX 字面, 不二次 escape
+    - 返回 None 表示不匹配 (调用方走原 latex_text)
+    """
+    text = latex_text.strip()
+    m = _INLINE_NUMBERED_EQ_RE.match(text)
+    if not m:
+        return None
+    body = m.group("body").strip()
+    tag = m.group("tag").replace("－", "-").replace(".", "-")
+    if not body:
+        return None
+    return (
+        "\\begin{equation}\n"
+        f"  {body} \\tag{{{tag}}}\n"
+        "\\end{equation}"
+    )
+
+
 def generate_chapter_tex(blocks: list, start_idx: int, end_idx: int,
                          latex_title: str, media_base: str = "media") -> str:
     """遍历 AST 区间，生成单章 .tex 内容。
@@ -901,6 +1097,11 @@ def generate_chapter_tex(blocks: list, start_idx: int, end_idx: int,
     """
     tex_lines = [f"\\chapter{{{latex_title}}}\n"]
     last_figure_caption = ""  # W6: 用于 caption 去重
+    pending_table_caption = ""  # CASE-A: "表X-Y" 段挂给下一个 Table block
+    skip_table_caption_next = False  # CASE-A: caption 在 Table 后时, 下次 Para 跳过
+
+    # CASE-A lun51 #34-36: docx 表格上方独立 "表X-Y ..." 段 → table caption
+    table_caption_pat = re.compile(r"^\s*表\s*\d+\s*[\.\-－]\s*\d+\s*(.*)$")
 
     for i in range(start_idx + 1, end_idx):
         block = blocks[i]
@@ -909,6 +1110,17 @@ def generate_chapter_tex(blocks: list, start_idx: int, end_idx: int,
         if t == "Para":
             text = inlines_to_text(block["c"]).strip()
             if not text:
+                continue
+
+            # CASE-A: detect "表X-Y ..." anchor for table caption (must come
+            # before figure-caption dedup so it isn't confused with figure rule).
+            cap_m = table_caption_pat.match(text)
+            if cap_m:
+                if skip_table_caption_next:
+                    # Caption was already attached to preceding Table — drop it.
+                    skip_table_caption_next = False
+                else:
+                    pending_table_caption = text  # for the *next* Table block
                 continue
 
             # W6: Caption 去重 — 跳过与上一个 Figure caption 相同的段落
@@ -972,7 +1184,14 @@ def generate_chapter_tex(blocks: list, start_idx: int, end_idx: int,
                     # 使用 Math 感知的 LaTeX 输出
                     latex_text = inlines_to_latex(block["c"]).strip()
                     if latex_text:
-                        tex_lines.append(f"\n{latex_text}\n")
+                        # W3 D40: whole-paragraph inline `$math$ + (X-Y)/（X-Y）`
+                        # → \begin{equation}...\tag{X-Y}\end{equation}
+                        # case14/15/16 三次命中, 升 shared
+                        eq_block = _maybe_emit_inline_numbered_equation(latex_text)
+                        if eq_block is not None:
+                            tex_lines.append(f"\n{eq_block}\n")
+                        else:
+                            tex_lines.append(f"\n{latex_text}\n")
 
         elif t == "Header":
             level, attrs, inlines = block["c"]
@@ -1032,10 +1251,10 @@ def generate_chapter_tex(blocks: list, start_idx: int, end_idx: int,
                     if latex_text:
                         tex_lines.append(f"\n{latex_text}\n")
                 else:
-                    # H3 无编号 → 降级为正文（规范§2.2 要求标题必须带编号）
-                    latex_text = inlines_to_latex(inlines).strip()
-                    if latex_text:
-                        tex_lines.append(f"\n{latex_text}\n")
+                    # CASE-A fix (2026-05-08): H3 无 "X.Y.Z" 前缀 → 仍当 \subsection
+                    # (类比 H2 line 1199 fallback). 客户用 Heading 3 样式即为标题意图,
+                    # auto-number 由 LaTeX 接管. 旧版降级为正文丢结构, ToC 缺二级节.
+                    tex_lines.append(f"\n\\subsection{{{escape_latex(text)}}}\n")
             elif level == 4:
                 # 级联层级 4，使用加粗的段落模拟 \subsubsection
                 latex_text = inlines_to_latex(inlines).strip()
@@ -1074,10 +1293,24 @@ def generate_chapter_tex(blocks: list, start_idx: int, end_idx: int,
         elif t == "OrderedList":
             # 中文论文自带编号（第一/第二/(1)/(2)），不使用 enumerate 避免缩进不一
             # 每个 sub-block 单独输出为一段，防止多段落 item 被合并
+            # D33 fix (2026-05-04): item 内 Para 也走 classify_paragraph,
+            # 因 Word 段落属性会把章节标题压进 list, pandoc 输出为 OrderedList
             items = block["c"][1]
             for item_blocks in items:
                 for sub_block in item_blocks:
                     if sub_block.get("t") in ("Para", "Plain"):
+                        item_text = inlines_to_text(sub_block["c"]).strip()
+                        heading = classify_paragraph(item_text) if item_text else None
+                        if heading:
+                            level, title = heading
+                            if level == "chapter":
+                                continue  # 重复章标题, 跳过
+                            elif level == "section":
+                                tex_lines.append(f"\n\\section{{{escape_latex(title)}}}\n")
+                                continue
+                            elif level == "subsection":
+                                tex_lines.append(f"\n\\subsection{{{escape_latex(title)}}}\n")
+                                continue
                         latex_text = inlines_to_latex(sub_block["c"]).strip()
                         if latex_text:
                             tex_lines.append(f"\n{latex_text}\n")
@@ -1100,8 +1333,19 @@ def generate_chapter_tex(blocks: list, start_idx: int, end_idx: int,
                             tex_lines.append(f"\n{escape_latex(sub_text)}\n")
 
         elif t == "Table":
-            # 引入加强版 handle_table_block
-            tex_lines.append(handle_table_block(block))
+            # CASE-A: caption may sit either before (pending) or *after* the
+            # Table block (e.g. ch04 表4-1 — docx para 174 "表4-1 各类别..."
+            # follows block 173 Table). Pre-pending wins; otherwise lookahead 1.
+            cap = pending_table_caption
+            if not cap and i + 1 < end_idx:
+                nxt = blocks[i + 1]
+                if nxt.get("t") in ("Para", "Plain"):
+                    nxt_text = inlines_to_text(nxt.get("c", [])).strip()
+                    if table_caption_pat.match(nxt_text):
+                        cap = nxt_text
+                        skip_table_caption_next = True
+            tex_lines.append(handle_table_block(block, caption_override=cap))
+            pending_table_caption = ""
 
         elif t == "RawBlock":
             # 保留原始 LaTeX/HTML 块
@@ -1178,6 +1422,56 @@ def extract_text_range(blocks: list, start_idx: int, end_idx: int) -> str:
 # ============================================================
 # 9. 封面元数据提取（复用旧 python-docx 逻辑）
 # ============================================================
+
+def collect_textbox_captions(docx_path: str, output_dir: str) -> list:
+    """D39: 收集 Word 文本框 (w:txbxContent) 中作为图 caption 的文字.
+
+    pandoc 不解析 textbox 内容, 客户用 textbox 装 caption 时会全部丢失
+    (CASE-A 13 张图静默错位). 本函数直接读 docx XML, 抓 txbxContent 内
+    匹配 "图X-Y" 前缀的文字, 输出到 extracted/textbox_captions.json,
+    供 recover_figures + product_audit Check 9 + risk_router 消费.
+
+    Schema: [{"label": "图1-1", "caption": "图1-1 SAM 模型架构图", "para_idx": 12}, ...]
+    """
+    import zipfile
+    import re as _re
+    captions = []
+    try:
+        with zipfile.ZipFile(docx_path) as z:
+            doc_xml = z.read("word/document.xml").decode("utf-8", errors="replace")
+    except Exception as e:
+        print(f"  ⚠️ textbox caption 扫描异常: {e}")
+        return captions
+
+    # 不按 <w:p> split (textbox 内含嵌套 <w:p> 会被切坏), 直接全文抓 txbxContent
+    # Word AlternateContent 让每个 textbox 出现 2 次 (mc:Choice + mc:Fallback), 按 label 去重
+    label_pat = _re.compile(r"^(图\s*\d+\s*[-－.]\s*\d+)")
+    seen_labels = set()
+    for tx_idx, tx in enumerate(_re.findall(r"<w:txbxContent>(.*?)</w:txbxContent>", doc_xml, _re.DOTALL)):
+        text_parts = _re.findall(r"<w:t[^>]*>([^<]*)</w:t>", tx)
+        text = "".join(text_parts).strip()
+        if not text:
+            continue
+        m = label_pat.match(text)
+        if not m:
+            continue
+        label = _re.sub(r"\s+", "", m.group(1)).replace("－", "-").replace(".", "-")
+        if label in seen_labels:
+            continue
+        seen_labels.add(label)
+        captions.append({
+            "label": label,
+            "caption": text,
+            "tx_idx": tx_idx,
+        })
+
+    out_path = os.path.join(output_dir, "textbox_captions.json")
+    with open(out_path, "w", encoding="utf-8") as f:
+        json.dump(captions, f, ensure_ascii=False, indent=2)
+    if captions:
+        print(f"  📦 textbox captions: {len(captions)} 条 → textbox_captions.json (D39)")
+    return captions
+
 
 def extract_cover_metadata(docx_path: str) -> dict:
     """从 Word 封面表格提取元数据。直接复用旧引擎的 python-docx 逻辑。"""
@@ -1544,6 +1838,21 @@ def main():
     type_counts = Counter(b["t"] for b in blocks)
     print(f"  类型分布: {dict(type_counts.most_common())}")
 
+    # === Step 1.5: textbox caption 收集 (D39, CASE-A) ===
+    collect_textbox_captions(args.input, output_dir)
+
+    # === Step 1.6: source_manifest (W2 v0.1.0) ===
+    _manifest = None
+    try:
+        import source_manifest as _sm
+        _manifest = _sm.build_final_manifest(args.input, output_dir, ast_blocks=blocks)
+        _sm.write_manifest(_manifest, os.path.join(output_dir, "source_manifest.json"))
+        print(f"  📦 source_manifest: {len(_manifest['paragraphs'])} paras / "
+              f"{len(_manifest['headings'])} headings / "
+              f"{len(_manifest['textboxes'])} textboxes -> source_manifest.json")
+    except Exception as _e:
+        print(f"  ⚠️ source_manifest 生成异常: {_e}")
+
     # === Step 2: 混合章节检测 ===
     chapters = find_chapters(blocks)
     print(f"\n  📌 识别到 {len(chapters)} 个章节:")
@@ -1567,12 +1876,37 @@ def main():
     print(f"\n  🔗 正文引用标记 [数字]: {citation_count} 处")
 
     # === Step 5: 输出 outline.json ===
+    # CASE-A root-cause: recover_figures.py needs docx_para_idx anchors so
+    # it doesn't re-run regex chapter detection (which lacks cluster suppression
+    # and trips on "全文结构安排" mention paragraphs).
+    #
+    # AST block idx → docx para idx 没法直接对齐 (source_manifest 不填 ast_block_idx,
+    # AST 块数 ≠ docx 段数). 改用 text 严格匹配: source_manifest.paragraphs 全表
+    # 按 ch.raw_title 找匹配的 docx 段, 取 docx_para_idx 最大值 (避开 TOC 早段, 落在正文).
+    # Build title → [docx_para_idx,...] index once instead of full-scanning manifest
+    # per chapter (was O(chapters × paragraphs); now O(paragraphs + chapters)).
+    _title_to_para_idx = {}
+    if _manifest is not None:
+        for p in _manifest.get("paragraphs", []):
+            t = (p.get("text") or "").strip()
+            idx = p.get("docx_para_idx")
+            if t and idx is not None:
+                _title_to_para_idx.setdefault(t, []).append(idx)
+
+    def _resolve_chapter_docx_para_idx(ch_title):
+        target = (ch_title or "").strip()
+        if not target:
+            return None
+        candidates = _title_to_para_idx.get(target)
+        return max(candidates) if candidates else None
+
     outline = {
         "chapters": [
             {
                 "filename": ch["filename"],
                 "title": ch["raw_title"],
                 "latex_title": ch["latex_title"],
+                "docx_para_idx": _resolve_chapter_docx_para_idx(ch["raw_title"]),
             }
             for ch in chapters
         ],
@@ -1601,12 +1935,17 @@ def main():
     print(f"  ✅ thesis_meta.json")
 
     # === Step 6.5: 封面元数据（Fallback 链：表格 → AST 段落）===
+    # 表格模式必须提到核心字段才算成功; 否则视为正文表格污染, 弃用并走 AST
     print(f"\n  📋 提取封面元数据...")
     cover_meta = extract_cover_metadata(args.input)
-    if cover_meta:
+    _CORE_KEYS = ("title_cn", "author_cn", "advisor_cn_raw", "advisor_name_cn")
+    table_mode_ok = cover_meta and any(k in cover_meta for k in _CORE_KEYS)
+    if table_mode_ok:
         print(f"  ✅ 表格模式提取成功")
     else:
-        print(f"  ⚠️ 表格模式未匹配，尝试 AST 段落模式...")
+        if cover_meta:
+            print(f"  ⚠️ 表格模式仅匹配辅助字段 {list(cover_meta.keys())} (疑似正文表格污染), 弃用")
+        print(f"  ⚠️ 尝试 AST 段落模式...")
         cover_meta = extract_cover_metadata_from_ast(blocks, first_ch_idx)
         if cover_meta and any(k in cover_meta for k in ("title_cn", "author_cn")):
             print(f"  ✅ AST 段落模式提取成功")
@@ -1630,9 +1969,11 @@ def main():
         print(f"  🧹 已标记 {stripped_count} 个封面/TOC 块为 Null（防泄漏）")
 
     # === 确定最末章节的结束边界 ===
-    # 边界优先级：致谢 > 参考文献 > 参考文献OrderedList > 攻读成果 > 文末
+    # 边界优先级：致谢 > 参考文献 > 参考文献OrderedList > 攻读成果 > 外文资料原文 > 文末
+    # CASE-A: foreign_original/translation 加入末位边界,避免章节文本误吞外文段
     last_chapter_end = len(blocks)
-    for key in ("acknowledgement", "references", "references_orderedlist", "accomplishments"):
+    for key in ("acknowledgement", "references", "references_orderedlist",
+                "accomplishments", "foreign_original", "foreign_translation"):
         if key in special:
             last_chapter_end = special[key]
             break
@@ -1675,8 +2016,14 @@ def main():
     references_raw = ""
     if "references" in special:
         # 有独立的 "参考文献" 标题块
+        # 边界优先级: 攻读成果 > 外文资料原文 > 外文资料译文 > 文末
+        # CASE-A fix: foreign sections 加入 boundary,防止外文正文段被误吞作 ref entry
         ref_start = special["references"]
-        ref_end = special.get("accomplishments", len(blocks))
+        ref_end = special.get(
+            "accomplishments",
+            special.get("foreign_original",
+            special.get("foreign_translation", len(blocks))),
+        )
         references_raw = extract_text_range(blocks, ref_start + 1, ref_end)
     elif "references_orderedlist" in special:
         # 参考文献在 OrderedList 中（马院论文模式）
@@ -1693,6 +2040,7 @@ def main():
             print(f"  📚 从 OrderedList 提取 {len(ref_lines)} 条参考文献")
 
     if references_raw:
+        references_raw = split_merged_refs_if_needed(references_raw)
         with open(os.path.join(output_dir, "references_raw.txt"), "w", encoding="utf-8") as f:
             f.write(references_raw)
         print(f"  ✅ references_raw.txt")
@@ -1718,15 +2066,17 @@ def main():
 
     if "abstract_en" in special:
         en_start = special["abstract_en"]
-        # 英文摘要结束 = "目录" 或第一章
+        # 英文摘要结束 = Keywords 行之后(优先) 或 "目录" 或第一章
         en_end = first_ch_idx
-        # 查找 "目录" block 作为更精确的结束点
-        for i in range(en_start, first_ch_idx):
-            if blocks[i].get("t") == "Para":
-                text = inlines_to_text(blocks[i]["c"]).strip()
-                if normalize_text(text).replace(" ", "") == "目录":
-                    en_end = i
-                    break
+        if "abstract_en_kw" in special:
+            en_end = special["abstract_en_kw"] + 1
+        else:
+            for i in range(en_start, first_ch_idx):
+                if blocks[i].get("t") == "Para":
+                    text = inlines_to_text(blocks[i]["c"]).strip()
+                    if normalize_text(text).replace(" ", "") == "目录":
+                        en_end = i
+                        break
         abs_text = extract_text_range(blocks, en_start, en_end)
         with open(os.path.join(output_dir, "abstract_en.txt"), "w", encoding="utf-8") as f:
             f.write(abs_text)
@@ -1743,6 +2093,162 @@ def main():
             with open(os.path.join(output_dir, "accomplishment.txt"), "w", encoding="utf-8") as f:
                 f.write(acc_text)
             print(f"  ✅ accomplishment.txt")
+
+    # === Step 12: 外文资料原文 / 译文 (本科必含, spec §1.1 #20-21) ===
+    # CASE-A fix: 之前完全不抽取这两个 section,导致 PDF 里只有正文 + 致谢 + 参考文献,
+    # 缺失本科规范要求的两个 appendix.
+    # 进一步发现: 外文原文常以图片(扫描截图)嵌入,文字为空 — 需要走 docx XML
+    # 把段内 drawings 抽出转 \includegraphics 行,而非依赖 pandoc 的文本.
+    # CASE-A Round 4: 段落类型分类 + LaTeX 装饰 emit
+    # 客户译文段全部 pStyle=(none) 扁平化, 用启发式恢复"标题/作者/摘要/节标题"层级.
+    # 保守原则: 不确定就 fallback 'body', 永不丢段, 永不改文字
+    _RE_NUMERIC_SECTION = _re_compile_safe = None  # placeholder, defined inside function
+
+    def _classify_foreign_para(text: str, idx_in_section: int, prev_type: str) -> str:
+        """Return one of: paper_title / authors / abstract_marker / section_title /
+        subsection_title / body. Image-only paragraphs handled separately by caller."""
+        import re as _re2
+        t = text.strip()
+        if not t:
+            return 'body'
+        # 节标题: "第X部分 XX" / "X. XX" / "X.Y XX"
+        if _re2.match(r'^第[一二三四五六七八九十]+部分[\s　]+\S', t):
+            return 'section_title'
+        if _re2.match(r'^\d+(\.\d+){0,2}[\s　\.、]+\S', t) and len(t) < 60 and not t.endswith('。'):
+            return 'subsection_title'
+        # 摘要标记
+        if _re2.match(r'^摘\s*要\s*[:：—\-]', t):
+            return 'abstract_marker'
+        # 论文标题: 仅在前 3 段内, 短, 不带句号, 不是节号
+        if idx_in_section <= 2 and len(t) < 60 and not _re2.search(r'[。.;；]$', t) and prev_type == 'start':
+            return 'paper_title'
+        # 作者行: 紧跟论文标题, 含人名分隔符, 较短
+        if prev_type == 'paper_title' and len(t) < 120 and (
+            ';' in t or '；' in t or '·' in t or t.count(',') >= 2 or t.count('，') >= 2
+        ):
+            return 'authors'
+        return 'body'
+
+    def _latex_decorate(text: str, ptype: str) -> str:
+        """Wrap text in LaTeX macros per type."""
+        if ptype == 'paper_title':
+            return '\\begin{center}\n\\bfseries\\zihao{4} ' + text + '\n\\end{center}'
+        if ptype == 'authors':
+            return '\\begin{center}\n' + text + '\n\\end{center}'
+        if ptype == 'abstract_marker':
+            # 把 "摘要：XXX" 改为 "\\noindent\\textit{摘要 ——} XXX"
+            import re as _re3
+            m = _re3.match(r'^(摘\s*要)\s*[:：—\-]\s*(.*)$', text)
+            if m:
+                rest = m.group(2)
+                return '\\noindent\\textit{摘要\\ ——}\\ ' + rest
+            return '\\noindent\\textit{' + text + '}'
+        if ptype == 'section_title':
+            return '\\section*{' + text + '}'
+        if ptype == 'subsection_title':
+            return '\\subsection*{' + text + '}'
+        return text  # body
+
+    def _emit_foreign_section(name, start, end):
+        """Emit a foreign appendix section as LaTeX lines, in DOCX paragraph order.
+
+        Round 4: 加段落类型启发式分类 — 译文部分识别论文标题/作者/摘要/节标题
+        并用合规字体字号 emit (\\bfseries\\zihao{4} / \\section* 等)。
+        Round 3: 按 docx XML 段顺序流式输出, 文字+图自然交错。
+        """
+        out_lines = []
+        # foreign_original 跳过分类(几乎全是图,无文字层级);只对译文做层级化
+        do_classify = (name == 'foreign_translation')
+        try:
+            import zipfile, re as _re
+            with zipfile.ZipFile(args.input) as z:
+                doc_xml = z.read("word/document.xml").decode("utf-8", errors="replace")
+                rels_xml = z.read("word/_rels/document.xml.rels").decode("utf-8", errors="replace")
+            rid_to_target = dict(_re.findall(
+                r'<Relationship Id="(rId\d+)"[^>]+Target="([^"]+)"', rels_xml))
+            paras_xml = _re.split(r"(?=<w:p[ >])", doc_xml)[1:]
+            section_title = "外文资料原文" if name == "foreign_original" else "外文资料译文"
+            anchor = -1
+            for j in range(len(paras_xml) - 1, -1, -1):
+                t = "".join(_re.findall(r"<w:t[^>]*>([^<]*)</w:t>", paras_xml[j]))
+                if t.strip() == section_title:
+                    anchor = j
+                    break
+            if anchor < 0:
+                return out_lines
+
+            stop_titles = {"外文资料原文", "外文资料译文"} - {section_title}
+            try:
+                from PIL import Image as _PI
+            except ImportError:
+                _PI = None
+
+            prev_type = 'start'
+            text_para_idx = 0  # index of non-empty text paragraph within section
+            for j in range(anchor + 1, len(paras_xml)):
+                p_xml = paras_xml[j]
+                jt = "".join(_re.findall(r"<w:t[^>]*>([^<]*)</w:t>", p_xml)).strip()
+                if jt in stop_titles:
+                    break
+                rids = _re.findall(r'<a:blip[^>]+r:embed="(rId\d+)"', p_xml)
+                if jt:
+                    if do_classify:
+                        ptype = _classify_foreign_para(jt, text_para_idx, prev_type)
+                        out_lines.append(_latex_decorate(jt, ptype))
+                        prev_type = ptype
+                    else:
+                        out_lines.append(jt)
+                        prev_type = 'body'
+                    text_para_idx += 1
+                for rid in rids:
+                    target = rid_to_target.get(rid, "")
+                    fname = os.path.basename(target)
+                    if not (fname and fname.lower().endswith((".png", ".jpg", ".jpeg"))):
+                        continue
+                    width_opt = ""
+                    if _PI is not None:
+                        for cand in [
+                            os.path.join(output_dir, "media", fname),
+                            os.path.join(output_dir, "media", "media", fname),
+                        ]:
+                            if os.path.exists(cand):
+                                try:
+                                    w_px, _h = _PI.open(cand).size
+                                    if w_px > 600:
+                                        width_opt = "[width=\\textwidth]"
+                                except Exception:
+                                    pass
+                                break
+                    out_lines.append(f"\\includegraphics{width_opt}{{media/{fname}}}")
+                    # Image breaks paper_title→authors continuity; reset prev to body
+                    if prev_type in ('paper_title',):
+                        prev_type = 'body'
+        except Exception as _e:
+            print(f"  ⚠️ {name} 图片扫描异常: {_e}")
+            txt = extract_text_range(blocks, start + 1, end).strip()
+            if txt:
+                out_lines.append(txt)
+        return out_lines
+
+    if "foreign_original" in special:
+        fo_start = special["foreign_original"]
+        fo_end = special.get("foreign_translation", len(blocks))
+        lines = _emit_foreign_section("foreign_original", fo_start, fo_end)
+        if lines:
+            with open(os.path.join(output_dir, "foreign_original.txt"),
+                      "w", encoding="utf-8") as f:
+                f.write("\n\n".join(lines))
+            print(f"  ✅ foreign_original.txt ({len(lines)} blocks)")
+
+    if "foreign_translation" in special:
+        ft_start = special["foreign_translation"]
+        ft_end = len(blocks)
+        lines = _emit_foreign_section("foreign_translation", ft_start, ft_end)
+        if lines:
+            with open(os.path.join(output_dir, "foreign_translation.txt"),
+                      "w", encoding="utf-8") as f:
+                f.write("\n\n".join(lines))
+            print(f"  ✅ foreign_translation.txt ({len(lines)} blocks)")
 
     # === 完成 ===
     print(f"\n🎉 [AST Engine] 提取完成! 输出目录: {output_dir}")
