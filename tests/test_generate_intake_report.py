@@ -30,7 +30,7 @@ def test_section_basic_missing_file(tmp_path):
 
 def test_integration_case012_full_intake(tmp_path):
     """CASE-A docx 应生成 6 节完整 intake."""
-    repo = os.environ.get("THESIS_REPO_ROOT", r"./
+    repo = os.environ.get("THESIS_REPO_ROOT", "")
     docx = os.path.join(repo, "work", "新case.docx")
     if not os.path.isfile(docx):
         import pytest

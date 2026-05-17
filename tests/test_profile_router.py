@@ -137,7 +137,7 @@ def test_route_unrecognized_docx(monkeypatch):
 # ============================================================
 
 def test_integration_case012_bachelor():
-    repo = os.environ.get("THESIS_REPO_ROOT", r"./
+    repo = os.environ.get("THESIS_REPO_ROOT", "")
     docx = os.path.join(repo, "work", "新case.docx")
     if not os.path.isfile(docx):
         import pytest

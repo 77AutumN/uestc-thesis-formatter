@@ -27,7 +27,9 @@ PATTERNS: list[tuple[re.Pattern[str], str]] = [
     (re.compile(r"黄子瀚|朱启彰|刘莹|郭芙蕊"), "CASE-A"),
     # Real English transliterations of the above (Liu Ying / Guo Furui), case-insensitive.
     (re.compile(r"\b(Liu Ying|Guo Furui)\b", re.IGNORECASE), "CASE-A"),
-    (re.compile(r"D:[\\/]+[Oo]pen claw[\\/]+\S+"), "./"),
+    # Non-greedy character class avoids swallowing trailing string delimiters
+    # (e.g. r"D:\open claw\X.pdf" must collapse to r"./" not r"./).
+    (re.compile(r"D:[\\/]+[Oo]pen claw[\\/][^\s'\"`,)]+"), "./"),
     (re.compile(r"\bCASE-0\d{2}\b"), "CASE-A"),
 ]
 

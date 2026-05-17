@@ -198,9 +198,7 @@ class TestStripCoverAndTocBlocks:
 # Integration test: full pipeline with real docx (skip if not available)
 # ============================================================
 
-STEM_DOCX = r"./
-
-
+STEM_DOCX = None
 @pytest.mark.skipif(not os.path.exists(STEM_DOCX), reason="STEM docx not found")
 class TestRealStemDocx:
     """Integration tests using the actual STEM thesis document."""

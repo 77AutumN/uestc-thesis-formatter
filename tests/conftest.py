@@ -23,7 +23,7 @@ def pytest_addoption(parser):
     )
     parser.addoption(
         "--oracle-pdf", action="store",
-        default=r"./
+        default=None,
         help="黄金参考 PDF 路径 (默认 workA/main_final_v2.pdf, CASE-A 已验收本科)"
     )
 

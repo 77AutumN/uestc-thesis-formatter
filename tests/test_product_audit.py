@@ -427,7 +427,7 @@ def test_integration_v10_full_audit_passes():
     含 case-private 手编辑 (v11 救火: 图片宽度调整 + ch03 表3-1 重排) + 旧版
     recover_figures placement bug. 重跑会破坏现状, 仅校验 Check 1-7.
     """
-    repo = os.environ.get("THESIS_REPO_ROOT", r"./
+    repo = os.environ.get("THESIS_REPO_ROOT", "")
     workdir = os.path.join(repo, "work", "output_012", "DissertationUESTC")
     docx = os.path.join(repo, "work", "新case.docx")
     extracted = os.path.join(repo, "work", "output_012", "extracted")
