@@ -1,0 +1,51 @@
+# Issue contract: equation_tag_missing
+# Phase 0 second batch (Day 4, 2026-05-07).
+# Source-side semantic, NOT visual_geometry. Detected by parsing TeX vs source manifest.
+schema_version: "0.1"
+issue_code: equation_tag_missing
+
+title:
+  zh: "公式右编号丢失"
+  en: "Equation block missing its expected right-side numeric tag"
+
+severity: P0               # 公式编号丢是客户必看, P0 hard
+risk_class: B
+repairability: deterministic
+default_confidence: 0.95
+
+source_audits:
+  - manifest_diff_audit
+  - product_audit          # Check 12 (equation layout sentinel) 已部分覆盖
+
+required_evidence:
+  - equation_label_or_index   # string, e.g. "eq:2-1" or "ch02_#9" 或 docx OMML mr id
+  - expected_tag              # string, e.g. "(2-1)"
+  - source_variant            # enum: "& & \\text{(X-Y)}" | "\\ \\ \\text{(X-Y)}" |
+                              #       "\\quad\\text{(X-Y)}" | "split_text" | "bare_trailing" | "missing"
+  - tex_snippet               # string, ≤ 200 chars, surrounding context
+
+required_location:
+  - pdf_page                  # 编号在 PDF 上预期出现的页
+  # tex_file/tex_line 由 SyncTeX locator 填,非 contract 强制
+
+allowed_repairers:
+  - equation_tag_repair
+
+acceptance:
+  rerun_audit: product_audit_check_12
+  must_disappear: true
+  invariants:
+    - field: evidence.expected_tag
+      operator: "rendered_in_pdf"   # checker 自定义谓词 (Phase 1 实施)
+
+fixtures:
+  - F5_equation_text_tag_variants
+
+tags: [semantic, equation, tag, numbering]
+
+introduced_in: 2026-05-07
+origin_case: |
+  CASE-A round 1 fix7 (& & \text 变体) +
+  round 3 fix7 漏匹配 \ \ \text variant +
+  round 3.5 fix6 14 处 equation* → equation+\tag
+related_defects: []

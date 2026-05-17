@@ -1,0 +1,5 @@
+{
+  "refs_raw_line_count_min": 5,
+  "no_single_para_with_3_plus_n_markers": true,
+  "merged_input_split_count_min": 5
+}

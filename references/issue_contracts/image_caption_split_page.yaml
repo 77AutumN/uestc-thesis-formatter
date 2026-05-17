@@ -1,0 +1,45 @@
+# Issue contract: image_caption_split_page
+# Phase 0 first batch (Day 3, 2026-05-07).
+schema_version: "0.1"
+issue_code: image_caption_split_page
+
+title:
+  zh: "图片与图题被分到不同页"
+  en: "Image and its caption rendered on different pages"
+
+severity: P0
+risk_class: B
+repairability: deterministic
+default_confidence: 0.97
+
+source_audits:
+  - visual_geometry_audit
+
+required_evidence:
+  - image_page         # int, 1-based, page where the image bbox is
+  - caption_page       # int, 1-based, page where the caption text is
+  - caption_text       # string, ≤ 120 chars, abbreviated caption
+  - image_filename     # string, e.g. "media/image8.png"
+
+required_location:
+  - pdf_page           # int, 1-based; convention: equal to image_page
+
+allowed_repairers:
+  - float_policy_repair
+
+acceptance:
+  rerun_audit: visual_geometry_audit
+  must_disappear: true
+  invariants:
+    - field: evidence.image_page
+      operator: "=="
+      value_from: evidence.caption_page
+
+fixtures:
+  - F9_h_float_overflow      # same float-policy mutant catches both
+
+tags: [geometry, float, figure, caption, pagination]
+
+introduced_in: 2026-05-07
+origin_case: CASE-A round 3 (用户反馈 "图片是不是乱序了" 之 image-caption pagination)
+related_defects: []

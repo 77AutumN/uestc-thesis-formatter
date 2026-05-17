@@ -1,0 +1,55 @@
+# Issue contract: caption_not_centered
+# Phase 0 second batch (Day 4, 2026-05-07).
+# Severity P1 deliberately (codex 二回应 §3.7): caption 居中是视觉近似 P1/P2 类,
+# 起步用宽松阈值,等历史 PDF 分布校准后再决定是否升 P0.
+schema_version: "0.1"
+issue_code: caption_not_centered
+
+title:
+  zh: "图表标题未居中"
+  en: "Figure/table caption text not centered relative to its reference center"
+
+severity: P1               # 起步 P1; calibration 后可升 P0
+risk_class: B
+repairability: trial       # caption 居中 fix 不一定一击命中(longtable padding 等),复检
+default_confidence: 0.80
+
+source_audits:
+  - visual_geometry_audit
+
+required_evidence:
+  - offset_pt              # number, 实测中心偏移量, pt
+  - reference_center_type  # enum: "image_bbox" | "table_bbox" | "text_area" | "page"
+  - expected_center_x      # number, pt (依据 reference_center_type 计算)
+  - actual_center_x        # number, pt (caption 文本块中心)
+  - caption_text           # string, ≤ 120 chars
+
+required_location:
+  - pdf_page
+
+allowed_repairers:
+  - caption_alignment_repair
+  - bare_table_title_repair  # 裸文字表标题用此变体
+
+acceptance:
+  rerun_audit: visual_geometry_audit
+  must_disappear: true
+  invariants:
+    - field: evidence.offset_pt
+      operator: "<"
+      value: 12             # 可调; codex 二回应建议初始 P1=25, P2=15-25;紧 hard threshold=12
+
+fixtures: []                # backlog: F_caption_centering 待写
+
+tags: [geometry, caption, centering, alignment]
+
+introduced_in: 2026-05-07
+origin_case: |
+  CASE-A round 3.5 fix5 / fix7 (caption justification + 裸表标题 \begin{center}) +
+  codex 二回应 §3.3 三种 reference center.
+related_defects: [D32]      # caption 字号 D32 是邻近修复点 (字号, 非居中, 但同一 caption 对象)
+notes: |
+  reference_center_type 决策树 (codex 二回应 §3.3):
+    figure caption → image_bbox center (优先)
+    table title    → table bbox center; 抽不到 → text_area center
+    其他 caption   → text_area center, 不是整页 page center

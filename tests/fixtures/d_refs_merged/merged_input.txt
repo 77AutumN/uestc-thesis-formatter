@@ -1,0 +1,1 @@
+[1] Smith, J. A. (2020). Reference one title. Journal of X, 12(3), 45-67. [2] Doe, J. (2021). Reference two title. Book Publisher, Beijing. [3] Lee, K. (2019). Reference three title [J]. Journal Y, 8(2), 23-30. [4] Wang, M. (2022). Reference four title [D]. PhD thesis, University Z. [5] Chen, L. (2023). Reference five title [EB/OL]. https://example.com.
