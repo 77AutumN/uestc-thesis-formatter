@@ -181,7 +181,7 @@ class TestValidateStructure:
         meta = {
             "abstract_word_count": 650,
             "keywords_zh": ["关键词1", "关键词2", "关键词3", "关键词4"],
-            "title_zh": "测试用深度学习图像分割",
+            "title_zh": "基于深度学习的图像分割研究",
             "citation_markers_in_body": 42,
         }
         meta_path = tmp_path / "thesis_meta.json"

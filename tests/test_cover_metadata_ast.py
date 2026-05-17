@@ -55,14 +55,14 @@ class TestExtractCoverMetadataFromAst:
             _para("学士学位论文"),                        # 2: degree type
             _para("BACHELOR THESIS"),                     # 3
             _para(""),                                    # 4: empty
-            _para("论文题目\t测试测试第一版真好"),             # 5: title field
-            _para("测试第二版测试"),                     # 6: title continuation
+            _para("论文题目\t基于快速直接算法的"),         # 5: title field
+            _para("雷达散射中心成像"),                    # 6: title continuation
             _blockquote([                                 # 7: metadata in BlockQuote
                 "学\u3000院\t电子科学与工程学院",
                 "专\u3000业\t电子科学与技术",
-                "学\u3000号\t202400000000",
-                "作者姓名\t张三",
-                "指导教师\t李四 副研究员",
+                "学\u3000号\t2017030306008",
+                "作者姓名\t陈金伟",
+                "指导教师\t江明 副研究员",
             ]),
             _header(1, "摘要"),                           # 8: abstract starts = first_chapter_idx
         ]
@@ -73,12 +73,12 @@ class TestExtractCoverMetadataFromAst:
         first_ch_idx = 8  # 摘要
         meta = extract_cover_metadata_from_ast(blocks, first_ch_idx)
 
-        assert meta["title_cn"] == "测试测试第一版真好测试第二版测试"
+        assert meta["title_cn"] == "基于快速直接算法的雷达散射中心成像"
         assert meta["school_cn"] == "电子科学与工程学院"
         assert meta["major_cn"] == "电子科学与技术"
-        assert meta["student_id"] == "202400000000"
-        assert meta["author_cn"] == "张三"
-        assert meta["advisor_name_cn"] == "李四"
+        assert meta["student_id"] == "<STUDENT_ID>"
+        assert meta["author_cn"] == "陈金伟"
+        assert meta["advisor_name_cn"] == "江明"
         assert meta["advisor_title_cn"] == "副研究员"
         assert "_cover_block_indices" in meta
 
@@ -100,12 +100,12 @@ class TestExtractCoverMetadataFromAst:
             _para("电 子 科 技 大 学"),
             _para("硕士学位论文"),
             _para("MASTER THESIS"),
-            _para("论文题目\t测试用硕士学位论文题目"),
+            _para("论文题目\t深度学习优化方法研究"),
             _blockquote(["作者姓名\t张三"]),
             _header(1, "第一章 绪论"),
         ]
         meta = extract_cover_metadata_from_ast(blocks, 5)
-        assert meta["title_cn"] == "测试用硕士学位论文题目"
+        assert meta["title_cn"] == "深度学习优化方法研究"
         assert meta["author_cn"] == "张三"
 
     def test_no_cover_returns_empty(self):
@@ -198,7 +198,7 @@ class TestStripCoverAndTocBlocks:
 # Integration test: full pipeline with real docx (skip if not available)
 # ============================================================
 
-STEM_DOCX = r"C:\fake\path\to\thesis.docx"
+STEM_DOCX = r"./
 
 
 @pytest.mark.skipif(not os.path.exists(STEM_DOCX), reason="STEM docx not found")
@@ -225,7 +225,7 @@ class TestRealStemDocx:
         assert "title_cn" in meta
         assert "author_cn" in meta
         assert "school_cn" in meta
-        assert meta["student_id"] == "202400000000"
+        assert meta["student_id"] == "<STUDENT_ID>"
 
     def test_real_stem_block_stripping(self, chapters_and_blocks):
         import copy

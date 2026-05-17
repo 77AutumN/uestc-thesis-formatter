@@ -15,14 +15,6 @@ import os
 import sys
 from copy import deepcopy
 
-# Windows console UTF-8 compatibility
-if hasattr(sys.stdout, 'reconfigure'):
-    try:
-        sys.stdout.reconfigure(encoding='utf-8')
-        sys.stderr.reconfigure(encoding='utf-8')
-    except Exception:
-        pass
-
 
 def _deep_merge(base: dict, override: dict) -> dict:
     """递归合并两个 dict。override 的值优先。"""
