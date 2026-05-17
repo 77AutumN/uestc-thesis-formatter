@@ -1,0 +1,45 @@
+# Issue contract: orphan_heading_at_page_bottom
+# Phase 0 first batch (Day 3, 2026-05-07).
+schema_version: "0.1"
+issue_code: orphan_heading_at_page_bottom
+
+title:
+  zh: "标题孤立在页尾"
+  en: "Heading orphaned at page bottom (less than 2 lines of body following)"
+
+severity: P0
+risk_class: B
+repairability: deterministic
+default_confidence: 0.92
+
+source_audits:
+  - visual_geometry_audit
+
+required_evidence:
+  - heading_text          # string, ≤ 120 chars
+  - heading_level         # int, 1=chapter, 2=section, 3=subsection, ...
+  - body_lines_following  # int, lines of body text below the heading on same page
+  - page_bottom_y         # number, pt, y of usable page bottom
+  - heading_y             # number, pt, y of the heading baseline
+
+required_location:
+  - pdf_page              # int, 1-based
+
+allowed_repairers:
+  - heading_pagebreak_repair
+
+acceptance:
+  rerun_audit: visual_geometry_audit
+  must_disappear: true
+  invariants:
+    - field: evidence.body_lines_following
+      operator: ">="
+      value: 2
+
+fixtures: []   # No mutant fixture yet; backlog item
+
+tags: [geometry, heading, pagination, widow_orphan]
+
+introduced_in: 2026-05-07
+origin_case: UESTC §2.4 附加规则 (1) "各级标题不得置于页面最后一行"; CASE-A round3 部分章节疑似触发但未单独反馈
+related_defects: []

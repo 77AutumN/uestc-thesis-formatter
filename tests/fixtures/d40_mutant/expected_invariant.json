@@ -1,0 +1,8 @@
+{
+  "equation_count_min": 1,
+  "tag_pattern_matches": [
+    "\\\\tag\\{1-2\\}"
+  ],
+  "no_literal_paren_marker": true,
+  "control_text_must_survive": "对照段"
+}

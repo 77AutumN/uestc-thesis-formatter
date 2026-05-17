@@ -1,0 +1,46 @@
+# Issue contract: header_chapter_mismatch
+# Phase 0 second batch (Day 4, 2026-05-07).
+schema_version: "0.1"
+issue_code: header_chapter_mismatch
+
+title:
+  zh: "页眉与所在章节不一致"
+  en: "Page header text does not reflect the current chapter"
+
+severity: P0
+risk_class: B
+repairability: deterministic
+default_confidence: 0.93
+
+source_audits:
+  - visual_geometry_audit
+
+required_evidence:
+  - actual_header_text         # string, fitz 抓到的页眉
+  - expected_chapter_title     # string, e.g. "第二章 LoRA 与 SAM 概述"
+  - chapter_label              # string or null, e.g. "ch02"
+  - is_starchapter             # bool: true 时 chapter 用 \chapter* 致 \markboth 未自动注入
+
+required_location:
+  - pdf_page
+
+allowed_repairers:
+  - header_markboth_repair
+
+acceptance:
+  rerun_audit: visual_geometry_audit
+  must_disappear: true
+  invariants:
+    - field: evidence.actual_header_text
+      operator: "contains_substring"
+      value_from: evidence.expected_chapter_title
+
+fixtures: []                  # backlog: F_header_starchapter 待写
+
+tags: [pagination, header, chapter, markboth]
+
+introduced_in: 2026-05-07
+origin_case: |
+  CASE-A round 3 fix4 (\chapter* 后 \markboth) — 致谢/参考文献等 \chapter*
+  page 偶页页眉显示前一章标题, UESTC §2.12 规定的奇偶页眉规则被破坏.
+related_defects: []
