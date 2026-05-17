@@ -18,9 +18,12 @@
 ## ✨ Features / 功能
 
 - **一键 Word → LaTeX**：从 `.docx` 自动提取论文结构（章节、摘要、致谢、参考文献），生成符合 UESTC 规范的 `.tex` 文件
-- **多学院 Profile 支持**：通过 `--profile` 参数切换学院配置（标准理工/马克思主义学院），自动应用对应的引用、文献、标点规则
+- **多 Profile 支持**：`--profile` 参数切换 `uestc`（标准研究生） / `uestc-bachelor`（本科） / `uestc-marxism`（马克思主义学院） / `stem`（理工）四套配置，自动应用对应的引用、文献、标点规则
 - **Pandoc AST 引擎**：基于 Pandoc JSON AST 的深度解析，精确处理图表、公式、交叉引用
-- **自动 QA 校验**：Pre-flight（输入检查）+ Post-flight（PDF 质量审计），含 12 项合规检查点
+- **三层 QA 闭环**：Pre-flight（输入检查 + 风险路由）+ Validate-assembly（编译前硬门禁）+ Product audit（PDF 14 项合规检查），任何 P0 红灯阻断交付
+- **Docx surgery toolkit**：自动恢复缺失的 Heading 样式、图编号、公式块；从 docx XML 直注 `\includegraphics`；WMF→PNG 公式回收（Docker LibreOffice）
+- **Visual geometry audit**：基于 PyMuPDF 全 PDF 扫页面几何异常（大留白 / 越版心 / caption 孤立）+ synctex 反查 .tex 位置
+- **Defect card tracking**：50+ 张 D 卡缺陷索引（按命中频率 / 学位类型 / 修复位置可检索，见 [`docs/defects/INDEX.md`](docs/defects/INDEX.md)），CI 友好的 `dashboard.json` 可 `jq` 检索
 - **Docker 编译**：内置 XeLaTeX 编译脚本，支持 Docker 一键构建
 - **AI-Native**：内置 `AGENTS.md` + `SKILL.md` 契约，支持 Cursor / Claude / Copilot / Antigravity 等 AI IDE 直接操作
 
