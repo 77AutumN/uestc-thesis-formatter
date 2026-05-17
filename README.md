@@ -147,7 +147,24 @@ uestc-thesis-formatter/
 | **uestc** (标准理工硕/博) | `\cite{}` + BibTeX | 编号列表 | xelatex→bibtex→xelatex×2 | ✅ |
 | **uestc-bachelor** (本科) | `\cite{}` + BibTeX (上标 [N]) | 编号列表 | xelatex→bibtex→xelatex×2 | ✅ |
 | **uestc-marxism** (马克思主义学院) | 脚注制 ①-⑳ (每页重置) | 四分类 (著作/期刊/论文/网页) | xelatex×3 | ✅ 已验证 |
-| **stem** (理工通用基础) | `\cite{}` + BibTeX | 编号列表 | xelatex→bibtex→xelatex×2 | ✅ |
+| **stem** (理工通用基础) | `\cite{}` + BibTeX | 编号列表 | xelatex→bibtex→xelatex×2 | 🧪 alpha |
+
+## ⚠️ Known Limitations / 已知限制
+
+- **Vendor template lag**: `vendor/DissertationUESTC` is pinned as a git
+  submodule to upstream `MGG1996/DissertationUESTC`. Small CLS patches
+  introduced during W4-W5 (caption font size, table rule widths, etc.) are
+  **not** redistributed in this public release — they belong to the upstream
+  template and are tracked in a separate PR. OSS clones will compile with
+  the upstream CLS as-is; expected differences are minor (most visibly in
+  bachelor caption rendering).
+- **Bundled compliance suites skip in clean environments**: `tests/test_bachelor_format_compliance.py`
+  and `tests/test_bachelor_spec_compliance.py` require a pre-built thesis
+  artifact under `work/workA/` (cls + main.tex) to verify rendered output.
+  They self-skip when those artifacts are absent. Pipeline + unit tests
+  (515 cases) remain CI-gated.
+- **`stem` profile is alpha**: shipped with the pipeline plumbing but
+  end-to-end fixtures are thin. Expect rough edges on first real use.
 
 ## 🔒 Privacy & Public Release
 
