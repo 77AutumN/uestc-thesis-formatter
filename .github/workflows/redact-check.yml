@@ -22,15 +22,28 @@ jobs:
         with:
           python-version: "3.10"
 
-      - name: Inject private name list from secret
+      - name: Install Python deps (for .docx + .pdf scanning)
+        run: pip install --quiet python-docx PyMuPDF
+
+      - name: Inject private name list from secret (fail-closed on trusted runs)
         env:
           REDACT_NAMES: ${{ secrets.REDACT_NAMES }}
+          EVENT_NAME: ${{ github.event_name }}
+          PR_HEAD_REPO: ${{ github.event.pull_request.head.repo.full_name }}
+          REPO: ${{ github.repository }}
         run: |
           if [ -n "$REDACT_NAMES" ]; then
             printf '%s\n' "$REDACT_NAMES" > .redact-names.local.txt
             echo "Loaded $(grep -c -v '^\s*\(#\|$\)' .redact-names.local.txt) private name pattern(s)."
           else
-            echo "::warning::REDACT_NAMES secret not available (fork PR or unconfigured); name-list pass skipped — high-entropy patterns still enforced."
+            # Trusted run = push to main, workflow_dispatch, or same-repo PR.
+            # Fork PRs legitimately can't access secrets — emit a warning only.
+            if [ "$EVENT_NAME" = "push" ] || [ "$EVENT_NAME" = "workflow_dispatch" ] || \
+               { [ "$EVENT_NAME" = "pull_request" ] && [ "$PR_HEAD_REPO" = "$REPO" ]; }; then
+              echo "::error::REDACT_NAMES secret missing on a trusted run ($EVENT_NAME). Fail-closed: cannot guarantee name-list coverage."
+              exit 1
+            fi
+            echo "::warning::REDACT_NAMES unavailable (fork PR). Name-list pass skipped; high-entropy patterns + binary scan still enforced."
           fi
 
       - name: Run redaction check (tools/redact.py --check)
@@ -58,3 +71,33 @@ jobs:
 
       - name: Run pytest
         run: python -m pytest tests/ -q --tb=line
+
+  history-audit:
+    name: Full git-history PII audit (manual / release-time)
+    if: github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: false
+          fetch-depth: 0   # full history for `git log -S/-G` pickaxe
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.10"
+
+      - name: Inject private name list from secret
+        env:
+          REDACT_NAMES: ${{ secrets.REDACT_NAMES }}
+        run: |
+          if [ -n "$REDACT_NAMES" ]; then
+            printf '%s\n' "$REDACT_NAMES" > .redact-names.local.txt
+            echo "Loaded $(grep -c -v '^\s*\(#\|$\)' .redact-names.local.txt) private name pattern(s)."
+          else
+            echo "::error::REDACT_NAMES secret required for history audit — without it the name-list pickaxe is skipped."
+            exit 1
+          fi
+
+      - name: Audit entire git history for PII
+        run: python tools/redact.py --audit-history .
