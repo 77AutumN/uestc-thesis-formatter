@@ -1,16 +1,35 @@
 __pycache__/
 *.pyc
-.pytest_cache/
+*.pyo
 output/
-*.pdf
-.env
-*.egg-info/
-dist/
-build/
-.venv/
+*.aux
+*.log
+*.synctex.gz
+*.toc
+*.lof
+*.lot
+*.bbl
+*.blg
+*.out
+*.fls
+*.fdb_latexmk
+.DS_Store
 
-# Gemini CLI IPC bridge
-.gemini_ipc/
+# Legacy template tree (deprecated, replaced by vendor/DissertationUESTC/)
+thesis-uestc/
 
-# Codex IPC artifacts
+# Cross-agent work artefacts (Gemini audit logs, etc.)
+artifacts/
+
+# Override and IPC dirs (private workflow only)
+overrides/
 .codex_ipc/
+.gemini_ipc/
+.pytest_cache/
+
+# Build/cache
+*.bcf
+*.run.xml
+*.nlo
+*.synctex(busy)
+*.xdv
