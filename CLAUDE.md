@@ -4,6 +4,6 @@ This repository uses a central knowledge base for AI-assisted thesis formatting.
 
 **ALWAYS start your task by reading:**
 1. `AGENTS.md` (root) — Bootstrap rules and file map
-2. `.agent/skills/thesis-formatter/SKILL.md` — Full pipeline specification
+2. `SKILL.md` — Full pipeline specification
 
 Do NOT duplicate rules here. This file is a routing stub only.

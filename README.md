@@ -20,7 +20,7 @@
 - **一键 Word → LaTeX**：从 `.docx` 自动提取论文结构（章节、摘要、致谢、参考文献），生成符合 UESTC 规范的 `.tex` 文件
 - **多 Profile 支持**：`--profile` 参数切换 `uestc`（标准研究生） / `uestc-bachelor`（本科） / `uestc-marxism`（马克思主义学院） / `stem`（理工）四套配置，自动应用对应的引用、文献、标点规则
 - **Pandoc AST 引擎**：基于 Pandoc JSON AST 的深度解析，精确处理图表、公式、交叉引用
-- **三层 QA 闭环**：Pre-flight（输入检查 + 风险路由）+ Validate-assembly（编译前硬门禁）+ Product audit（PDF 14 项合规检查），任何 P0 红灯阻断交付
+- **三层 QA 闭环**：Pre-flight（输入检查 + 风险路由）+ Validate-assembly（编译前硬门禁）+ Product audit（PDF 15 项合规检查），任何 P0 红灯阻断交付
 - **Docx surgery toolkit**：自动恢复缺失的 Heading 样式、图编号、公式块；从 docx XML 直注 `\includegraphics`；WMF→PNG 公式回收（Docker LibreOffice）
 - **Visual geometry audit**：基于 PyMuPDF 全 PDF 扫页面几何异常（大留白 / 越版心 / caption 孤立）+ synctex 反查 .tex 位置
 - **Defect card tracking**：50+ 张 D 卡缺陷索引（按命中频率 / 学位类型 / 修复位置可检索，见 [`docs/defects/INDEX.md`](docs/defects/INDEX.md)），CI 友好的 `dashboard.json` 可 `jq` 检索
@@ -148,6 +148,18 @@ uestc-thesis-formatter/
 | **uestc-bachelor** (本科) | `\cite{}` + BibTeX (上标 [N]) | 编号列表 | xelatex→bibtex→xelatex×2 | ✅ |
 | **uestc-marxism** (马克思主义学院) | 脚注制 ①-⑳ (每页重置) | 四分类 (著作/期刊/论文/网页) | xelatex×3 | ✅ 已验证 |
 | **stem** (理工通用基础) | `\cite{}` + BibTeX | 编号列表 | xelatex→bibtex→xelatex×2 | 🧪 alpha |
+
+## ✅ Tested Schools / 已验证学院
+
+本管线已基于 21 个真实论文 case 完成实测 (脱敏后的缺陷热度索引见 [`docs/defects/INDEX.md`](docs/defects/INDEX.md)):
+
+| 学位 | 已实测学院 |
+|------|----------|
+| **本科** (`uestc-bachelor`) | 信息与通信工程 · 电子科学与工程 · 集成电路科学与工程 · 计算机科学与工程 · 数学科学 · 公共管理 |
+| **硕士** (`uestc-marxism`) | 马克思主义学院 |
+| 其他学院 / 理工硕博 | Profile 路径设计支持, 尚无真实 case, 欢迎试用反馈 |
+
+If your school isn't on the list yet, the pipeline likely still works — open an issue with your `.docx` (after manual PII removal) and we'll triage.
 
 ## ⚠️ Known Limitations / 已知限制
 
