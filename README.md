@@ -1,33 +1,90 @@
 <div align="center">
 
-# UESTC Thesis Formatter
+# 电子科技大学毕业论文格式排版引擎
 
-**电子科技大学学位论文 Word → LaTeX 自动排版引擎**
+**Word 一键转 LaTeX, 自动排出符合学校规范的 PDF**
 
-*Automated Word-to-LaTeX formatting pipeline for UESTC graduate theses*
+`uestc-thesis-formatter` · 已实测 21 case · 覆盖 7 个学院
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Python 3.10+](https://img.shields.io/badge/Python-3.10%2B-blue.svg)](https://www.python.org/downloads/)
 [![UESTC](https://img.shields.io/badge/UESTC-电子科技大学-red.svg)](https://www.uestc.edu.cn)
-[![AI-Native](https://img.shields.io/badge/AI--Native-AGENTS.md-blueviolet.svg)](#-ai-native-support)
+[![AI-Native](https://img.shields.io/badge/AI--Native-AGENTS.md-blueviolet.svg)](AGENTS.md)
 
 </div>
 
 ---
 
-## ✨ Features / 功能
+## ✨ 这是什么
 
-- **一键 Word → LaTeX**：从 `.docx` 自动提取论文结构（章节、摘要、致谢、参考文献），生成符合 UESTC 规范的 `.tex` 文件
-- **多 Profile 支持**：`--profile` 参数切换 `uestc`（标准研究生） / `uestc-bachelor`（本科） / `uestc-marxism`（马克思主义学院） / `stem`（理工）四套配置，自动应用对应的引用、文献、标点规则
-- **Pandoc AST 引擎**：基于 Pandoc JSON AST 的深度解析，精确处理图表、公式、交叉引用
-- **三层 QA 闭环**：Pre-flight（输入检查 + 风险路由）+ Validate-assembly（编译前硬门禁）+ Product audit（PDF 15 项合规检查），任何 P0 红灯阻断交付
-- **Docx surgery toolkit**：自动恢复缺失的 Heading 样式、图编号、公式块；从 docx XML 直注 `\includegraphics`；WMF→PNG 公式回收（Docker LibreOffice）
-- **Visual geometry audit**：基于 PyMuPDF 全 PDF 扫页面几何异常（大留白 / 越版心 / caption 孤立）+ synctex 反查 .tex 位置
-- **Defect card tracking**：50+ 张 D 卡缺陷索引（按命中频率 / 学位类型 / 修复位置可检索，见 [`docs/defects/INDEX.md`](docs/defects/INDEX.md)），CI 友好的 `dashboard.json` 可 `jq` 检索
-- **Docker 编译**：内置 XeLaTeX 编译脚本，支持 Docker 一键构建
-- **AI-Native**：内置 `AGENTS.md` + `SKILL.md` 契约，支持 Cursor / Claude / Copilot / Antigravity 等 AI IDE 直接操作
+每年毕业季, 成电学子都要面临一个隐藏的"终极 Boss": 被教务处反复打回的论文格式修改意见 —— 段前几磅、行距几倍、参考文献标点全/半角、上下标位置, 一项项手抠到吐血。
 
-## 🏗️ Architecture / 架构
+这个项目把这些重复劳作做成自动化流水线: 你给一份 `.docx`, 它自动生成符合 UESTC 规范的 LaTeX 工程 + PDF。马克思主义学院的脚注式引用、本科的封面表格、研究生的 BibTeX 参考文献, 都内置识别。
+
+## 🚀 快速开始
+
+### 前置条件
+
+- Python 3.10+
+- [Pandoc](https://pandoc.org/installing.html) (≥ 3.0)
+- [Docker Desktop](https://www.docker.com/products/docker-desktop/) (用于 XeLaTeX 编译)
+- 或本地安装 TeX Live 2023+ (含 XeLaTeX + CTeX 宏集)
+
+### 三步上手
+
+```bash
+# 1. 拉代码 + 子模块
+git clone https://github.com/77AutumN/uestc-thesis-formatter.git
+cd uestc-thesis-formatter
+git submodule update --init --recursive
+
+# 2. 装依赖
+pip install -r requirements.txt
+
+# 3. 把你的论文丢进去
+python scripts/run_v2.py 你的论文.docx --profile uestc-bachelor --output-dir ./output/
+```
+
+Profile 选择见下表; 想跑别的学位换成 `uestc` (研究生) 或 `uestc-marxism` (马院) 即可。
+
+## ✅ 已验证学院 / Tested Schools
+
+本管线已基于 21 个真实论文 case 完成实测 (脱敏后的缺陷热度索引见 [`docs/defects/INDEX.md`](docs/defects/INDEX.md)):
+
+| 学位 | 已实测学院 |
+|------|----------|
+| **本科** (`uestc-bachelor`) | 信息与通信工程 · 电子科学与工程 · 集成电路科学与工程 · 计算机科学与工程 · 数学科学 · 公共管理 |
+| **硕士** (`uestc-marxism`) | 马克思主义学院 |
+| 其他学院 / 理工硕博 | Profile 路径设计支持, 尚无真实 case, 欢迎试用反馈 |
+
+If your school isn't on the list yet, the pipeline likely still works — open an issue with your `.docx` (after manual PII removal) and we'll triage.
+
+## 📋 支持的 Profile
+
+| Profile | 引用方式 | 参考文献 | 编译链 | 状态 |
+|---------|---------|---------|--------|------|
+| **uestc** (标准理工硕/博) | `\cite{}` + BibTeX | 编号列表 | xelatex→bibtex→xelatex×2 | ✅ |
+| **uestc-bachelor** (本科) | `\cite{}` + BibTeX (上标 [N]) | 编号列表 | xelatex→bibtex→xelatex×2 | ✅ |
+| **uestc-marxism** (马克思主义学院) | 脚注制 ①-⑳ (每页重置) | 四分类 (著作/期刊/论文/网页) | xelatex×3 | ✅ 已验证 |
+| **stem** (理工通用基础) | `\cite{}` + BibTeX | 编号列表 | xelatex→bibtex→xelatex×2 | 🧪 alpha |
+
+## 💡 它能帮我做什么
+
+- **🪄 一键 Word → PDF**: 给我一份 `.docx`, 我吐一份符合学校格式规范的 PDF, 中间所有 LaTeX 工程都自动生成, 不需要你装 TeX Live。
+- **🎓 认得学院**: 内置 4 套 Profile (本科 / 研究生 / 马院硕士 / 理工通用 alpha), 不同学院的引用方式 (脚注 vs BibTeX)、参考文献分类 (4 类 vs 编号列表)、封面布局, 自动选对。
+- **🔬 会检查**: 编译前后跑 24+ 项格式自检 (摘要字数、图表编号连续性、参考文献分类、上标引用、版心溢出等), 不让你交瑕疵 PDF。
+- **🩺 会救图救公式**: Word 里嵌的 WMF 公式、表格里被吞的子图、丢失的 Heading 样式, 都能从 docx XML 抢回来。
+- **🤖 配 AI IDE 用更舒服**: Cursor / Claude Code / GitHub Copilot 直接 `@/thesis` 或 `/thesis` 一键启动。
+- **📓 50 个真实坑都已记录**: 21 个真实论文 case 踩出来的 50 张缺陷卡片在 [`docs/defects/INDEX.md`](docs/defects/INDEX.md), 同症状下次就不复发。
+
+## ⚠️ 已知问题
+
+- **LaTeX 模板补丁未并回上游**: `vendor/DissertationUESTC` 是 git submodule 锁到上游, 项目内做的几个小补丁 (caption 字号 / 表格线宽等) 还在另一条 PR 上等并入。直接 clone 跑通没问题, 仅本科 caption 渲染会有细微差别, 不影响内容合规。
+- **部分测试需要预编译产物才能跑**: `tests/test_bachelor_*_compliance.py` 需要 `work/workA/` 下有预跑过的论文制品才能验证。clean clone 下会 self-skip, 不影响主流水线测试 (515 项) 在 CI 里完整跑。
+- **`stem` profile 还在 alpha**: 框架接好了, 但端到端 fixture 薄弱, 真用可能有粗糙处, 欢迎试 + 反馈。
+
+<details>
+<summary><b>🏗️ 架构概览</b> (贡献者展开)</summary>
 
 ```
 Word .docx
@@ -62,43 +119,10 @@ Word .docx
     thesis.pdf ✅
 ```
 
-## 🚀 Quick Start / 快速开始
+</details>
 
-### Prerequisites / 前置条件
-
-- Python 3.10+
-- [Pandoc](https://pandoc.org/installing.html) (≥ 3.0)
-- [Docker Desktop](https://www.docker.com/products/docker-desktop/) (用于 XeLaTeX 编译)
-- 或本地安装 TeX Live 2023+ (含 XeLaTeX + CTeX 宏集)
-
-### Installation / 安装
-
-```bash
-# 1. Clone
-git clone https://github.com/77AutumN/uestc-thesis-formatter.git
-cd uestc-thesis-formatter
-
-# 2. Install dependencies
-pip install -r requirements.txt
-
-# 3. 初始化底层 LaTeX 模板子模块
-git submodule update --init --recursive
-```
-
-### Usage / 使用
-
-```bash
-# 标准理工模式
-python scripts/run_v2.py thesis.docx --profile uestc --output-dir ./output/
-
-# 马克思主义学院模式
-python scripts/run_v2.py thesis.docx --profile uestc-marxism --output-dir ./output/
-
-# 仅提取（不编译）
-python scripts/pandoc_ast_extract.py --input thesis.docx --output-dir ./output/extracted/
-```
-
-## 📁 Project Structure / 项目结构
+<details>
+<summary><b>📁 项目结构</b> (贡献者展开)</summary>
 
 ```
 uestc-thesis-formatter/
@@ -140,74 +164,31 @@ uestc-thesis-formatter/
 └── LICENSE
 ```
 
-## 📋 Supported Profiles / 支持的学院模式
+</details>
 
-| Profile | 引用方式 | 参考文献 | 编译链 | 状态 |
-|---------|---------|---------|--------|------|
-| **uestc** (标准理工硕/博) | `\cite{}` + BibTeX | 编号列表 | xelatex→bibtex→xelatex×2 | ✅ |
-| **uestc-bachelor** (本科) | `\cite{}` + BibTeX (上标 [N]) | 编号列表 | xelatex→bibtex→xelatex×2 | ✅ |
-| **uestc-marxism** (马克思主义学院) | 脚注制 ①-⑳ (每页重置) | 四分类 (著作/期刊/论文/网页) | xelatex×3 | ✅ 已验证 |
-| **stem** (理工通用基础) | `\cite{}` + BibTeX | 编号列表 | xelatex→bibtex→xelatex×2 | 🧪 alpha |
+<details>
+<summary><b>🤖 AI IDE 支持</b> (Cursor / Claude Code / Copilot 用户展开)</summary>
 
-## ✅ Tested Schools / 已验证学院
+本项目原生支持多种 AI 编程助手。在任何支持的 IDE 输入 `/thesis` 或 `@/thesis`, AI 会自动加载完整流水线规范并引导你完成排版。
 
-本管线已基于 21 个真实论文 case 完成实测 (脱敏后的缺陷热度索引见 [`docs/defects/INDEX.md`](docs/defects/INDEX.md)):
-
-| 学位 | 已实测学院 |
-|------|----------|
-| **本科** (`uestc-bachelor`) | 信息与通信工程 · 电子科学与工程 · 集成电路科学与工程 · 计算机科学与工程 · 数学科学 · 公共管理 |
-| **硕士** (`uestc-marxism`) | 马克思主义学院 |
-| 其他学院 / 理工硕博 | Profile 路径设计支持, 尚无真实 case, 欢迎试用反馈 |
-
-If your school isn't on the list yet, the pipeline likely still works — open an issue with your `.docx` (after manual PII removal) and we'll triage.
-
-## ⚠️ Known Limitations / 已知限制
-
-- **Vendor template lag**: `vendor/DissertationUESTC` is pinned as a git
-  submodule to upstream `MGG1996/DissertationUESTC`. Small CLS patches
-  introduced during W4-W5 (caption font size, table rule widths, etc.) are
-  **not** redistributed in this public release — they belong to the upstream
-  template and are tracked in a separate PR. OSS clones will compile with
-  the upstream CLS as-is; expected differences are minor (most visibly in
-  bachelor caption rendering).
-- **Bundled compliance suites skip in clean environments**: `tests/test_bachelor_format_compliance.py`
-  and `tests/test_bachelor_spec_compliance.py` require a pre-built thesis
-  artifact under `work/workA/` (cls + main.tex) to verify rendered output.
-  They self-skip when those artifacts are absent. Pipeline + unit tests
-  (515 cases) remain CI-gated.
-- **`stem` profile is alpha**: shipped with the pipeline plumbing but
-  end-to-end fixtures are thin. Expect rough edges on first real use.
-
-## 🔒 Privacy & Public Release
-
-This repository is a **knowledge-compiled public release**. The private skill
-tree it was synced from is not redistributed; only sanitized scripts, docs and
-machine-readable specs ship here.
-
-- All PII is scrubbed before commit via [`tools/redact.py`](tools/redact.py).
-  Concretely: real student names → the sentinel `CASE-A`; 13-digit student
-  IDs → `<STUDENT_ID>`; absolute Windows paths → `./`; non-sentinel case
-  codes (any internal case identifier other than `CASE-A` / `CASE-B`) → the
-  sentinel `CASE-A`.
-- The CI workflow [`.github/workflows/redact-check.yml`](.github/workflows/redact-check.yml)
-  runs both `tools/redact.py --check` and a belt-and-suspenders `git grep`
-  on every PR to `main`. Any reintroduction of PII patterns blocks merge.
-- See [`docs/redaction-spec.md`](docs/redaction-spec.md) for the full rule set.
-
-## 🤖 AI-Native Support
-
-本项目原生支持多种 AI IDE / 编程助手：
-
-| AI Tool | 入口文件 | 作用 |
+| AI 工具 | 入口文件 | 作用 |
 |---------|---------|------|
-| **通用** | `AGENTS.md` | Canonical Index（4 条 Bootstrap 规则） |
-| **Cursor** | `.cursorrules` | Thin Proxy → AGENTS.md |
-| **Claude Code** | `CLAUDE.md` | Thin Proxy → AGENTS.md |
-| **GitHub Copilot** | `.github/copilot-instructions.md` | Thin Proxy → AGENTS.md |
+| 通用 | `AGENTS.md` | 标准入口索引 (4 条 Bootstrap 规则) |
+| Cursor | `.cursorrules` | 转接到 `AGENTS.md` |
+| Claude Code | `CLAUDE.md` | 转接到 `AGENTS.md` |
+| GitHub Copilot | `.github/copilot-instructions.md` | 转接到 `AGENTS.md` |
 
-AI 一键启动：在任何支持的 IDE 中输入 `/thesis` 或 `@/thesis`，AI 将自动加载完整 Pipeline 规范并引导你完成论文排版。
+</details>
 
-## 🙏 Credits / 致谢
+## 🔒 隐私与公开发布
+
+这是项目的"公开知识精炼版"仓库, 实际开发的私有 skill 树不公开, 公开仓库只放脱敏后的脚本、文档、规范。
+
+- 所有 PII (姓名 / 13 位学号 / 真实案例号 / Windows 绝对路径) 在 commit 前都会被 [`tools/redact.py`](tools/redact.py) 自动替换成 `CASE-A` 等脱敏符号
+- 每次 PR 都跑 [`.github/workflows/redact-check.yml`](.github/workflows/redact-check.yml) 自动审计 + git grep 双保险, 任何 PII 残留直接拦截 merge
+- 详细规则见 [`docs/redaction-spec.md`](docs/redaction-spec.md)
+
+## 🙏 致谢
 
 本项目基于 [DissertationUESTC](https://github.com/MGG1996/DissertationUESTC) LaTeX 模板构建，原始项目源自 [x-magus/ThesisUESTC](https://github.com/x-magus/ThesisUESTC)，遵循 [LPPL (LaTeX Project Public License)](https://www.latex-project.org/lppl/) 协议。
 
